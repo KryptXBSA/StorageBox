@@ -1,0 +1,46 @@
+datasource db {
+  // could be postgresql or mysql
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator db {
+  provider = "go run github.com/steebchen/prisma-client-go"
+}
+
+// Use the UUID type for the IDs
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String?   @unique
+  password  String?
+  folders   Folder[]
+  files     File[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Folder {
+  id         String   @id @default(uuid())
+  name       String
+  userId     String
+  parentId   String?
+  user       User     @relation(fields: [userId], references: [id])
+  parent     Folder?  @relation("SubFolders", fields: [parentId], references: [id])
+  subFolders Folder[] @relation("SubFolders")
+  files      File[]
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  type      String
+  userId    String
+  folderId  String
+  user      User     @relation(fields: [userId], references: [id])
+  folder    Folder   @relation(fields: [folderId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}

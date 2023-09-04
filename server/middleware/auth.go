@@ -40,6 +40,7 @@ func Auth(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token"})
+    println(err.Error())
 		c.Abort()
 		return
 	}
