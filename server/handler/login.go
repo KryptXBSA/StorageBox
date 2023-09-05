@@ -12,12 +12,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const secretKey = "your-secret-key"
+
 var body struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
-
-const secretKey = "your-secret-key"
 
 func Login(c *gin.Context) {
 
