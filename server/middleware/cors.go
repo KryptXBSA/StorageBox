@@ -10,7 +10,7 @@ func Cors() gin.HandlerFunc {
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
 		AllowHeaders: []string{
-			"Authorization", "X-Requested-With", "X-Request-ID", "X-HTTP-Method-Override",
+			"Authorization", "X-Requested-With", "X-Request-ID", "X-HTTP-Method-Override","Content-Type",
 			"Upload-Length", "Upload-Offset", "Tus-Resumable", "Upload-Metadata", "Upload-Defer-Length",
 			"Upload-Concat", "User-Agent", "Referrer", "Origin", "Content-Type", "Content-Length", "dir", "id", "token", // Include "dir" header
 		},

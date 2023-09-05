@@ -15,12 +15,12 @@ func main() {
 
 	router.POST("/login", handler.Login)
 
-	router.Use(middleware.Auth)
+	// router.Use(middleware.Auth)
 
 	router.GET("/session", handler.Session)
 	router.POST("/folder", handler.NewFolder)
 
-	router.Use(middleware.DirExists)
+	// router.Use(middleware.DirExists)
 	router.POST("/files/", handler.PostHandler)
 	router.HEAD("/files/:id", handler.HeadHandler)
 	router.PATCH("/files/:id", handler.PatchHandler)

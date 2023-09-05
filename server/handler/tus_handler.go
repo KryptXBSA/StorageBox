@@ -3,8 +3,8 @@ package handler
 import (
 	"fmt"
 
-	"github.com/AlandSleman/StorageBox/prisma"
-	"github.com/AlandSleman/StorageBox/prisma/db"
+	// "github.com/AlandSleman/StorageBox/prisma"
+	// "github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
 	"github.com/tus/tusd/pkg/filestore"
 	tusd "github.com/tus/tusd/pkg/handler"
@@ -24,23 +24,23 @@ func PatchHandler(c *gin.Context) {
 }
 
 func GetHandler(c *gin.Context) {
-	dTusHandler(c).PatchFile(c.Writer, c.Request)
+	dTusHandler(c).GetFile(c.Writer, c.Request)
 }
 
 func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
-	folderID := c.GetHeader("dir")
-	println("innn", folderID)
+	// folderID := c.GetHeader("dir")
+	// println("innn", folderID)
 
-	folder, err := prisma.Client().Folder.FindFirst(
-		db.Folder.ID.Equals(folderID),
-	).Exec(prisma.Context())
-	println("fff", folder.UserID)
+	// folder, err := prisma.Client().Folder.FindFirst(
+	// 	db.Folder.ID.Equals(folderID),
+	// ).Exec(prisma.Context())
+	// println("fff", folder.UserID)
 
-	if err != nil {
-		// c.JSON(http.StatusBadRequest, gin.H{"message": "Folder not found"})
-		fmt.Println("Unable to create a new file")
-		// return
-	}
+	// if err != nil {
+	// 	// c.JSON(http.StatusBadRequest, gin.H{"message": "Folder not found"})
+	// 	fmt.Println("Unable to create a new file")
+	// 	// return
+	// }
 
 	store := filestore.FileStore{
 		Path: "./uploads/",
@@ -67,19 +67,19 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 			println("UPLOADING")
 			event := <-h.CompleteUploads
 
-			_, err = prisma.Client().File.CreateOne(
-				db.File.ID.Set(event.Upload.ID),
-				db.File.Name.Set(event.Upload.MetaData["type"]),
-				db.File.Type.Set(event.Upload.MetaData["name"]),
-				db.File.Size.Set(int(event.Upload.Size)),
-				db.File.User.Link(db.User.ID.Equals(c.GetString("id"))),
-				db.File.Folder.Link(db.Folder.ID.Equals(folderID)),
-			).Exec(prisma.Context())
+			// _, err = prisma.Client().File.CreateOne(
+			// 	db.File.ID.Set(event.Upload.ID),
+			// 	db.File.Name.Set(event.Upload.MetaData["type"]),
+			// 	db.File.Type.Set(event.Upload.MetaData["name"]),
+			// 	db.File.Size.Set(int(event.Upload.Size)),
+			// 	db.File.User.Link(db.User.ID.Equals(c.GetString("id"))),
+			// 	db.File.Folder.Link(db.Folder.ID.Equals(folderID)),
+			// ).Exec(prisma.Context())
 
-			if err != nil {
-				fmt.Println("Unable to create a new file", event.Upload.ID)
-				return
-			}
+			// if err != nil {
+			// 	fmt.Println("Unable to create a new file", event.Upload.ID)
+			// 	return
+			// }
 
 			fmt.Printf("Upload %s finished\n", event.Upload.ID)
 		}
