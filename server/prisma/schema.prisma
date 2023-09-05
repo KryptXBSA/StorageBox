@@ -23,6 +23,7 @@ model User {
 model Folder {
   id         String   @id @default(uuid())
   name       String
+  path       String
   userId     String
   parentId   String?
   user       User     @relation(fields: [userId], references: [id])

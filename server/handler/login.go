@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"context"
 	"errors"
+	"net/http"
+	"time"
+
+	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
-	"time"
 )
 
-// Login route
 var body struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -20,21 +20,16 @@ var body struct {
 const secretKey = "your-secret-key"
 
 func Login(c *gin.Context) {
-	prisma := db.NewClient()
-	ctx := context.Background()
-	if err := prisma.Prisma.Connect(); err != nil {
-		println("connnnnnnnn")
-		panic(err)
-	}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input"})
 		return
 	}
+
 	// get user from db
-	user, err := prisma.User.FindFirst(
+	user, err := prisma.Client().User.FindFirst(
 		db.User.Username.Equals(body.Username),
-	).Exec(ctx)
+	).Exec(prisma.Context())
 	var id string
 
 	if err != nil {
@@ -46,11 +41,18 @@ func Login(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server err"})
 				return
 			}
-			user, err = prisma.User.CreateOne(
+			// TODO make this a TX
+			user, err = prisma.Client().User.CreateOne(
 				db.User.Username.Set(body.Username),
 				db.User.Password.Set(hashedPassword),
-			).Exec(ctx)
+			).Exec(prisma.Context())
 			id = user.ID
+
+			_, err = prisma.Client().Folder.CreateOne(
+				db.Folder.Name.Set("/"),
+				db.Folder.Path.Set("/"),
+				db.Folder.User.Link(db.User.ID.Equals(id)),
+			).Exec(prisma.Context())
 
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while creating user"})

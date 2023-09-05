@@ -40,7 +40,7 @@ func Auth(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token"})
-    println(err.Error())
+		println(err.Error())
 		c.Abort()
 		return
 	}
@@ -50,6 +50,12 @@ func Auth(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Token is not valid"})
 		c.Abort()
 		return
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		if id, exists := claims["id"].(string); exists {
+			c.Set("id", id)
+		}
 	}
 
 	// Continue with the request
