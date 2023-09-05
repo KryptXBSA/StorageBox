@@ -35,9 +35,10 @@ model Folder {
 }
 
 model File {
-  id        String   @id @default(uuid())
+  id        String   @id 
   name      String
   type      String
+  size      Int
   userId    String
   folderId  String
   user      User     @relation(fields: [userId], references: [id])

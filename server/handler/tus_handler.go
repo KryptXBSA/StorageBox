@@ -2,38 +2,48 @@ package handler
 
 import (
 	"fmt"
+
+	"github.com/AlandSleman/StorageBox/prisma"
+	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
 	"github.com/tus/tusd/pkg/filestore"
 	tusd "github.com/tus/tusd/pkg/handler"
+	// Import other necessary packages here
 )
 
 func PostHandler(c *gin.Context) {
-	dir := c.MustGet("dir").(string)
-	println("dir is", dir)
-	dTusHandler(dir).PostFile(c.Writer, c.Request)
+	dTusHandler(c).PostFile(c.Writer, c.Request)
 }
 
 func HeadHandler(c *gin.Context) {
-	dir := c.MustGet("dir").(string)
-	println("dir is", dir)
-	dTusHandler(dir).HeadFile(c.Writer, c.Request)
+	dTusHandler(c).HeadFile(c.Writer, c.Request)
 }
 
 func PatchHandler(c *gin.Context) {
-	dir := c.MustGet("dir").(string)
-	println("dir is", dir)
-	dTusHandler(dir).PatchFile(c.Writer, c.Request)
+	dTusHandler(c).PatchFile(c.Writer, c.Request)
 }
 
 func GetHandler(c *gin.Context) {
-	dir := c.MustGet("dir").(string)
-	println("dir is", dir)
-	dTusHandler(dir).GetFile(c.Writer, c.Request)
+	dTusHandler(c).PatchFile(c.Writer, c.Request)
 }
 
-func dTusHandler(dir string) *tusd.UnroutedHandler {
+func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
+	folderID := c.GetHeader("dir")
+	println("innn", folderID)
+
+	folder, err := prisma.Client().Folder.FindFirst(
+		db.Folder.ID.Equals(folderID),
+	).Exec(prisma.Context())
+	println("fff", folder.UserID)
+
+	if err != nil {
+		// c.JSON(http.StatusBadRequest, gin.H{"message": "Folder not found"})
+		fmt.Println("Unable to create a new file")
+		// return
+	}
+
 	store := filestore.FileStore{
-		Path: "./uploads/" + dir,
+		Path: "./uploads/",
 	}
 
 	composer := tusd.NewStoreComposer()
@@ -46,16 +56,33 @@ func dTusHandler(dir string) *tusd.UnroutedHandler {
 	})
 
 	if err != nil {
-		panic(fmt.Errorf("Unable to create handler: %s", err))
+		fmt.Println("Unable to create a new file")
+		// println("Unable to create handler: ",err.Error())
+		// c.JSON(http.StatusBadRequest, gin.H{"message": "Unable to create handler: %s"})
+		// return
 	}
 
 	go func() {
 		for {
+			println("UPLOADING")
 			event := <-h.CompleteUploads
-			println("aaaa", dir)
+
+			_, err = prisma.Client().File.CreateOne(
+				db.File.ID.Set(event.Upload.ID),
+				db.File.Name.Set(event.Upload.MetaData["type"]),
+				db.File.Type.Set(event.Upload.MetaData["name"]),
+				db.File.Size.Set(int(event.Upload.Size)),
+				db.File.User.Link(db.User.ID.Equals(c.GetString("id"))),
+				db.File.Folder.Link(db.Folder.ID.Equals(folderID)),
+			).Exec(prisma.Context())
+
+			if err != nil {
+				fmt.Println("Unable to create a new file", event.Upload.ID)
+				return
+			}
+
 			fmt.Printf("Upload %s finished\n", event.Upload.ID)
 		}
 	}()
-
 	return h
 }
