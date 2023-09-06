@@ -1,5 +1,15 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import Uppy from "@uppy/core"
+import {
+  Dashboard,
+  DashboardModal,
+  DragDrop,
+  FileInput,
+  ProgressBar,
+} from "@uppy/react"
+import Tus from "@uppy/tus"
 import { PlusIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -12,20 +22,48 @@ import {
 } from "@/components/ui/popover"
 
 export function FloatingNewBtn() {
+  const [uppy, setUppy] = useState<Uppy>()
+
+  useEffect(() => {
+    // Create an Uppy instance with custom headers
+    const uppyInstance = new Uppy({
+      id: "uppy1",
+      autoProceed: false,
+      debug: true,
+    }).use(Tus, {
+      endpoint: "http://localhost:4000/files/",
+      headers: {
+        dir: "bb93c78a-1841-41c1-bc13-d94b9857dd6e",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTQwMjY5MzAsImlkIjoiMGQ0YjRmOTMtN2NkZC00YzdiLTgwOTQtZWFhMDY2ODE3MTNjIn0.i-XW9qNFi2rRw3HXz2tssPwdX3AIqmSQFAfnaKETB_Y",
+      },
+    })
+
+    // Store the Uppy instance in state
+    setUppy(uppyInstance)
+
+    // Clean up the Uppy instance when the component unmounts
+    return () => {
+      uppyInstance.close()
+      uppy?.close()
+    }
+  }, [])
   return (
-    <Popover >
+    <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="rounded-full w-14 h-14">
           <PlusIcon className="scale-125" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 mx-12 mb-5">
+      <PopoverContent className="w-80 mr-[500px] mb-5">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Dimensions</h4>
-            <p className="text-sm text-muted-foreground">
-              Set the dimensions for the layer.
-            </p>
+            <Dashboard
+              uppy={uppy}
+              metaFields={[
+                { id: "name", name: "Name", placeholder: "File name" },
+              ]}
+            />
           </div>
           <div className="grid gap-2">
             <div className="grid grid-cols-3 items-center gap-4">

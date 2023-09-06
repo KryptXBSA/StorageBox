@@ -3,6 +3,11 @@ import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Sidebar } from "@/layout/Sidebar"
 
+import "@uppy/core/dist/style.css"
+import "@uppy/dashboard/dist/style.css"
+import "@uppy/drag-drop/dist/style.css"
+import "@uppy/file-input/dist/style.css"
+import "@uppy/progress-bar/dist/style.css"
 // import { SetSession } from "@/state/session"
 
 import { siteConfig } from "@/config/site"
