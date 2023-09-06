@@ -15,7 +15,7 @@ func main() {
 
 	router.POST("/login", handler.Login)
 
-	// router.Use(middleware.Auth)
+	router.Use(middleware.Auth)
 
 	router.GET("/session", handler.Session)
 	router.POST("/folder", handler.NewFolder)

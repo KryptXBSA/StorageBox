@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
-	"github.com/AlandSleman/StorageBox/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -30,11 +29,9 @@ func NewFolder(c *gin.Context) {
 		return
 	}
 
-	path := utils.RandomPath()
 	userOwnsFolder := false
 	for _, folder := range user.Folders() {
 		if folder.ID == NewFolderBody.ParentID {
-			path = folder.Path + path + "/"
 			userOwnsFolder = true
 			break
 		}
@@ -49,7 +46,6 @@ func NewFolder(c *gin.Context) {
 
 	newFolder, err := prisma.Client().Folder.CreateOne(
 		db.Folder.Name.Set(folderName),
-		db.Folder.Path.Set(path),
 		db.Folder.User.Link(db.User.ID.Equals(userID)),
 		db.Folder.Parent.Link(db.Folder.ID.Equals(NewFolderBody.ParentID)),
 	).Exec(prisma.Context())

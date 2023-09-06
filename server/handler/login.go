@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/AlandSleman/StorageBox/prisma"
@@ -41,18 +42,29 @@ func Login(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server err"})
 				return
 			}
-			// TODO make this a TX
 			user, err = prisma.Client().User.CreateOne(
 				db.User.Username.Set(body.Username),
+				db.User.Provider.Set("password"),
 				db.User.Password.Set(hashedPassword),
 			).Exec(prisma.Context())
 			id = user.ID
 
 			_, err = prisma.Client().Folder.CreateOne(
 				db.Folder.Name.Set("/"),
-				db.Folder.Path.Set("/"),
 				db.Folder.User.Link(db.User.ID.Equals(id)),
 			).Exec(prisma.Context())
+
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while creating user"})
+				return
+			}
+			folderPath := "./uploads/" + id // Specify the folder path
+
+			// Create the folder (including parent directories) with read-write permissions (os.ModePerm)
+			if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
+				println("Error creating folder:", err)
+				return
+			}
 
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while creating user"})

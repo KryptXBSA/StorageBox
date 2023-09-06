@@ -12,8 +12,9 @@ generator db {
 model User {
   id        String   @id @default(uuid())
   username  String   @unique
-  email     String?   @unique
+  email     String?  @unique
   password  String?
+  provider  String
   folders   Folder[]
   files     File[]
   createdAt DateTime @default(now()) @map("created_at")
@@ -23,7 +24,6 @@ model User {
 model Folder {
   id         String   @id @default(uuid())
   name       String
-  path       String
   userId     String
   parentId   String?
   user       User     @relation(fields: [userId], references: [id])
@@ -35,7 +35,7 @@ model Folder {
 }
 
 model File {
-  id        String   @id 
+  id        String   @id
   name      String
   type      String
   size      Int
