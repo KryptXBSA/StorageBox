@@ -6,7 +6,7 @@ export async function makeRequest(path: string, method: string, body?: any) {
   const options = {
     method: method,
     path: path,
-    body,
+    data: body,
     headers: {
       "Content-Type": "application/json",
       Authorization:

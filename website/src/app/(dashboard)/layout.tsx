@@ -2,12 +2,17 @@ import "@/styles/globals.css"
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Sidebar } from "@/layout/Sidebar"
+import { Session } from "@/types"
+import jwt from "jsonwebtoken"
 
 import "@uppy/core/dist/style.css"
 import "@uppy/dashboard/dist/style.css"
 import "@uppy/drag-drop/dist/style.css"
 import "@uppy/file-input/dist/style.css"
 import "@uppy/progress-bar/dist/style.css"
+import { redirect } from "next/navigation"
+import { SetSession } from "@/session/SetSession"
+
 // import { SetSession } from "@/state/session"
 
 import { siteConfig } from "@/config/site"
@@ -42,9 +47,13 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  // let session = getServerSession(cookies())
+  const cookieStore = cookies()
+  const token = cookieStore.get("token")?.value
+  if (!token) redirect("/")
+  let decoded = jwt.decode(token) as { id: string }
+  // let data = getUserData(session?.token)
+  const session: Session = { token, id: decoded.id }
   // let userData = null
-  // if (session?.token) userData = getUserData(session?.token)
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -56,7 +65,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ReactQueryProvider>
-            {/* <SetSession userData={{ id: "s" }} session={session} /> */}
+            <SetSession session={session} />
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">
                 <FloatingNewBtn />

@@ -23,6 +23,8 @@ var body struct {
 func Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&body); err != nil {
+    println("wtf",body.Password)
+    println(body.Username)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input"})
 		return
 	}

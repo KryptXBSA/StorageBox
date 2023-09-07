@@ -23,3 +23,5 @@ export interface Folder {
   updatedAt: string
   parentId?: string
 }
+
+export type Session = { id: string; token: string }
