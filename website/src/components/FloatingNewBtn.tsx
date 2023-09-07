@@ -58,7 +58,7 @@ export function FloatingNewBtn() {
         <div className="grid gap-4">
           <div className="space-y-2">
             <Dashboard
-              uppy={uppy}
+              uppy={uppy!}
               metaFields={[
                 { id: "name", name: "Name", placeholder: "File name" },
               ]}

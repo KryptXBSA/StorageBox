@@ -1,4 +1,3 @@
-"use client"
 
 import { create } from "zustand"
 import {  Session } from "@/types";
