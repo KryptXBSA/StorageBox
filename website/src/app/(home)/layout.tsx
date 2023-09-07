@@ -1,14 +1,15 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import { SiteHeader } from "@/layout/SiteHeader"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { ReactQueryProvider } from "@/components/ReactQueryProvider"
-import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
-  import 'react-toastify/dist/ReactToastify.css';
+
+import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
 
 export const metadata: Metadata = {
@@ -44,10 +45,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ReactQueryProvider>
-
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-
-        <ToastContainer theme="dark" />
+              <ToastContainer theme="dark" />
               <div className="relative flex min-h-screen flex-col">
                 <SiteHeader />
                 <div className="flex-1">{children}</div>

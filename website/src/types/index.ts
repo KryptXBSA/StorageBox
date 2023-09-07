@@ -4,6 +4,7 @@ export interface ErrorResponse {
   message: string
 }
 
+export type ErrorRes={message:string}
 export interface File {
   id: string
   name: string

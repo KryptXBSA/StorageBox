@@ -1,15 +1,15 @@
 "use client"
 
 import React from "react"
-import { useFolderStore } from "@/state/folder"
+import { useDataStore } from "@/state/data"
 
 export function Breadcrumbs() {
-  const { selectedFolder, parents } = useFolderStore()
+  const { selectedFolder, parents,setSelectedFolder } = useDataStore()
 
   return (
     <nav className="flex text-lg" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 md:space-x-3">
-        <li className="inline-flex items-center">
+        <li onClick={()=>setSelectedFolder(null)} className="inline-flex items-center">
           <a
             href="#"
             className="inline-flex items-center font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"

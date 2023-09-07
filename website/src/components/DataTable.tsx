@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { useFolderStore } from "@/state/folder"
+import { useDataStore } from "@/state/data"
 import { File, Folder } from "@/types"
 
 import {
@@ -13,18 +13,18 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-export function DataTable(props: { folders: Folder[]; files: File[] }) {
-  const state = useFolderStore()
+export function DataTable() {
+  const state = useDataStore()
 
   function selectFolder(id: string) {
-    const selectedFolder = props.folders.find((f) => f.id === id)!
+    const selectedFolder = state.folders.find((f) => f.id === id)!
     state.setSelectedFolder(selectedFolder)
 
     let parents: Folder[] = []
     let currentFolder = selectedFolder
 
     while (currentFolder.parentId) {
-      const parentFolder = props.folders.find(
+      const parentFolder = state.folders.find(
         (f) => f.id === currentFolder.parentId
       )
       if (parentFolder) {
@@ -36,6 +36,13 @@ export function DataTable(props: { folders: Folder[]; files: File[] }) {
     }
     state.setParents(parents)
   }
+  const filteredFolders = state.folders.filter((f) =>
+    f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
+  )
+
+  const filteredFiles = state.files.filter((f) =>
+    f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
+  )
   return (
     <Table>
       <TableHeader>
@@ -47,7 +54,7 @@ export function DataTable(props: { folders: Folder[]; files: File[] }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {props.folders.map((f) => (
+        {filteredFolders.map((f) => (
           <TableRow
             onClick={() => selectFolder(f.id)}
             className="cursor-pointer"
@@ -59,7 +66,8 @@ export function DataTable(props: { folders: Folder[]; files: File[] }) {
             <TableCell className="text-right">:</TableCell>
           </TableRow>
         ))}
-        {props.files.map((f) => (
+
+        {filteredFiles.map((f) => (
           <TableRow className="cursor-pointer" key={f.id}>
             <TableCell className="font-medium">{f.name}</TableCell>
             <TableCell>{f.createdAt}</TableCell>
