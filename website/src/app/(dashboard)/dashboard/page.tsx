@@ -18,9 +18,10 @@ export default function Page() {
   const query = useQuery({
     queryKey: [queryKeys.data],
     queryFn: getData,
-    // don't set the data again if already fetched
+    // don't refetch again if already fetched
     enabled: store.folders.length === 0,
-    onError: (e: AxiosError<ErrorRes>) => toast.error(e.response?.data.message),
+    onError: (e: AxiosError<ErrorRes>) =>
+      toast.error(e.response?.data.message || e.message),
   })
   if (query.isSuccess && store.folders.length === 0) {
     store.setFolders(query.data.folders.slice(1))

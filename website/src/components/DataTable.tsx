@@ -23,6 +23,7 @@ export function DataTable() {
     let parents: Folder[] = []
     let currentFolder = selectedFolder
 
+    // this is for the BreadCrumbs, find the parents of the selectedFolder
     while (currentFolder.parentId) {
       const parentFolder = state.folders.find(
         (f) => f.id === currentFolder.parentId
@@ -31,18 +32,31 @@ export function DataTable() {
         parents.unshift(parentFolder)
         currentFolder = parentFolder
       } else {
-        break // Break the loop if the parent folder is not found
+        break
       }
     }
     state.setParents(parents)
   }
-  const filteredFolders = state.folders.filter((f) =>
+
+  let filteredFolders = state.folders
+  let filteredFiles = state.files
+  // first filter based on the selected folder
+  if (state.selectedFolder?.id) {
+    filteredFolders = filteredFolders.filter(
+      (f) => f.parentId === state.selectedFolder?.id
+    )
+    filteredFiles = filteredFiles.filter(
+      (f) => f.folderId === state.selectedFolder?.id
+    )
+  }
+  // then filter based on the searchQuery
+  filteredFolders = filteredFolders.filter((f) =>
+    f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
+  )
+  filteredFiles = filteredFiles.filter((f) =>
     f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
   )
 
-  const filteredFiles = state.files.filter((f) =>
-    f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
-  )
   return (
     <Table>
       <TableHeader>

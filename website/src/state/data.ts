@@ -14,17 +14,19 @@ interface SessionState {
   setSearchQuery: (s: string) => void
 }
 
-export const useDataStore = create<SessionState>((set) => ({
-  folders: [],
-  setFolders: (b) => set(() => ({ folders: b })),
-  files: [],
-  setFiles: (b) => set(() => ({ files: b })),
-  selectedFolder: null,
-  setSelectedFolder: (s) => set(() => ({ selectedFolder: s })),
-  parents: [],
-  setParents: (b) => set(() => ({ parents: b })),
-  searchQuery: "",
-  setSearchQuery: (b) => set(() => ({ searchQuery: b })),
-}))
+export const useDataStore = create<SessionState>((set) => {
+  return {
+    folders: [],
+    setFolders: (b) => set(() => ({ folders: b })),
+    files: [],
+    setFiles: (b) => set(() => ({ files: b })),
+    selectedFolder: null,
+    setSelectedFolder: (s) => set(() => ({ selectedFolder: s })),
+    parents: [],
+    setParents: (b) => set(() => ({ parents: b })),
+    searchQuery: "",
+    setSearchQuery: (b) => set(() => ({ searchQuery: b })),
+  }
+})
 
 export const dataStore = useDataStore.getState()
