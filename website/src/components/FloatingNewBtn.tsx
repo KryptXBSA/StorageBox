@@ -33,9 +33,9 @@ export function FloatingNewBtn() {
     }).use(Tus, {
       endpoint: "http://localhost:4000/files/",
       headers: {
-        dir: "bb93c78a-1841-41c1-bc13-d94b9857dd6e",
+        dir: "e6271481-c012-4e26-8165-1cda0b214587",
         Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTQwMjY5MzAsImlkIjoiMGQ0YjRmOTMtN2NkZC00YzdiLTgwOTQtZWFhMDY2ODE3MTNjIn0.i-XW9qNFi2rRw3HXz2tssPwdX3AIqmSQFAfnaKETB_Y",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTQwMzUyOTksImlkIjoiMGQ0YjRmOTMtN2NkZC00YzdiLTgwOTQtZWFhMDY2ODE3MTNjIn0.dW7IJPTTOWb_LuFTRyzmdsk-y7heNFkBVMQD0rz3HxU",
       },
     })
 
@@ -44,7 +44,6 @@ export function FloatingNewBtn() {
 
     // Clean up the Uppy instance when the component unmounts
     return () => {
-      uppyInstance.close()
       uppy?.close()
     }
   }, [])

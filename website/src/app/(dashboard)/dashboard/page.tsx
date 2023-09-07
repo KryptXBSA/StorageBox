@@ -1,10 +1,31 @@
 "use client"
 
+import { getData } from "@/api/getData"
+import { apiUrl } from "@/config"
+import { queryKeys } from "@/queryKeys"
+import { useQuery } from "@tanstack/react-query"
+
 export default function Page() {
+  const { data, isLoading } = useQuery({
+    queryKey: [queryKeys.data],
+    queryFn: getData,
+  })
+  if (isLoading) return <>LOADING</>
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
         <Breadcrumbs />
+        {data?.files.map((f) => (
+          <div key={f.id}>
+            <p>{f.name}</p>
+            <p>{f.size}</p>
+            <img src={apiUrl + "/files/" + f.id} />
+          </div>
+        ))}
+        <br />
+        {data?.folders.map((f) => (
+          <p key={f.id}>{f.name}</p>
+        ))}
       </div>
     </section>
   )

@@ -27,7 +27,7 @@ func PostHandler(c *gin.Context) {
 
 	println(folder.UserID, c.GetString("id"))
 	if folder.UserID != c.GetString("id") {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "folderID!=id"})
 		return
 	}
 	if err != nil {
@@ -95,8 +95,8 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 
 			_, err = prisma.Client().File.CreateOne(
 				db.File.ID.Set(event.Upload.ID),
-				db.File.Name.Set(event.Upload.MetaData["type"]),
-				db.File.Type.Set(event.Upload.MetaData["name"]),
+				db.File.Name.Set(event.Upload.MetaData["name"]),
+				db.File.Type.Set(event.Upload.MetaData["type"]),
 				db.File.Size.Set(int(event.Upload.Size)),
 				db.File.User.Link(db.User.ID.Equals(c.GetString("id"))),
 				db.File.Folder.Link(db.Folder.ID.Equals(c.GetHeader("dir"))),

@@ -20,6 +20,8 @@ func main() {
 	router.GET("/session", handler.Session)
 	router.POST("/folder", handler.NewFolder)
 
+	router.GET("/data", handler.UserData)
+
 	// router.Use(middleware.DirExists)
 	router.POST("/files/", handler.PostHandler)
 	router.HEAD("/files/:id", handler.HeadHandler)
