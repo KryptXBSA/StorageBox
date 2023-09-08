@@ -89,7 +89,7 @@ export function DataTable() {
               }}
               className="text-right"
             >
-              <RowAction  />
+              <RowAction id={f.id} />
             </TableCell>
           </TableRow>
         ))}
@@ -100,7 +100,7 @@ export function DataTable() {
             <TableCell>{f.createdAt}</TableCell>
             <TableCell>{f.size}</TableCell>
             <TableCell className="text-right">
-              <RowAction  />
+              <RowAction id={f.id} />
             </TableCell>
           </TableRow>
         ))}

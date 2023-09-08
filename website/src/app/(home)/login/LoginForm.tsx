@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ErrorRes } from "@/types"
 
 const formSchema = z.object({
   username: z.string().min(1).max(255),
@@ -32,7 +33,7 @@ export function LoginForm() {
   })
   const mutation = useMutation({
     mutationFn: login,
-    onError: (e: AxiosError<{ message: string }>) => {
+    onError: (e: AxiosError<ErrorRes>) => {
       toast.error(e.response?.data.message)
       return e
     },

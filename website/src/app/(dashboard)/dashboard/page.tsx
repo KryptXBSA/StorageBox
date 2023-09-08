@@ -19,11 +19,12 @@ export default function Page() {
     queryKey: [queryKeys.data],
     queryFn: getData,
     // don't refetch again if already fetched
-    enabled: store.folders.length === 0,
+    enabled: !store.initialDataFetched,
     onError: (e: AxiosError<ErrorRes>) =>
       toast.error(e.response?.data.message || e.message),
   })
-  if (query.isSuccess && store.folders.length === 0) {
+  if (query.isSuccess && !store.initialDataFetched) {
+    store.setInitialDataFetched(true)
     store.setFolders(query.data.folders.slice(1))
     store.setFiles(query.data.files)
   }

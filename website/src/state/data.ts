@@ -2,6 +2,8 @@ import { File, Folder } from "@/types"
 import { create } from "zustand"
 
 interface SessionState {
+  initialDataFetched: boolean
+  setInitialDataFetched: (s: boolean) => void
   selectedFolder: Folder | null
   setSelectedFolder: (s: Folder | null) => void
   parents: Folder[]
@@ -16,6 +18,8 @@ interface SessionState {
 
 export const useDataStore = create<SessionState>((set) => {
   return {
+    initialDataFetched: false,
+    setInitialDataFetched: (b) => set(() => ({ initialDataFetched: b })),
     folders: [],
     setFolders: (b) => set(() => ({ folders: b })),
     files: [],
