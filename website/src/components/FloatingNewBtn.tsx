@@ -1,6 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { newFolder } from "@/api/newFolder"
+import { ErrorRes } from "@/types"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
 import Uppy from "@uppy/core"
 import {
   Dashboard,
@@ -10,9 +14,21 @@ import {
   ProgressBar,
 } from "@uppy/react"
 import Tus from "@uppy/tus"
+import { AxiosError } from "axios"
 import { PlusIcon } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
+import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -21,6 +37,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+const formSchema = z.object({
+  name: z.string().min(1).max(255),
+})
 export function FloatingNewBtn() {
   const [uppy, setUppy] = useState<Uppy>()
 
@@ -47,6 +66,32 @@ export function FloatingNewBtn() {
       uppy?.close()
     }
   }, [])
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  })
+
+  // let router = useRouter()
+  // if (mutation.isSuccess) {
+  // toast.success(mutation.data.token)
+  // Cookies.set("token", mutation.data.token, { secure: true })
+  // router.push("/dashboard")
+  // }
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    mutation.mutate({
+      name: values.name,
+      parentId: "bb93c78a-1841-41c1-bc13-d94b9857dd6e",
+    })
+  }
+  const mutation = useMutation({
+    mutationFn: newFolder,
+    onError: (e: AxiosError<ErrorRes>) => {
+      toast.error(e.response?.data.message)
+      return e
+    },
+  })
+  mutation.mutate
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -66,36 +111,32 @@ export function FloatingNewBtn() {
           </div>
           <div className="grid gap-2">
             <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="width">Width</Label>
-              <Input
-                id="width"
-                defaultValue="100%"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="maxWidth">Max. width</Label>
-              <Input
-                id="maxWidth"
-                defaultValue="300px"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="height">Height</Label>
-              <Input
-                id="height"
-                defaultValue="25px"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="maxHeight">Max. height</Label>
-              <Input
-                id="maxHeight"
-                defaultValue="none"
-                className="col-span-2 h-8"
-              />
+              <Form {...form}>
+                <form
+                  noValidate
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8"
+                >
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <Button type="submit">Submit</Button>
+                </form>
+              </Form>
             </div>
           </div>
         </div>
