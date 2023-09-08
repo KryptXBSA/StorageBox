@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
+    "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.0.6",
     "@radix-ui/react-slot": "^1.0.2",
@@ -52,7 +53,6 @@
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "autoprefixer": "^10.4.14",
-    "daisyui": "^3.7.3",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "tailwindcss": "^3.3.2",

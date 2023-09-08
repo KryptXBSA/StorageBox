@@ -1,5 +1,4 @@
 datasource db {
-  // could be postgresql or mysql
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -8,7 +7,6 @@ generator db {
   provider = "go run github.com/steebchen/prisma-client-go"
 }
 
-// Use the UUID type for the IDs
 model User {
   id        String   @id @default(uuid())
   username  String   @unique
@@ -42,7 +40,7 @@ model File {
   userId    String
   folderId  String
   user      User     @relation(fields: [userId], references: [id])
-  folder    Folder   @relation(fields: [folderId], references: [id])
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }

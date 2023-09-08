@@ -1,8 +1,9 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import { useDataStore } from "@/state/data"
 import { File, Folder } from "@/types"
+import { MoreVertical } from "lucide-react"
 
 import {
   Table,
@@ -13,8 +14,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { RowAction } from "./RowAction"
+
 export function DataTable() {
   const state = useDataStore()
+  const [folderAction, setFolderAction] = useState(false)
+  const [fileAction, setFileAction] = useState(false)
 
   function selectFolder(id: string) {
     const selectedFolder = state.folders.find((f) => f.id === id)!
@@ -38,6 +43,7 @@ export function DataTable() {
     state.setParents(parents)
   }
 
+  // TODO explicitly filder root folder /
   let filteredFolders = state.folders
   let filteredFiles = state.files
   // first filter based on the selected folder
@@ -64,7 +70,7 @@ export function DataTable() {
           <TableHead className="w-[300px]">Name</TableHead>
           <TableHead>Date</TableHead>
           <TableHead>File size</TableHead>
-          <TableHead className="text-right">:</TableHead>
+          <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -77,7 +83,14 @@ export function DataTable() {
             <TableCell className="font-medium">{f.name}</TableCell>
             <TableCell>{f.createdAt}</TableCell>
             <TableCell>-</TableCell>
-            <TableCell className="text-right">:</TableCell>
+            <TableCell
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+              className="text-right"
+            >
+              <RowAction  />
+            </TableCell>
           </TableRow>
         ))}
 
@@ -86,7 +99,9 @@ export function DataTable() {
             <TableCell className="font-medium">{f.name}</TableCell>
             <TableCell>{f.createdAt}</TableCell>
             <TableCell>{f.size}</TableCell>
-            <TableCell className="text-right">:</TableCell>
+            <TableCell className="text-right">
+              <RowAction  />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -20,6 +20,11 @@ func main() {
 	router.GET("/session", handler.Session)
 	router.POST("/folder", handler.NewFolder)
 
+	router.PATCH("/file", handler.UpdateFile)
+	router.PATCH("/folder", handler.UpdateFolder)
+	router.POST("/folder/delete", handler.DeleteFolder)
+	router.POST("/file/delete", handler.DeleteFile)
+
 	router.GET("/data", handler.UserData)
 
 	// router.Use(middleware.DirExists)

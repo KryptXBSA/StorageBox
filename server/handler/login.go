@@ -15,12 +15,12 @@ import (
 
 const secretKey = "your-secret-key"
 
+
+func Login(c *gin.Context) {
 var body struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
-
-func Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&body); err != nil {
     println("wtf",body.Password)
