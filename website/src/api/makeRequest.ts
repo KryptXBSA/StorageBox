@@ -1,16 +1,17 @@
 import { apiUrl } from "@/config"
+import { $session, sessionStore } from "@/session/session"
 // import { sessionStore } from "@/state/session"
 import axios from "axios"
 
 export async function makeRequest(path: string, method: string, body?: any) {
+  const token = $session.get()?.token
   const options = {
     method: method,
     path: path,
     data: body,
     headers: {
       "Content-Type": "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDQ4MzU5NjUsImlkIjoiMGQ0YjRmOTMtN2NkZC00YzdiLTgwOTQtZWFhMDY2ODE3MTNjIn0.BEIweSC2gameAtNA4JXeojZjFLpGL05Ely2KsPjxf78",
+      Authorization: `Bearer ${token}`,
     },
   }
   const { data } = await axios(apiUrl + options.path, {

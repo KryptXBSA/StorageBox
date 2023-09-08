@@ -1,6 +1,6 @@
-
+import { Session } from "@/types"
+import { atom } from "nanostores"
 import { create } from "zustand"
-import {  Session } from "@/types";
 
 interface SessionState {
   session: Session | null
@@ -10,11 +10,16 @@ interface SessionState {
 }
 
 export const useSessionStore = create<SessionState>((set) => ({
-  session: { id: "a", token: "b" },
-  userData: null,
+  session: null,
   setSession: (s) => set(() => ({ session: s })),
   alreadySet: false,
   setAlreadySet: (b) => set(() => ({ alreadySet: b })),
 }))
 
 export const sessionStore = useSessionStore.getState()
+
+export const $session = atom<Session | null>(null)
+
+export function setSession(s: Session) {
+  $session.set(s)
+}

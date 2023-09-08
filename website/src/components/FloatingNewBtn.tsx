@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { newFolder } from "@/api/newFolder"
+import { $session } from "@/session/session"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useStore } from "@nanostores/react"
 import { useMutation } from "@tanstack/react-query"
 import Uppy from "@uppy/core"
 import {
@@ -42,6 +44,7 @@ const formSchema = z.object({
 })
 export function FloatingNewBtn() {
   const [uppy, setUppy] = useState<Uppy>()
+  let token = useStore($session)?.token
 
   useEffect(() => {
     // Create an Uppy instance with custom headers
@@ -52,9 +55,8 @@ export function FloatingNewBtn() {
     }).use(Tus, {
       endpoint: "http://localhost:4000/files/",
       headers: {
-        dir: "e6271481-c012-4e26-8165-1cda0b214587",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTQwMzUyOTksImlkIjoiMGQ0YjRmOTMtN2NkZC00YzdiLTgwOTQtZWFhMDY2ODE3MTNjIn0.dW7IJPTTOWb_LuFTRyzmdsk-y7heNFkBVMQD0rz3HxU",
+        dir: "4fd07ab6-872d-4def-b49e-fb4ec141be85",
+        Authorization: "Bearer " + token,
       },
     })
 
@@ -81,7 +83,7 @@ export function FloatingNewBtn() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({
       name: values.name,
-      parentId: "bb93c78a-1841-41c1-bc13-d94b9857dd6e",
+      parentId: "4fd07ab6-872d-4def-b49e-fb4ec141be85",
     })
   }
   const mutation = useMutation({
