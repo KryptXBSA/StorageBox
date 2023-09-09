@@ -49,7 +49,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
-  if (!token) redirect("/")
+  if (!token) redirect("/login")
   let decoded = jwt.decode(token) as { id: string }
   // let data = getUserData(session?.token)
   const session: Session = { token, id: decoded.id }
