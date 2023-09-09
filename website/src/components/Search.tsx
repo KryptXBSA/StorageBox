@@ -13,11 +13,11 @@ export function Search() {
   }
 
   return (
-    <div className="max-w-lg relative">
+    <div className=" relative">
       <Input
-        placeholder="shadcn"
+        placeholder="Search"
         onChange={handleInputChange}
-        className="pr-10" // Add padding for the icon
+        className="w-[480px] rounded-3xl"
       />
       <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2" />
     </div>

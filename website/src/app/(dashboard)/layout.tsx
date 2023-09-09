@@ -11,6 +11,7 @@ import "@uppy/drag-drop/dist/style.css"
 import "@uppy/file-input/dist/style.css"
 import "@uppy/progress-bar/dist/style.css"
 import { redirect } from "next/navigation"
+import { SiteHeader } from "@/layout/SiteHeader"
 import { SetSession } from "@/session/SetSession"
 
 // import { SetSession } from "@/state/session"
@@ -21,7 +22,6 @@ import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { FloatingNewBtn } from "@/components/FloatingNewBtn"
 import { ReactQueryProvider } from "@/components/ReactQueryProvider"
-import { SiteHeader } from "@/layout/SiteHeader"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -66,12 +66,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <ReactQueryProvider>
             <SetSession session={session} />
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="dark">
               <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">
                 <FloatingNewBtn />
               </div>
-              <div className="relative flex min-h-screen flex-col">
-                <Sidebar />
+              <Sidebar />
+              <div style={{ width: 'calc(100% - 240px)' }}className="relative ml-auto flex min-h-screen flex-col">
                 <SiteHeader />
                 <main className="ml-60 flex-1">{children}</main>
               </div>
