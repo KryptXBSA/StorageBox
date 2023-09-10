@@ -41,11 +41,6 @@
         name: nginx
         state: present
 
-    - name: Clone the repository
-      ansible.builtin.git:
-        repo: https://github.com/AlandSleman/StorageBox
-        dest: StorageBox
-
     - name: Create .env file in ./StorageBox/server
       ansible.builtin.copy:
         content: |
