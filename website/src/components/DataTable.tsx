@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { useDataStore } from "@/state/data"
 import { File, Folder } from "@/types"
-import { MoreVertical } from "lucide-react"
+import { FileIcon, FolderIcon } from "lucide-react"
 
 import {
   Table,
@@ -14,10 +14,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { FolderCard } from "./FolderCard"
 import { RowAction } from "./RowAction"
+import { FileCard } from "./FileCard"
 
 export function DataTable() {
   const state = useDataStore()
+  console.log("state", state.folders)
   const [folderAction, setFolderAction] = useState(false)
   const [fileAction, setFileAction] = useState(false)
 
@@ -62,49 +65,74 @@ export function DataTable() {
   filteredFiles = filteredFiles.filter((f) =>
     f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
   )
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[300px]">Name</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>File size</TableHead>
-          <TableHead className="text-right"></TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {filteredFolders.map((f) => (
-          <TableRow
-            onClick={() => selectFolder(f.id)}
-            className="cursor-pointer"
-            key={f.id}
-          >
-            <TableCell className="font-medium">{f.name}</TableCell>
-            <TableCell>{f.createdAt}</TableCell>
-            <TableCell>-</TableCell>
-            <TableCell
-              onClick={(e) => {
-                e.stopPropagation()
-              }}
-              className="text-right"
+  if (state.viewAs === "grid")
+    return (
+      <>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 py-4 gap-2">
+          {filteredFolders.map((f) => (
+            <FolderCard selectFolder={selectFolder} key={f.id} {...f} />
+          ))}
+          {filteredFiles.map((f) => (
+            <FileCard key={f.id} {...f} />
+          ))}
+          {filteredFiles.map((f) => (
+            <FileCard key={f.id} {...f} />
+          ))}
+        </div>
+      </>
+    )
+  else
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="grow">Name</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Size</TableHead>
+            <TableHead className="text-right"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredFolders.map((f) => (
+            <TableRow
+              onClick={() => selectFolder(f.id)}
+              className="cursor-pointer"
+              key={f.id}
             >
-              <RowAction id={f.id} />
-            </TableCell>
-          </TableRow>
-        ))}
+              <TableCell className="font-medium flex items-center gap-1">
+                <FolderIcon />
+                {f.name}
+              </TableCell>
+              <TableCell>{f.createdAt}</TableCell>
+              <TableCell>Folder</TableCell>
+              <TableCell>-</TableCell>
+              <TableCell
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
+                className="text-right"
+              >
+                <RowAction id={f.id} />
+              </TableCell>
+            </TableRow>
+          ))}
 
-        {filteredFiles.map((f) => (
-          <TableRow className="cursor-pointer" key={f.id}>
-            <TableCell className="font-medium">{f.name}</TableCell>
-            <TableCell>{f.createdAt}</TableCell>
-            <TableCell>{f.size}</TableCell>
-            <TableCell className="text-right">
-              <RowAction id={f.id} />
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
+          {filteredFiles.map((f) => (
+            <TableRow className="cursor-pointer" key={f.id}>
+              <TableCell className="font-medium flex gap-1">
+                <FileIcon />
+                {f.name}
+              </TableCell>
+              <TableCell>{f.createdAt}</TableCell>
+              <TableCell>{f.type}</TableCell>
+              <TableCell>{f.size}</TableCell>
+              <TableCell className="text-right">
+                <RowAction id={f.id} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    )
 }

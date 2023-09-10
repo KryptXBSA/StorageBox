@@ -58,7 +58,7 @@ export function RenameDialog({ id }: { id: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="flex justify-start gap-4">
+        <Button onClick={(e)=>e.stopPropagation()} variant="ghost" className="flex justify-start gap-4">
           <Pencil />
           Rename
         </Button>

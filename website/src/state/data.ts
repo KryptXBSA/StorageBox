@@ -1,7 +1,11 @@
 import { File, Folder } from "@/types"
 import { create } from "zustand"
 
+// const [viewAs, setviewAs] = useState<"list" | "grid">()
+type ViewAs = "list" | "grid" 
 interface SessionState {
+  viewAs: ViewAs
+  setViewAs: (s: ViewAs) => void
   initialDataFetched: boolean
   setInitialDataFetched: (s: boolean) => void
   selectedFolder: Folder | null
@@ -18,6 +22,8 @@ interface SessionState {
 
 export const useDataStore = create<SessionState>((set) => {
   return {
+    viewAs: "list",
+    setViewAs: (b) => set(() => ({ viewAs: b })),
     initialDataFetched: false,
     setInitialDataFetched: (b) => set(() => ({ initialDataFetched: b })),
     folders: [],

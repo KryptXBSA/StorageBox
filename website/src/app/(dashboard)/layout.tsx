@@ -73,7 +73,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <Sidebar />
               <div style={{ width: 'calc(100% - 240px)' }}className="relative ml-auto flex min-h-screen flex-col">
                 <SiteHeader />
-                <main className="ml-60 flex-1">{children}</main>
+                <main className="flex-1">{children}</main>
               </div>
               <TailwindIndicator />
             </ThemeProvider>
