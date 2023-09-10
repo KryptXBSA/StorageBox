@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/AlandSleman/StorageBox/handler"
 	"github.com/AlandSleman/StorageBox/middleware"
 	"github.com/AlandSleman/StorageBox/prisma"
@@ -13,6 +15,11 @@ func main() {
 	router.Use(middleware.Cors())
 	prisma.Init()
 
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "hello",
+		})
+	})
 	router.POST("/login", handler.Login)
 
 	router.Use(middleware.Auth)
