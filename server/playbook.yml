@@ -1,0 +1,115 @@
+---
+- name: Setup Local Environment
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Install prerequisites
+      apt:
+        update_cache: yes
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+
+    - name: Install Node.js and global packages
+      ansible.builtin.shell: |
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        NODE_MAJOR=20
+        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+        sudo apt update 
+        sudo apt install -y nodejs
+        npm i prisma pm2 pnpm -g
+
+    - name: Install Docker
+      ansible.builtin.shell: |
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt update
+        sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+    - name: Create new PostgreSQL container
+      ansible.builtin.shell: |
+        docker run --name postgres-container -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} -p 5432:5432 -d postgres
+        sudo apt-get install -y postgresql-client
+        psql -h localhost -U postgres -d postgres -c "CREATE DATABASE mydb;"
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Clone the repository
+      ansible.builtin.git:
+        repo: https://github.com/AlandSleman/StorageBox
+        dest: StorageBox
+
+    - name: Create .env file in ./StorageBox/server
+      ansible.builtin.copy:
+        content: |
+          DATABASE_URL="postgresql://postgres:123@localhost:5432/postgres"
+        dest: StorageBox/server/.env
+
+    - name: Prisma sync database
+      ansible.builtin.shell: |
+        cd StorageBox/server
+        npx prisma db push --force
+
+    - name: Run backend with PM2
+      ansible.builtin.shell: |
+        pm2 start StorageBox/server --name server
+
+    - name: Create .env file in ./StorageBox/website
+      ansible.builtin.copy:
+        content: |
+          SERVER_URL="https://api.kurdmake.com"
+        dest: StorageBox/website/.env
+
+    - name: Install frontend dependencies, build, and start with PM2
+      ansible.builtin.shell: |
+        cd StorageBox/website
+        pnpm i
+        pnpm build
+        pm2 start npm --name "website" -- start
+
+    - name: Update Nginx configuration
+      ansible.builtin.copy:
+        content: |
+          events {}
+
+          http {
+              server {
+                  listen 80;
+                  server_name storagebox.kurdmake.com;
+
+                  location / {
+                      proxy_pass http://localhost:4001;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
+
+              server {
+                  listen 80;
+                  server_name api.kurdmake.com;
+
+                  location / {
+                      proxy_pass http://localhost:4000;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
+          }
+        dest: /etc/nginx/sites-available/default
+
+    - name: Reload Nginx
+      ansible.builtin.command: nginx -s reload
+
