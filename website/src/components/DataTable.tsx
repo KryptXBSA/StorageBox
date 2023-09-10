@@ -14,9 +14,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { FileCard } from "./FileCard"
 import { FolderCard } from "./FolderCard"
 import { RowAction } from "./RowAction"
-import { FileCard } from "./FileCard"
 
 export function DataTable() {
   const state = useDataStore()
@@ -25,7 +25,8 @@ export function DataTable() {
   const [fileAction, setFileAction] = useState(false)
 
   function selectFolder(id: string) {
-    const selectedFolder = state.folders.find((f) => f.id === id)!
+    let filtered = state.folders.filter((f) => f.name !== "/")
+    const selectedFolder = filtered.find((f) => f.id === id)!
     state.setSelectedFolder(selectedFolder)
 
     let parents: Folder[] = []
@@ -33,7 +34,7 @@ export function DataTable() {
 
     // this is for the BreadCrumbs, find the parents of the selectedFolder
     while (currentFolder.parentId) {
-      const parentFolder = state.folders.find(
+      const parentFolder = filtered.find(
         (f) => f.id === currentFolder.parentId
       )
       if (parentFolder) {
@@ -46,9 +47,10 @@ export function DataTable() {
     state.setParents(parents)
   }
 
-  // TODO explicitly filder root folder /
+  // TODO explicitly filder root folder /, DONE
   let filteredFolders = state.folders
   let filteredFiles = state.files
+  filteredFolders = state.folders.filter((f) => f.name !== "/")
   // first filter based on the selected folder
   if (state.selectedFolder?.id) {
     filteredFolders = filteredFolders.filter(

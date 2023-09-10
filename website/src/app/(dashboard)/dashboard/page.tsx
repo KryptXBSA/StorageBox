@@ -25,7 +25,7 @@ export default function Page() {
   })
   if (query.isSuccess && !store.initialDataFetched) {
     store.setInitialDataFetched(true)
-    store.setFolders(query.data.folders.slice(1))
+    store.setFolders(query.data.folders)
     store.setFiles(query.data.files)
   }
   if (query.isLoading) return <>LOADING</>

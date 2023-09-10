@@ -93,7 +93,6 @@ export function FloatingNewBtn() {
       return e
     },
   })
-  mutation.mutate
   return (
     <Popover>
       <PopoverTrigger asChild>
