@@ -10,6 +10,7 @@ import { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
 import { DataTable } from "@/components/DataTable"
+import { Spinner } from "@/components/Spinner"
 
 import { Breadcrumbs } from "./Breadcrumbs"
 
@@ -28,11 +29,16 @@ export default function Page() {
     store.setFolders(query.data.folders)
     store.setFiles(query.data.files)
   }
-  if (query.isLoading) return <>LOADING</>
+  if (query.isLoading)
+    return (
+      <div className="p-96 mx-auto">
+        <Spinner />
+      </div>
+    )
   return (
     <section className="p-4">
-        <Breadcrumbs />
-        <DataTable />
+      <Breadcrumbs />
+      <DataTable />
     </section>
   )
 }

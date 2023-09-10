@@ -11,8 +11,10 @@ import "@uppy/drag-drop/dist/style.css"
 import "@uppy/file-input/dist/style.css"
 import "@uppy/progress-bar/dist/style.css"
 import { redirect } from "next/navigation"
-import { SiteHeader } from "@/layout/SiteHeader"
+import { SiteHeaderLoggedIn } from "@/layout/SiteHeaderLoggedIn"
 import { SetSession } from "@/session/SetSession"
+import "react-toastify/dist/ReactToastify.css"
+import { ToastContainer } from "react-toastify"
 
 // import { SetSession } from "@/state/session"
 
@@ -67,12 +69,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ReactQueryProvider>
             <SetSession session={session} />
             <ThemeProvider attribute="class" defaultTheme="dark">
+              <ToastContainer position="bottom-right" theme="dark" />
               <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">
-                <FloatingNewBtn />
+                {/* <FloatingNewBtn /> */}
               </div>
               <Sidebar />
-              <div style={{ width: 'calc(100% - 240px)' }}className="relative ml-auto flex min-h-screen flex-col">
-                <SiteHeader />
+              <div
+                style={{ width: "calc(100% - 240px)" }}
+                className="relative ml-auto flex min-h-screen flex-col"
+              >
+                <SiteHeaderLoggedIn />
                 <main className="flex-1">{children}</main>
               </div>
               <TailwindIndicator />

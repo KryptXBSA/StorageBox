@@ -20,9 +20,6 @@ import { RowAction } from "./RowAction"
 
 export function DataTable() {
   const state = useDataStore()
-  console.log("state", state.folders)
-  const [folderAction, setFolderAction] = useState(false)
-  const [fileAction, setFileAction] = useState(false)
 
   function selectFolder(id: string) {
     let filtered = state.folders.filter((f) => f.name !== "/")
@@ -34,9 +31,7 @@ export function DataTable() {
 
     // this is for the BreadCrumbs, find the parents of the selectedFolder
     while (currentFolder.parentId) {
-      const parentFolder = filtered.find(
-        (f) => f.id === currentFolder.parentId
-      )
+      const parentFolder = filtered.find((f) => f.id === currentFolder.parentId)
       if (parentFolder) {
         parents.unshift(parentFolder)
         currentFolder = parentFolder
@@ -115,7 +110,7 @@ export function DataTable() {
                 }}
                 className="text-right"
               >
-                <RowAction id={f.id} />
+                <RowAction isFolder name={f.name} id={f.id} />
               </TableCell>
             </TableRow>
           ))}
@@ -130,7 +125,7 @@ export function DataTable() {
               <TableCell>{f.type}</TableCell>
               <TableCell>{f.size}</TableCell>
               <TableCell className="text-right">
-                <RowAction id={f.id} />
+                <RowAction isFolder={false} name={f.name} id={f.id} />
               </TableCell>
             </TableRow>
           ))}

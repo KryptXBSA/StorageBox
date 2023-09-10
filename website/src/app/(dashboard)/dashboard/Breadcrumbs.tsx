@@ -32,9 +32,7 @@ export function Breadcrumbs() {
 
   function refreshData() {
     setModalOpen(false)
-    console.log("aaass")
     getData().then((d) => {
-      console.log("xx", d)
       store.setFiles(d.files)
       store.setFolders(d.folders)
     })

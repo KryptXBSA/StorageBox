@@ -46,7 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <ReactQueryProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <ToastContainer theme="dark" />
+              <ToastContainer position="bottom-right" theme="dark" />
               <div className="relative flex min-h-screen flex-col">
                 <SiteHeader />
                 <div className="flex-1">{children}</div>

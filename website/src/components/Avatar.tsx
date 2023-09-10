@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import Cookies from "js-cookie"
 import { LogOut, Settings } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -12,6 +14,11 @@ import {
 import { Button } from "./ui/button"
 
 export function UserAvatar() {
+  let router = useRouter()
+  function logout() {
+    Cookies.remove("token")
+    router.push("/")
+  }
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,7 +32,11 @@ export function UserAvatar() {
           <Settings />
           <span> Settings</span>
         </Button>
-        <Button variant="ghost" className="w-full gap-2 border-none">
+        <Button
+          onClick={logout}
+          variant="ghost"
+          className="w-full gap-2 border-none"
+        >
           <LogOut /> LogOut
         </Button>
       </PopoverContent>

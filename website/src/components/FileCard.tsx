@@ -14,7 +14,7 @@ export function FileCard(p: File) {
         <p className="overflow-hidden text-center w-20 truncate whitespace-nowrap text-overflow-ellipsis">
           {p.name}
         </p>
-        <RowAction horizontal id={p.id} />
+        <RowAction horizontal isFolder={false} name={p.name} id={p.id} />
       </CardContent>
     </Card>
   )

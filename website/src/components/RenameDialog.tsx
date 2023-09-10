@@ -28,14 +28,20 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useState } from "react"
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
 })
 
-export function RenameDialog({ id }: { id: string }) {
+export function RenameDialog(p: {
+  id: string
+  name: string
+  isFolder: boolean
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues:{name:p.name}
   })
   const mutation = useMutation({
     mutationFn: renameFolder,
@@ -52,13 +58,20 @@ export function RenameDialog({ id }: { id: string }) {
   // router.push("/dashboard")
   // }
 
+  const [open, setOpen] = useState<boolean>()
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({ name: values.name, id })
+    mutation.mutate({ name: values.name, id:p.id, isFolder: p.isFolder })
+    toast.success("Success")
+    setOpen(false)
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button onClick={(e)=>e.stopPropagation()} variant="ghost" className="flex justify-start gap-4">
+        <Button
+          onClick={(e) => e.stopPropagation()}
+          variant="ghost"
+          className="flex justify-start gap-4"
+        >
           <Pencil />
           Rename
         </Button>
@@ -73,8 +86,8 @@ export function RenameDialog({ id }: { id: string }) {
             <DialogHeader>
               <DialogTitle>Rename</DialogTitle>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
+            <div className="">
+              <div className="">
                 <FormField
                   control={form.control}
                   name="name"
@@ -90,8 +103,8 @@ export function RenameDialog({ id }: { id: string }) {
               </div>
             </div>
             <DialogFooter>
-              <Button>Cancel</Button>
-              <Button type="submit">Save changes</Button>
+              <Button variant="destructive">Cancel</Button>
+              <Button variant="ghost"type="submit">Rename</Button>
             </DialogFooter>
           </form>
         </Form>

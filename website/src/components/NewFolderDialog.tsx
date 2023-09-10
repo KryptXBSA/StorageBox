@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { getData } from "@/api/getData"
 import { newFolder } from "@/api/newFolder"
-import { renameFolder } from "@/api/renameFolder"
 import { useDataStore } from "@/state/data"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -16,7 +15,6 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -27,11 +25,9 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -60,13 +56,17 @@ export function NewFolderDialog({ id }: { id: string }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({ name: values.name, parentId: id })
+    form.reset()
     if (mutation.isSuccess) {
       getData().then((d) => {
         state.setFiles(d.files)
         state.setFolders(d.folders)
+        console.log("aa", state)
       })
-      setOpen(false)
-      form.reset()
+      setTimeout(() => {
+      toast.success("Success")
+        setOpen(false)
+      }, 400)
     } else {
       setOpen(false)
       form.reset()

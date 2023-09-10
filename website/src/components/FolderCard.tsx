@@ -33,7 +33,7 @@ export function FolderCard(p: Folder & { selectFolder: any }) {
       onClick={() => p.selectFolder(p.id)}
           className="w-20 h-20" />
         <p className=" text-center overflow-hidden  w-20 truncate whitespace-nowrap text-overflow-ellipsis">{p.name}</p>
-        <RowAction horizontal id={p.id} />
+        <RowAction horizontal id={p.id} isFolder name={p.name}/>
       </CardContent>
     </Card>
   )
