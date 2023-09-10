@@ -76,7 +76,7 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 	store.UseIn(composer)
 
 	h, err := tusd.NewUnroutedHandler(tusd.Config{
-		BasePath:              "/files/",
+		BasePath:              "https://apii.kurdmake.com/files/",
 		StoreComposer:         composer,
     RespectForwardedHeaders: true,
 		NotifyCompleteUploads: true,
