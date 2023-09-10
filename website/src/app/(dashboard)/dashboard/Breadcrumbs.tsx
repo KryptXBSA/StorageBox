@@ -44,6 +44,7 @@ export function Breadcrumbs() {
       id: "uppy1",
       autoProceed: false,
       debug: true,
+      
     }).use(Tus, {
       endpoint: apiUrl + "/files/",
       headers: {

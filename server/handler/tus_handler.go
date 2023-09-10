@@ -78,6 +78,7 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 	h, err := tusd.NewUnroutedHandler(tusd.Config{
 		BasePath:              "/files/",
 		StoreComposer:         composer,
+    RespectForwardedHeaders: true,
 		NotifyCompleteUploads: true,
 	})
 
