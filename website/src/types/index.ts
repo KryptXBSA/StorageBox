@@ -4,7 +4,7 @@ export interface ErrorResponse {
   message: string
 }
 
-export type ErrorRes={message:string}
+export type ErrorRes = { message: string }
 export interface File {
   id: string
   name: string
@@ -25,4 +25,4 @@ export interface Folder {
   parentId?: string
 }
 
-export type Session = { id: string; token: string }
+export type Session = { id: string; token: string; storage: number }

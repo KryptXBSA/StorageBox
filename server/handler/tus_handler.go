@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -66,6 +67,8 @@ func GetHandler(c *gin.Context) {
 	dTusHandler(c).GetFile(c.Writer, c.Request)
 }
 
+const maxSize = db.BigInt(10000000)
+
 func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 
 	store := filestore.FileStore{
@@ -83,6 +86,19 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 		NotifyCompleteUploads:   true,
 		PreUploadCreateCallback: func(hook tusd.HookEvent) error {
 			println("wtf", hook.Upload.Size, hook.Upload.MetaData["name"])
+
+			user, err := prisma.Client().User.FindFirst(
+				db.User.ID.Equals(c.GetString("id")),
+			).Exec(prisma.Context())
+
+			if err != nil {
+				errors.New("Failed to get user")
+			}
+
+			if db.BigInt(hook.Upload.Size)+db.BigInt(user.Storage) >= maxSize {
+				errors.New("Storage limit reached")
+
+			}
 			return nil
 		},
 	})
@@ -111,8 +127,18 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 				db.File.Folder.Link(db.Folder.ID.Equals(c.GetHeader("dir"))),
 			).Exec(prisma.Context())
 
+			//TODO make this a TX
 			if err != nil {
 				fmt.Println("Unable to create a new file", event.Upload.ID)
+				return
+			}
+			user, err := prisma.Client().User.FindUnique(
+				db.User.ID.Equals(c.GetString("id")),
+			).Update(db.User.Storage.Increment(db.BigInt(event.Upload.Size))).Exec(prisma.Context())
+			println("uuxx", user.Storage)
+
+			if err != nil {
+				fmt.Println("Unable to update user", event.Upload.ID)
 				return
 			}
 

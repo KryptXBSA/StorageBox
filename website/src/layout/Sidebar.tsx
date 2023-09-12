@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { $session } from "@/session/session"
+import { useStore } from "@nanostores/react"
 import { Book, Clock, Cloud, Github, LayoutDashboardIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -25,9 +27,9 @@ let sections: Section[] = [
       },
     ],
   },
-  
 ]
 export function Sidebar() {
+  const data = useStore($session)
   const [selected, setSelected] = useState("/dashboard")
   return (
     <>
@@ -59,11 +61,18 @@ export function Sidebar() {
             <div className="flex w-full px-4 flex-col gap-1.5">
               <div className="flex text-slate-400 font-medium justify-between">
                 <p>Storage</p>
-                <p className="text-sky-400">60%</p>
+                <p className="text-sky-400">
+                  {calculatePercentage(data?.storage!)}%
+                </p>
               </div>
-              <Progress className="h-2 bg-black" value={60} />
+              <Progress
+                className="h-2 bg-black"
+                value={calculatePercentage(data?.storage!)}
+              />
               <p className="text-[13.5px] font-semibold">
-                <span className="text-sky-400 font-semibold">300 MB&nbsp;</span>{" "}
+                <span className="text-sky-400 font-semibold">
+                  {bytesToMB(data?.storage!)}&nbsp;
+                </span>{" "}
                 of
                 <span className="font-semibold">&nbsp;500 MB</span>
               </p>
@@ -117,4 +126,27 @@ export function Sidebar() {
       </div>
     )
   }
+}
+function bytesToMB(bytes: number, decimalPlaces = 2) {
+  if (bytes === 0) return "0 MB"
+
+  const k = 1024
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const formattedValue = parseFloat(
+    (bytes / Math.pow(k, i)).toFixed(decimalPlaces)
+  )
+
+  return formattedValue + " " + sizes[i]
+}
+const totalSize = 500 * 1024 * 1024
+function calculatePercentage(
+  sizeInBytes: number,
+  totalSizeInBytes = totalSize,
+  decimalPlaces = 2
+): number {
+  if (totalSizeInBytes === 0) return 0
+
+  const percentage = (sizeInBytes / totalSizeInBytes) * 100
+  return parseFloat(percentage.toFixed(decimalPlaces))
 }

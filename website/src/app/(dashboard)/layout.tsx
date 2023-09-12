@@ -54,7 +54,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   if (!token) redirect("/login")
   let decoded = jwt.decode(token) as { id: string }
   // let data = getUserData(session?.token)
-  const session: Session = { token, id: decoded.id }
+  const session: Session = { token, id: decoded.id,storage:1000000 }
   // let userData = null
   return (
     <>
