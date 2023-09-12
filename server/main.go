@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-
 	"github.com/AlandSleman/StorageBox/handler"
 	"github.com/AlandSleman/StorageBox/middleware"
 	"github.com/AlandSleman/StorageBox/prisma"

@@ -40,6 +40,7 @@ export function Breadcrumbs() {
 
   useEffect(() => {
     // Create an Uppy instance with custom headers
+    console.log("selectedFolder",selectedFolder?.id)
     const uppyInstance = new Uppy({
       id: "uppy1",
       autoProceed: false,

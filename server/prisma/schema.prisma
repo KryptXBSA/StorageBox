@@ -13,6 +13,7 @@ model User {
   email     String?  @unique
   password  String?
   provider  String
+  storage   BigInt @default(0)
   folders   Folder[]
   files     File[]
   createdAt DateTime @default(now()) @map("created_at")
@@ -36,7 +37,7 @@ model File {
   id        String   @id
   name      String
   type      String
-  size      Int
+  size      BigInt
   userId    String
   folderId  String
   user      User     @relation(fields: [userId], references: [id])

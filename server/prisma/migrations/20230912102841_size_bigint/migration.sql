@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "File" ALTER COLUMN "size" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "storage" BIGINT NOT NULL DEFAULT 0;

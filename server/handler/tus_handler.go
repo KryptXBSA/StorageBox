@@ -25,7 +25,7 @@ func PostHandler(c *gin.Context) {
 		db.Folder.ID.Equals(folderID),
 	).Exec(prisma.Context())
 
-	println(folder.UserID, c.GetString("id"))
+	// println(folder.UserID, c.GetString("id"))
 	if folder.UserID != c.GetString("id") {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "folderID!=id"})
 		return
@@ -76,11 +76,15 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 	store.UseIn(composer)
 
 	h, err := tusd.NewUnroutedHandler(tusd.Config{
-		BasePath:              "/files/",
+		BasePath: "/files/",
 		// BasePath:              "https://apii.kurdmake.com/files/",
-		StoreComposer:         composer,
-    RespectForwardedHeaders: true,
-		NotifyCompleteUploads: true,
+		StoreComposer:           composer,
+		RespectForwardedHeaders: true,
+		NotifyCompleteUploads:   true,
+		PreUploadCreateCallback: func(hook tusd.HookEvent) error {
+			println("wtf", hook.Upload.Size, hook.Upload.MetaData["name"])
+			return nil
+		},
 	})
 
 	if err != nil {
@@ -89,17 +93,20 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 		// c.JSON(http.StatusBadRequest, gin.H{"message": "Unable to create handler: %s"})
 		// return
 	}
-
 	go func() {
+		// for {
+		// 	event2 := <-h.CreatedUploads
+		// 	println("UPLOADING", event2.Upload.ID)
+		// }
 		for {
-			println("UPLOADING")
+
 			event := <-h.CompleteUploads
 
 			_, err = prisma.Client().File.CreateOne(
 				db.File.ID.Set(event.Upload.ID),
 				db.File.Name.Set(event.Upload.MetaData["name"]),
 				db.File.Type.Set(event.Upload.MetaData["type"]),
-				db.File.Size.Set(int(event.Upload.Size)),
+				db.File.Size.Set(db.BigInt(event.Upload.Size)),
 				db.File.User.Link(db.User.ID.Equals(c.GetString("id"))),
 				db.File.Folder.Link(db.Folder.ID.Equals(c.GetHeader("dir"))),
 			).Exec(prisma.Context())
@@ -109,7 +116,7 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 				return
 			}
 
-			fmt.Printf("Upload %s finished\n", event.Upload.ID)
+			println("Upload %s finished\n", event.Upload.ID, event.Upload.Size)
 		}
 	}()
 	return h
