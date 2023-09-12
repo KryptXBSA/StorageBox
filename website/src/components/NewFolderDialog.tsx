@@ -56,21 +56,17 @@ export function NewFolderDialog({ id }: { id: string }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({ name: values.name, parentId: id })
+    setTimeout(() => {
+      if (mutation.isSuccess) {
+        getData().then((d) => {
+          state.setFiles(d.files)
+          state.setFolders(d.folders)
+        })
+        toast.success("Success")
+      }
+    }, 500)
     form.reset()
-    if (mutation.isSuccess) {
-      getData().then((d) => {
-        state.setFiles(d.files)
-        state.setFolders(d.folders)
-        console.log("aa", state)
-      })
-      setTimeout(() => {
-      toast.success("Success")
-        setOpen(false)
-      }, 400)
-    } else {
-      setOpen(false)
-      form.reset()
-    }
+    setOpen(false)
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>

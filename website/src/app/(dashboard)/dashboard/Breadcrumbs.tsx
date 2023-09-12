@@ -44,9 +44,8 @@ export function Breadcrumbs() {
       id: "uppy1",
       autoProceed: false,
       debug: true,
-      
     }).use(Tus, {
-      endpoint: "https://apii.kurdmake.com/files/",
+      endpoint: apiUrl + "/files/",
       headers: {
         dir:
           selectedFolder?.id! || store.folders.find((f) => f.name === "/")?.id!,
