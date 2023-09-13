@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
+	"github.com/AlandSleman/StorageBox/auth"
 	"github.com/AlandSleman/StorageBox/handler"
-	"github.com/AlandSleman/StorageBox/handler/auth"
 	"github.com/AlandSleman/StorageBox/middleware"
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func main() {
@@ -23,6 +24,7 @@ func main() {
 	prisma.Init()
 
 	r.POST("/login", handler.Login)
+
 	r.GET("/auth/github/callback", auth.Github)
 
 	r.Use(middleware.Auth)
