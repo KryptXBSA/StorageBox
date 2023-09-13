@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import { LoginForm } from "./LoginForm"
 
-export default function IndexPage() {
+export default function Page() {
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
   if(token)redirect("/dashboard")

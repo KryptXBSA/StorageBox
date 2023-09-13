@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/AlandSleman/StorageBox/config"
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
@@ -13,18 +14,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const secretKey = "your-secret-key"
-
-
 func Login(c *gin.Context) {
-var body struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
+	var body struct {
+		Username string `json:"username" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-    println("wtf",body.Password)
-    println(body.Username)
+		println("wtf", body.Password)
+		println(body.Username)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input"})
 		return
 	}
@@ -96,7 +94,7 @@ var body struct {
 	claims["exp"] = time.Now().Add(time.Hour * 3000).Unix() // Token expiration time (1 hour)
 
 	// Sign the token with the secret key
-	tokenString, err := token.SignedString([]byte(secretKey))
+	tokenString, err := token.SignedString([]byte(config.GetConfig().JWT_SECRET))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate token"})
 		return

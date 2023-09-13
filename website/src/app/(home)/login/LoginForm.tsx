@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation"
 import { login } from "@/api/login"
+import { GITHUB_CLIENT_ID, GITHUB_REDIRECT_URI } from "@/config"
+import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
@@ -20,7 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ErrorRes } from "@/types"
 
 const formSchema = z.object({
   username: z.string().min(1).max(255),
@@ -48,43 +49,54 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate(values)
   }
+  function githubLogin() {
+    const clientId = GITHUB_CLIENT_ID
+    const redirectUri = GITHUB_REDIRECT_URI
+    const scope = "read:user user:email"
 
+    // Construct the GitHub OAuth URL
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
+    router.replace(authUrl)
+  }
   return (
-    <Form {...form}>
-      <form
-        noValidate
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8"
-      >
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      <Button onClick={githubLogin}>Github</Button>
+      <Form {...form}>
+        <form
+          noValidate
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </>
   )
 }

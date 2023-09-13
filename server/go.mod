@@ -14,8 +14,8 @@ require (
 	github.com/steebchen/prisma-client-go v0.21.0
 	github.com/takuoki/gocase v1.0.0
 	github.com/tus/tusd v1.12.1
-	golang.org/x/crypto v0.10.0
-	golang.org/x/text v0.10.0
+	golang.org/x/crypto v0.13.0
+	golang.org/x/text v0.13.0
 )
 
 require (
@@ -48,8 +48,10 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/net v0.11.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/oauth2 v0.12.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect
 	google.golang.org/grpc v1.56.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
