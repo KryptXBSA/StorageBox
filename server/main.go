@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/AlandSleman/StorageBox/auth"
@@ -9,12 +10,44 @@ import (
 	"github.com/AlandSleman/StorageBox/middleware"
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
+	limiter "github.com/ulule/limiter/v3"
+	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	sredis "github.com/ulule/limiter/v3/drivers/store/redis"
 )
 
 func main() {
 	r := gin.Default()
 	r.Use(middleware.Cors())
 
+	rate, err := limiter.NewRateFromFormatted("70-M")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	// Create a redis client.
+	option, err := redis.ParseURL("redis://localhost:6379/0")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	client := redis.NewClient(option)
+
+	// Create a store with the redis client.
+	store, err := sredis.NewStoreWithOptions(client, limiter.StoreOptions{
+		Prefix:   "limiter",
+		MaxRetry: 3,
+	})
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	// Create a new middleware with the limiter instance.
+	m := mgin.NewMiddleware(limiter.New(store, rate))
+
+	r.Use(m)
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "hello",
