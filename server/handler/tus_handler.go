@@ -7,9 +7,11 @@ import (
 
 	// "github.com/AlandSleman/StorageBox/prisma"
 	// "github.com/AlandSleman/StorageBox/prisma/db"
+	"github.com/AlandSleman/StorageBox/config"
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
+	"github.com/steebchen/prisma-client-go/runtime/types"
 	"github.com/tus/tusd/pkg/filestore"
 	tusd "github.com/tus/tusd/pkg/handler"
 	// Import other necessary packages here
@@ -26,13 +28,12 @@ func PostHandler(c *gin.Context) {
 		db.Folder.ID.Equals(folderID),
 	).Exec(prisma.Context())
 
-	// println(folder.UserID, c.GetString("id"))
-	if folder.UserID != c.GetString("id") {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "folderID!=id"})
-		return
-	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Folder not found"})
+		return
+	}
+	if folder.UserID != c.GetString("id") {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
 	dTusHandler(c).PostFile(c.Writer, c.Request)
@@ -40,6 +41,7 @@ func PostHandler(c *gin.Context) {
 
 func PatchHandler(c *gin.Context) {
 	folderID := c.GetHeader("dir")
+
 	if folderID == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Missing dir header"})
 		return
@@ -49,29 +51,76 @@ func PatchHandler(c *gin.Context) {
 		db.Folder.ID.Equals(folderID),
 	).Exec(prisma.Context())
 
-	if folder.UserID != c.GetString("id") {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-		return
-	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Folder not found"})
+		return
+	}
+	if folder.UserID != c.GetString("id") {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
 	dTusHandler(c).PatchFile(c.Writer, c.Request)
 }
 func HeadHandler(c *gin.Context) {
+	fileId := c.Param("id")
+
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing file id"})
+		return
+	}
+
+	file, err := prisma.Client().File.FindFirst(
+		db.File.ID.Equals(fileId),
+	).Exec(prisma.Context())
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "File not found"})
+		return
+	}
+	// if user is not admin && not file owner return err
+	if c.GetString("role") != "admin" {
+		if file.UserID != c.GetString("id") {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+			return
+		}
+	}
+	c.Set("id", file.UserID)
+
 	dTusHandler(c).HeadFile(c.Writer, c.Request)
 }
 
 func GetHandler(c *gin.Context) {
+	fileId := c.Param("id")
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing file id"})
+		return
+	}
+
+
+	file, err := prisma.Client().File.FindFirst(
+		db.File.ID.Equals(fileId),
+	).Exec(prisma.Context())
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "File not found"})
+		return
+	}
+	// if user is not admin && not file owner return err
+	if c.GetString("role") != "admin" {
+		if file.UserID != c.GetString("id") {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorizedd"})
+			return
+		}
+	}
+	c.Set("id", file.UserID)
+
 	dTusHandler(c).GetFile(c.Writer, c.Request)
 }
-
-const maxSize = db.BigInt(10000000)
 
 func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 
 	store := filestore.FileStore{
+		// using userID as the prefix
 		Path: "./uploads/" + c.GetString("id") + "/",
 	}
 
@@ -81,43 +130,37 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 	h, err := tusd.NewUnroutedHandler(tusd.Config{
 		BasePath: "/files/",
 		// BasePath:              "https://apii.kurdmake.com/files/",
-		StoreComposer:           composer,
+		StoreComposer: composer,
+
 		RespectForwardedHeaders: true,
 		NotifyCompleteUploads:   true,
 		PreUploadCreateCallback: func(hook tusd.HookEvent) error {
-			println("wtf", hook.Upload.Size, hook.Upload.MetaData["name"])
 
 			user, err := prisma.Client().User.FindFirst(
 				db.User.ID.Equals(c.GetString("id")),
 			).Exec(prisma.Context())
 
 			if err != nil {
-				errors.New("Failed to get user")
+				return errors.New("Failed to get user")
 			}
 
-			if db.BigInt(hook.Upload.Size)+db.BigInt(user.Storage) >= maxSize {
-				errors.New("Storage limit reached")
-
+			// if upload size + user.Storage > max size return err
+			if db.BigInt(hook.Upload.Size)+db.BigInt(user.Storage) >= types.BigInt(config.GetConfig().MAX_SIZE) {
+				return errors.New("Storage limit reached")
 			}
 			return nil
 		},
 	})
 
 	if err != nil {
-		fmt.Println("Unable to create a new file")
-		// println("Unable to create handler: ",err.Error())
-		// c.JSON(http.StatusBadRequest, gin.H{"message": "Unable to create handler: %s"})
-		// return
+		println("Unable to create tus handler")
 	}
 	go func() {
-		// for {
-		// 	event2 := <-h.CreatedUploads
-		// 	println("UPLOADING", event2.Upload.ID)
-		// }
 		for {
 
 			event := <-h.CompleteUploads
 
+			//TODO make this a TX
 			_, err = prisma.Client().File.CreateOne(
 				db.File.ID.Set(event.Upload.ID),
 				db.File.Name.Set(event.Upload.MetaData["name"]),
@@ -127,15 +170,13 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 				db.File.Folder.Link(db.Folder.ID.Equals(c.GetHeader("dir"))),
 			).Exec(prisma.Context())
 
-			//TODO make this a TX
 			if err != nil {
 				fmt.Println("Unable to create a new file", event.Upload.ID)
 				return
 			}
-			user, err := prisma.Client().User.FindUnique(
+			_, err := prisma.Client().User.FindUnique(
 				db.User.ID.Equals(c.GetString("id")),
 			).Update(db.User.Storage.Increment(db.BigInt(event.Upload.Size))).Exec(prisma.Context())
-			println("uuxx", user.Storage)
 
 			if err != nil {
 				fmt.Println("Unable to update user", event.Upload.ID)

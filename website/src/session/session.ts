@@ -1,5 +1,6 @@
 import { Session } from "@/types"
 import { atom } from "nanostores"
+import { useStore } from "@nanostores/react"
 import { create } from "zustand"
 
 interface SessionState {
@@ -22,4 +23,7 @@ export const $session = atom<Session | null>(null)
 
 export function setSession(s: Session) {
   $session.set(s)
+}
+export function useSessionStore0(){
+  return useStore($session)
 }

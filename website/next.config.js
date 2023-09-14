@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    serverActions:true
   },
   env: {
     SERVER_URL: process.env.SERVER_URL,

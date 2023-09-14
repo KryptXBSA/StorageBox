@@ -129,9 +129,7 @@ func Github(c *gin.Context) {
 		return
 	}
 
-	// Handle the user profile data as needed
-
-	token, err := GenerateJWTToken(user.ID)
+	token, err := GenerateJWTToken(user.ID, user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate token"})
 		return

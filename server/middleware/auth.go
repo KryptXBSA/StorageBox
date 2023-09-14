@@ -12,21 +12,26 @@ const secretKey = "your-secret-key"
 
 func Auth(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
-	if authHeader == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Missing Authorization header"})
-		c.Abort()
-		return
-	}
 
-	// Check if the Authorization header has the "Bearer" prefix
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid Authorization header format"})
-		c.Abort()
-		return
-	}
+	var tokenString string
+	tokenQuery := c.Query("token")
 
-	// Extract the token part after "Bearer "
-	tokenString := authHeader[7:]
+	if tokenQuery != "" {
+		tokenString = tokenQuery
+
+	} else {
+		if authHeader == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Missing Authorization header"})
+			return
+		}
+		// Check if the Authorization header has the "Bearer" prefix
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid Authorization header format"})
+			c.Abort()
+			return
+		}
+		tokenString = authHeader[7:]
+	}
 
 	// Parse the JWT token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -52,9 +57,13 @@ func Auth(c *gin.Context) {
 		return
 	}
 
+	// set the user id and role in ctx
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		if id, exists := claims["id"].(string); exists {
 			c.Set("id", id)
+		}
+		if role, exists := claims["role"].(string); exists {
+			c.Set("role", role)
 		}
 	}
 

@@ -76,10 +76,10 @@ func CreateFolderForUser(userID string) error {
 	_, err := prisma.Client().Folder.CreateOne(
 		db.Folder.Name.Set("/"),
 		db.Folder.User.Link(db.User.ID.Equals(userID)),
-	).Exec(prisma.Context());
+	).Exec(prisma.Context())
 	if err != nil {
-			return err
-		}
+		return err
+	}
 	// Create the folder (including parent directories) with read-write permissions (os.ModePerm)
 	if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
 		return err
@@ -88,28 +88,17 @@ func CreateFolderForUser(userID string) error {
 	return nil
 }
 
-func GenerateJWTToken(userID string) (string, error) {
+func GenerateJWTToken(userID, role string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = userID
 	claims["exp"] = time.Now().Add(time.Hour * 3000).Unix() // Token expiration time (1 hour)
 
+	// Include the role in the JWT claims if provided
+	if role != "" {
+		claims["role"] = role
+	}
+
 	// Sign the token with the secret key
 	return token.SignedString([]byte(config.GetConfig().JWT_SECRET))
 }
-
-// TODO add role
-// func GenerateJWTToken(userID, role string) (string, error) {
-//     token := jwt.New(jwt.SigningMethodHS256)
-//     claims := token.Claims.(jwt.MapClaims)
-//     claims["id"] = userID
-//     claims["exp"] = time.Now().Add(time.Hour * 3000).Unix() // Token expiration time (1 hour)
-
-//     // Include the role in the JWT claims if provided
-//     if role != "" {
-//         claims["role"] = role
-//     }
-
-//     // Sign the token with the secret key
-//     return token.SignedString([]byte(config.GetConfig().JWT_SECRET))
-// }

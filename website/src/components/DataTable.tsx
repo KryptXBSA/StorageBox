@@ -72,9 +72,6 @@ export function DataTable() {
           {filteredFiles.map((f) => (
             <FileCard key={f.id} {...f} />
           ))}
-          {filteredFiles.map((f) => (
-            <FileCard key={f.id} {...f} />
-          ))}
         </div>
       </>
     )

@@ -13,6 +13,7 @@ import "@uppy/progress-bar/dist/style.css"
 import { redirect } from "next/navigation"
 import { SiteHeaderLoggedIn } from "@/layout/SiteHeaderLoggedIn"
 import { SetSession } from "@/session/SetSession"
+
 import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
 
@@ -48,13 +49,13 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
   if (!token) redirect("/login")
   let decoded = jwt.decode(token) as { id: string }
   // let data = getUserData(session?.token)
-  const session: Session = { token, id: decoded.id,storage:1000000 }
+  const session: Session = { token, id: decoded.id, storage: 1000000 }
   // let userData = null
   return (
     <>
