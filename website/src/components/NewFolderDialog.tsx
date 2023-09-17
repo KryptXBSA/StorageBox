@@ -54,7 +54,6 @@ export function NewFolderDialog({ id }: { id: string }) {
   // }
   const [open, setOpen] = useState<boolean>()
 
-  console.log("nn", mutation)
   useEffect(() => {
     if (mutation.isSuccess) {
       getData().then((d) => {

@@ -2,11 +2,11 @@ import * as React from "react"
 import { apiUrl } from "@/config"
 import { useSessionStore0 } from "@/session/session"
 import { File } from "@/types"
-import { FileIcon } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 
 import { RowAction } from "./RowAction"
+import { GetFileIcon } from "./GetFileIcon"
 
 export function FileCard(p: File) {
   const [content, setContent] = React.useState<string | null>(null)
@@ -59,7 +59,7 @@ export function FileCard(p: File) {
     fetchFileContent()
   }, [p.id, token])
 
-  const handleDownloadClick = () => {
+  const handleDownload = () => {
     // Create a temporary anchor element to trigger the download
     if (!isImage) {
       const a = document.createElement("a")
@@ -80,25 +80,34 @@ export function FileCard(p: File) {
   return (
     <Card className="w-[200px] hover:bg-slate-500/50 cursor-pointer duration-300 transition-colors border-none bg-slate-500/20 h-[160px] py-2">
       <CardContent className="flex p-4 flex-col items-center justify-center">
-        {isImage ? (
-          content && <img src={content} alt={p.name} />
-        ) : (
-          <pre className="w-20 h-16 overflow-auto">{content}</pre>
-        )}
-        <FileIcon className="w-20 h-20" />
+        {/* {isImage ? ( */}
+        {/*   content && <img src={content} alt={p.name} /> */}
+        {/* ) : ( */}
+        {/*   <pre className="w-20 h-16 overflow-auto">{content}</pre> */}
+        {/* )} */}
+        {/* TODO change icon based on type */}
+        <GetFileIcon type={p.type} view="grid" />
         <p className="overflow-hidden text-center w-20 truncate whitespace-nowrap text-overflow-ellipsis">
-          <a
-            // href="#"
-            onClick={handleDownloadClick}
-            target="_blank"
-            style={{ textDecoration: "underline", cursor: "pointer" }}
-            download
-          >
-            {p.name}
-          </a>
+          {/* <a */}
+          {/*   // href="#" */}
+          {/*   onClick={handleDownloadClick} */}
+          {/*   target="_blank" */}
+          {/*   style={{ textDecoration: "underline", cursor: "pointer" }} */}
+          {/*   download */}
+          {/* > */}
+          {p.name}
+          {/* </a> */}
         </p>
-        <RowAction horizontal isFolder={false} name={p.name} id={p.id} />
+        <RowAction
+          handleDownload={handleDownload}
+          horizontal
+          isFolder={false}
+          name={p.name}
+          id={p.id}
+        />
       </CardContent>
     </Card>
   )
 }
+
+

@@ -112,8 +112,9 @@ export function Sidebar() {
   )
   function Btn(p: { text: string; href: string; icon: JSX.Element }) {
     return (
-      <div
+      <Link
         onClick={() => setSelected(p.href)}
+        href={p.href}
         className={cn(
           "transition-colors font-semibold gap-2 px-6 py-2 my-0.5 duration-300 cursor-pointer flex flex-row items-center",
           selected === p.href
@@ -123,7 +124,7 @@ export function Sidebar() {
       >
         {p.icon}
         {p.text}
-      </div>
+      </Link>
     )
   }
 }

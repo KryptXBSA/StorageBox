@@ -17,6 +17,7 @@ import {
 import { FileCard } from "./FileCard"
 import { FolderCard } from "./FolderCard"
 import { RowAction } from "./RowAction"
+import { GetFileIcon } from "./GetFileIcon"
 
 export function DataTable() {
   const state = useDataStore()
@@ -115,7 +116,7 @@ export function DataTable() {
           {filteredFiles.map((f) => (
             <TableRow className="cursor-pointer" key={f.id}>
               <TableCell className="font-medium flex gap-1">
-                <FileIcon />
+              <GetFileIcon view="list" type={f.type}/>
                 {f.name}
               </TableCell>
               <TableCell>{f.createdAt}</TableCell>
