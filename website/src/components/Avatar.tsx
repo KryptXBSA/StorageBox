@@ -28,7 +28,7 @@ export function UserAvatar() {
         </Avatar>
       </PopoverTrigger>
       <PopoverContent className="w-44 space-y-4">
-        <Button variant="ghost" className="w-full gap-2  border-none">
+        <Button onClick={()=>router.push("/dashboard/settings")} variant="ghost" className="w-full gap-2  border-none">
           <Settings />
           <span> Settings</span>
         </Button>

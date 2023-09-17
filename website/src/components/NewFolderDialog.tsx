@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { getData } from "@/api/getData"
 import { newFolder } from "@/api/newFolder"
 import { useDataStore } from "@/state/data"
@@ -54,19 +54,26 @@ export function NewFolderDialog({ id }: { id: string }) {
   // }
   const [open, setOpen] = useState<boolean>()
 
+  console.log("nn", mutation)
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      getData().then((d) => {
+        state.setFiles(d.files)
+        state.setFolders(d.folders)
+      })
+      toast.success("Success")
+    }
+
+    // return () => {
+    //   second
+    // }
+  }, [mutation.isLoading])
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({ name: values.name, parentId: id })
     setTimeout(() => {
-      if (mutation.isSuccess) {
-        getData().then((d) => {
-          state.setFiles(d.files)
-          state.setFolders(d.folders)
-        })
-        toast.success("Success")
-      }
-    }, 500)
-    form.reset()
-    setOpen(false)
+      form.reset()
+      setOpen(false)
+    }, 100)
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
