@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { login } from "@/api/login"
-import { GITHUB_CLIENT_ID, GITHUB_REDIRECT_URI } from "@/config"
+import { GITHUB_CLIENT_ID, GITHUB_REDIRECT_URI,DISCORD_CLIENT_ID,DISCORD_REDIRECT_URI } from "@/config"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -49,6 +49,17 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate(values)
   }
+function discordLogin() {
+  const clientId = DISCORD_CLIENT_ID; // Your Discord OAuth client ID
+  const redirectUri = DISCORD_REDIRECT_URI; // Your OAuth redirect URI
+  const scope = 'identify email'; // Scopes required by your application
+
+  // Construct the Discord OAuth URL
+  const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+
+  // Redirect the user to the Discord OAuth authorization page
+  window.location.href = authUrl;
+}
   function githubLogin() {
     const clientId = GITHUB_CLIENT_ID
     const redirectUri = GITHUB_REDIRECT_URI
@@ -61,6 +72,8 @@ export function LoginForm() {
   return (
     <>
       <Button onClick={githubLogin}>Github</Button>
+
+      <Button onClick={discordLogin}>Discord</Button>
       <Form {...form}>
         <form
           noValidate

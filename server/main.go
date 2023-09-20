@@ -45,9 +45,9 @@ func main() {
 	}
 
 	// Create a new middleware with the limiter instance.
-	m := mgin.NewMiddleware(limiter.New(store, rate))
+	limiterMiddleware := mgin.NewMiddleware(limiter.New(store, rate))
 
-	r.Use(m)
+	r.Use(limiterMiddleware)
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "hello",
@@ -59,6 +59,7 @@ func main() {
 	r.POST("/login", handler.Login)
 
 	r.GET("/auth/github/callback", auth.Github)
+	r.GET("/auth/discord/callback", auth.Discord)
 
 	r.Use(middleware.Auth)
 
