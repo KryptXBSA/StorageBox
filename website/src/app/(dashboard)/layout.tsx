@@ -50,6 +50,7 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
+
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
   if (!token) redirect("/login")
