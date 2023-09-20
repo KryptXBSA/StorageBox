@@ -64,11 +64,6 @@ export const sections: Section[] = [
         icon: <VideoIcon />,
       },
       {
-        text: "Favorites",
-        href: "/dashboard/favorites",
-        icon: <HeartIcon />,
-      },
-      {
         text: "Albums",
         href: "/dashboard/albums",
         icon: <FoldersIcon />,

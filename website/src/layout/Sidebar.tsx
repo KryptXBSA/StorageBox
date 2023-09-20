@@ -46,8 +46,9 @@ export function Sidebar() {
                 </>
               ))}
             </div>
-            <Separator orientation="horizontal" className="w-full" />
 
+          </div>
+            <Separator orientation="horizontal" className="w-full" />
             <div className="flex w-full px-4 flex-col gap-1.5">
               <div className="flex text-slate-400 font-medium justify-between">
                 <p>Storage</p>
@@ -67,7 +68,6 @@ export function Sidebar() {
                 <span className="font-semibold">&nbsp;500 MB</span>
               </p>
             </div>
-          </div>
 
           <Separator orientation="horizontal" className="w-full" />
           <Link
