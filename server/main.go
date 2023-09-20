@@ -60,6 +60,7 @@ func main() {
 
 	r.GET("/auth/github/callback", auth.Github)
 	r.GET("/auth/discord/callback", auth.Discord)
+	r.GET("/auth/google/callback", auth.Google)
 
 	r.Use(middleware.Auth)
 

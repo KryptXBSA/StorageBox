@@ -2,7 +2,14 @@
 
 import { useRouter } from "next/navigation"
 import { login } from "@/api/login"
-import { GITHUB_CLIENT_ID, GITHUB_REDIRECT_URI,DISCORD_CLIENT_ID,DISCORD_REDIRECT_URI } from "@/config"
+import {
+  DISCORD_CLIENT_ID,
+  DISCORD_REDIRECT_URI,
+  GITHUB_CLIENT_ID,
+  GITHUB_REDIRECT_URI,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_REDIRECT_URI
+} from "@/config"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -49,17 +56,26 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate(values)
   }
-function discordLogin() {
-  const clientId = DISCORD_CLIENT_ID; // Your Discord OAuth client ID
-  const redirectUri = DISCORD_REDIRECT_URI; // Your OAuth redirect URI
-  const scope = 'identify email'; // Scopes required by your application
 
-  // Construct the Discord OAuth URL
-  const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+function googleLogin() {
+  const clientId = GOOGLE_CLIENT_ID; // Your Google OAuth client ID
+  const redirectUri = GOOGLE_REDIRECT_URI; // Your OAuth redirect URI
+  const scope = "openid email profile"; // Scopes required by your application
 
-  // Redirect the user to the Discord OAuth authorization page
-  window.location.href = authUrl;
+  // Construct the Google OAuth URL
+  const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+  
+  // Use router to replace the URL with the authUrl
+  router.replace(authUrl);
 }
+  function discordLogin() {
+    const clientId = DISCORD_CLIENT_ID // Your Discord OAuth client ID
+    const redirectUri = DISCORD_REDIRECT_URI // Your OAuth redirect URI
+    const scope = "identify email" // Scopes required by your application
+    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`
+    router.replace(authUrl)
+  }
+
   function githubLogin() {
     const clientId = GITHUB_CLIENT_ID
     const redirectUri = GITHUB_REDIRECT_URI
@@ -74,6 +90,7 @@ function discordLogin() {
       <Button onClick={githubLogin}>Github</Button>
 
       <Button onClick={discordLogin}>Discord</Button>
+      <Button onClick={googleLogin}>Google</Button>
       <Form {...form}>
         <form
           noValidate

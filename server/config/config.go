@@ -12,6 +12,11 @@ type ServerConfig struct {
 	DISCORD_CLIENT_ID     string
 	DISCORD_CLIENT_SECRET string
 	DISCORD_REDIRECT_URI  string
+
+	// Add Google OAuth configuration variables here
+	GOOGLE_CLIENT_ID     string
+	GOOGLE_CLIENT_SECRET string
+	GOOGLE_REDIRECT_URI  string
 }
 
 func GetConfig() *ServerConfig {
@@ -25,6 +30,11 @@ func GetConfig() *ServerConfig {
 		DISCORD_CLIENT_ID:     os.Getenv("DISCORD_CLIENT_ID"),
 		DISCORD_CLIENT_SECRET: os.Getenv("DISCORD_CLIENT_SECRET"),
 		DISCORD_REDIRECT_URI:  os.Getenv("DISCORD_REDIRECT_URI"),
+
+		// Load Google OAuth configuration variables here
+		GOOGLE_CLIENT_ID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		GOOGLE_CLIENT_SECRET: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		GOOGLE_REDIRECT_URI:  os.Getenv("GOOGLE_REDIRECT_URI"),
 	}
 
 	return config
