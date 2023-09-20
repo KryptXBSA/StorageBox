@@ -4,7 +4,23 @@ import { useState } from "react"
 import Link from "next/link"
 import { $session } from "@/session/session"
 import { useStore } from "@nanostores/react"
-import { Book, Clock, Cloud, Github, LayoutDashboardIcon } from "lucide-react"
+import {
+  Book,
+  CameraIcon,
+  Clock,
+  Cloud,
+  FoldersIcon,
+  Github,
+  HeartIcon,
+  HistoryIcon,
+  ImageIcon,
+  LayoutDashboardIcon,
+  TabletSmartphoneIcon,
+  Trash2Icon,
+  TrashIcon,
+  Users2,
+  VideoIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Progress } from "@/components/ui/progress"
@@ -25,9 +41,70 @@ let sections: Section[] = [
         href: "/dashboard",
         icon: <LayoutDashboardIcon />,
       },
+      {
+        text: "Recents",
+        href: "/dashboard/recents",
+        icon: <HistoryIcon />,
+      },
+      {
+        text: "Favorites",
+        href: "/dashboard/favorites",
+        icon: <HeartIcon />,
+      },
+      {
+        text: "Trash",
+        href: "/dashboard/trash",
+        icon: <Trash2Icon />,
+      },
+    ],
+  },
+  {
+    title: "Media",
+    btns: [
+      {
+        text: "All media",
+        href: "/dashboard/all-media",
+        icon: <CameraIcon />,
+      },
+      {
+        text: "Images",
+        href: "/dashboard/images",
+        icon: <ImageIcon />,
+      },
+      {
+        text: "Videos",
+        href: "/dashboard/videos",
+        icon: <VideoIcon />,
+      },
+      {
+        text: "Favorites",
+        href: "/dashboard/favorites",
+        icon: <HeartIcon />,
+      },
+      {
+        text: "Albums",
+        href: "/dashboard/albums",
+        icon: <FoldersIcon />,
+      },
+    ],
+  },
+  {
+    title: "Shared",
+    btns: [
+      {
+        text: "Devices",
+        href: "/dashboard/devices",
+        icon: <TabletSmartphoneIcon />,
+      },
+      {
+        text: "Team",
+        href: "/dashboard/team",
+        icon: <Users2 />,
+      },
     ],
   },
 ]
+
 export function Sidebar() {
   const data = useStore($session)
   const [selected, setSelected] = useState("/dashboard")
