@@ -1,4 +1,4 @@
-import { MoreHorizontal, MoreVertical, Pencil } from "lucide-react"
+import { Download, MoreHorizontal, MoreVertical, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -25,7 +25,14 @@ export function RowAction(p: {
       <PopoverContent className="flex text-primary w-52 flex-col gap-4">
         <RenameDialog {...p} />
         <DeleteDialog {...p} />
-        {/* <RenameDialog id={p.id} /> */}
+        <Button
+          variant="ghost"
+          className="flex justify-start gap-4"
+          onClick={p.handleDownload}
+        >
+          <Download />
+          Download
+        </Button>
       </PopoverContent>
     </Popover>
   )

@@ -1,12 +1,14 @@
 "use client"
 
 import React, { useState } from "react"
+import { apiUrl } from "@/config"
+import { useSessionStore0 } from "@/session/session"
 import { useDataStore } from "@/state/data"
 import { updateAppState } from "@/state/state"
 import { File, Folder } from "@/types"
 import { FolderClosed, FolderIcon } from "lucide-react"
 
-import { imageTypes, videoTypes } from "@/lib/utils"
+import { handleDownload, imageTypes, videoTypes } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -30,6 +32,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
     setOpen(true)
   }
 
+  const token = useSessionStore0()?.token
   function selectFolder(id: string) {
     let filtered = state.folders.filter((f) => f.name !== "/")
     const selectedFolder = filtered.find((f) => f.id === id)!
@@ -172,7 +175,14 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
                   }}
                   className="text-right"
                 >
-                  <RowAction isFolder={false} name={f.name} id={f.id} />
+                  <RowAction
+                    handleDownload={() =>
+                      handleDownload({ ...f, token: token! })
+                    }
+                    isFolder={false}
+                    name={f.name}
+                    id={f.id}
+                  />
                 </TableCell>
               </TableRow>
             ))}

@@ -98,7 +98,16 @@ export function PreviewFileDialog({
           </MediaPlayer>
         )}
         <DialogFooter>
+
+          <a
+            // href="#"
+            // onClick={handleDownloadClick}
+            target="_blank"
+            style={{ textDecoration: "underline", cursor: "pointer" }}
+            download
+          >
           <Button type="submit">Download</Button>
+          </a>
         </DialogFooter>
       </DialogContent>
     </Dialog>
