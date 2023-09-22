@@ -20,6 +20,7 @@ import { FolderCard } from "./FolderCard"
 import { GetFileIcon } from "./GetFileIcon"
 import { PreviewFileDialog } from "./PreviewFileDialog"
 import { RowAction } from "./RowAction"
+import { imageTypes, videoTypes } from "@/lib/utils"
 
 export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   const state = useDataStore()
@@ -73,8 +74,6 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   filteredFiles = filteredFiles.filter((f) =>
     f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
   )
-  const imageTypes = ["image", "png"]
-  const videoTypes = ["video", "mp4"]
   if (p.filter === "all-media") {
     // Filter both images and videos
     filteredFiles = filteredFiles.filter(

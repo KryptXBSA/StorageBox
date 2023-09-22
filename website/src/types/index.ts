@@ -3,7 +3,7 @@ export interface ErrorResponse {
   code: number
   message: string
 }
-export type ViewAs = "list" | "grid" 
+export type ViewAs = "list" | "grid"
 
 export type ErrorRes = { message: string }
 export interface File {
@@ -27,3 +27,4 @@ export interface Folder {
 }
 
 export type Session = { id: string; token: string; storage: number }
+

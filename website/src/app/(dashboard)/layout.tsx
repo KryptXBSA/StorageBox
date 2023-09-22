@@ -1,6 +1,7 @@
 import "@/styles/globals.css"
-import 'vidstack/styles/defaults.css';
-import 'vidstack/styles/community-skin/video.css';
+import "vidstack/styles/defaults.css"
+import "vidstack/styles/community-skin/video.css"
+
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Sidebar } from "@/layout/Sidebar"
@@ -12,20 +13,18 @@ import "@uppy/dashboard/dist/style.css"
 import "@uppy/drag-drop/dist/style.css"
 import "@uppy/file-input/dist/style.css"
 import "@uppy/progress-bar/dist/style.css"
+
 import { redirect } from "next/navigation"
 import { SiteHeaderLoggedIn } from "@/layout/SiteHeaderLoggedIn"
 import { SetSession } from "@/session/SetSession"
 
 import "react-toastify/dist/ReactToastify.css"
-import { ToastContainer } from "react-toastify"
 
-// import { SetSession } from "@/state/session"
+import { ToastContainer } from "react-toastify"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
-// import { getServerSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { FloatingNewBtn } from "@/components/FloatingNewBtn"
 import { ReactQueryProvider } from "@/components/ReactQueryProvider"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -52,7 +51,6 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
   if (!token) redirect("/login")
