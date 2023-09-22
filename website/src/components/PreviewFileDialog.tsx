@@ -35,7 +35,7 @@ export function PreviewFileDialog({
   const token = useSessionStore0()?.token
 
   useEffect(() => {
-    console.log("ttt",type)
+    console.log("ttt", type)
     if (type === "text" || type === "image") fetchFileContent()
     async function fetchFileContent() {
       try {

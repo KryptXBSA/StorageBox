@@ -22,7 +22,7 @@ type ServerConfig struct {
 func GetConfig() *ServerConfig {
 	config := &ServerConfig{
 		JWT_SECRET:           os.Getenv("JWT_SECRET"),
-		MAX_SIZE:             100000000,
+		MAX_SIZE:             10000000000000,
 		GITHUB_CLIENT_ID:     os.Getenv("GITHUB_CLIENT_ID"),
 		GITHUB_CLIENT_SECRET: os.Getenv("GITHUB_CLIENT_SECRET"),
 		GITHUB_REDIRECT_URI:  os.Getenv("GITHUB_REDIRECT_URI"),

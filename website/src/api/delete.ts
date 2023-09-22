@@ -1,16 +1,15 @@
+import { File, Folder } from "@/types"
+
 import { makeRequest } from "./makeRequest"
 
 type Res = {
-  token: string
+  files: File[]
+  folders: Folder[]
 }
-export async function renameFolder(body: {
-  id: string
-  name: string
-  isFolder: boolean
-}) {
+export async function deleteItem(body: { id: string; isFolder: boolean }) {
   let data: Res = await makeRequest(
     body.isFolder ? "/folder" : "/file",
-    "patch",
+    "delete",
     body
   )
   return data

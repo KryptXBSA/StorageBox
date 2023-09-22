@@ -2,13 +2,14 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"strings"
+
+	"github.com/AlandSleman/StorageBox/config"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-const secretKey = "your-secret-key"
 
 func Auth(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
@@ -40,7 +41,7 @@ func Auth(c *gin.Context) {
 			return nil, fmt.Errorf("Invalid signing method")
 		}
 		// Provide the secret key to validate the token
-		return []byte(secretKey), nil
+		return []byte(config.GetConfig().JWT_SECRET), nil
 	})
 
 	if err != nil {

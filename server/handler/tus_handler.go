@@ -86,6 +86,8 @@ func HeadHandler(c *gin.Context) {
 	}
 	c.Set("id", file.UserID)
 
+	c.Header("Content-Disposition", "inline; filename=\""+file.Name+"\"")
+
 	dTusHandler(c).HeadFile(c.Writer, c.Request)
 }
 

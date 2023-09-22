@@ -1,7 +1,7 @@
-import { File, Folder } from "@/types"
 
 import { makeRequest } from "./makeRequest"
 
+import { File, Folder } from "@/types"
 type Res = {
   files: File[]
   folders: Folder[]

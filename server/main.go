@@ -69,8 +69,8 @@ func main() {
 
 	r.PATCH("/file", handler.UpdateFile)
 	r.PATCH("/folder", handler.UpdateFolder)
-	r.POST("/folder/delete", handler.DeleteFolder)
-	r.POST("/file/delete", handler.DeleteFile)
+	r.DELETE("/folder", handler.DeleteFolder)
+	r.DELETE("/file", handler.DeleteFile)
 
 	r.GET("/data", handler.UserData)
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { deleteItem } from "@/api/delete"
 import { getData } from "@/api/getData"
 import { renameItem } from "@/api/rename"
 import { useDataStore } from "@/state/data"
@@ -6,7 +7,7 @@ import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { Pencil } from "lucide-react"
+import { Pencil, Trash } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { z } from "zod"
@@ -36,18 +37,14 @@ const formSchema = z.object({
   name: z.string().min(1).max(255),
 })
 
-export function RenameDialog(p: {
+export function DeleteDialog(p: {
   id: string
   name: string
   isFolder: boolean
 }) {
   let state = useDataStore()
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: p.name },
-  })
   const mutation = useMutation({
-    mutationFn: renameItem,
+    mutationFn: deleteItem,
     onError: (e: AxiosError<ErrorRes>) => {
       toast.error(e.response?.data.message)
       return e
@@ -70,9 +67,8 @@ export function RenameDialog(p: {
       toast.success("Success")
     }
   }, [mutation.isLoading])
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({ name: values.name, id: p.id, isFolder: p.isFolder })
-
+  function del() {
+    mutation.mutate({ id: p.id, isFolder: p.isFolder })
     setOpen(false)
   }
   return (
@@ -83,44 +79,19 @@ export function RenameDialog(p: {
           variant="ghost"
           className="flex justify-start gap-4"
         >
-          <Pencil />
-          Rename
+          <Trash />
+          Delete
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <Form {...form}>
-          <form
-            noValidate
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
-            <DialogHeader>
-              <DialogTitle>Rename {p.name}</DialogTitle>
-            </DialogHeader>
-            <div className="">
-              <div className="">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="destructive">Cancel</Button>
-              <Button variant="ghost" type="submit">
-                Rename
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <DialogHeader>
+          <DialogTitle>Delete {p.name} </DialogTitle>
+        </DialogHeader>
+        <p>Are you sure you want to delete this {p.isFolder?"Folder":"File"}</p>
+        <DialogFooter>
+          <Button onClick={()=>setOpen(false)} variant="ghost">Cancel</Button>
+          <Button onClick={del} variant="destructive">Delete</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

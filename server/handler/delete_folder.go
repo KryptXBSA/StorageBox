@@ -25,37 +25,18 @@ func DeleteFolder(c *gin.Context) {
 	).Delete().Exec(prisma.Context())
 
 	if err != nil {
-    println(err.Error())
+		println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete folder"})
 		return
 	}
 
-	// userOwnsFolder := false
-	// for _, folder := range user.Folders() {
-	// 	if folder.ID == NewFolderBody.ParentID {
-	// 		userOwnsFolder = true
-	// 		break
-	// 	}
-	// }
+	folders, err := prisma.Client().Folder.FindMany(
+		db.Folder.UserID.Equals(userID),
+	).Exec(prisma.Context())
+	files, err := prisma.Client().File.FindMany(
+		db.File.UserID.Equals(userID),
+	).Exec(prisma.Context())
 
-	// if userOwnsFolder == false {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"message": "User doesn't own folder"})
-	// 	return
-	// }
-
-	// folderName := NewFolderBody.Name
-
-	// newFolder, err := prisma.Client().Folder.CreateOne(
-	// 	db.Folder.Name.Set(folderName),
-	// 	db.Folder.User.Link(db.User.ID.Equals(userID)),
-	// 	db.Folder.Parent.Link(db.Folder.ID.Equals(NewFolderBody.ParentID)),
-	// ).Exec(prisma.Context())
-
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to create folder"})
-	// 	return
-	// }
-
-	c.JSON(http.StatusOK, gin.H{"message": "success"})
+	c.JSON(http.StatusOK, gin.H{"folders": folders, "files": files})
 	return
 }

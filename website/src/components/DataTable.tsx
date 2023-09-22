@@ -4,8 +4,9 @@ import React, { useState } from "react"
 import { useDataStore } from "@/state/data"
 import { updateAppState } from "@/state/state"
 import { File, Folder } from "@/types"
-import { FileIcon, FolderClosed, FolderIcon } from "lucide-react"
+import { FolderClosed, FolderIcon } from "lucide-react"
 
+import { imageTypes, videoTypes } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -20,7 +21,6 @@ import { FolderCard } from "./FolderCard"
 import { GetFileIcon } from "./GetFileIcon"
 import { PreviewFileDialog } from "./PreviewFileDialog"
 import { RowAction } from "./RowAction"
-import { imageTypes, videoTypes } from "@/lib/utils"
 
 export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   const state = useDataStore()
@@ -166,7 +166,12 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
                 <TableCell>{f.createdAt}</TableCell>
                 <TableCell>{f.type}</TableCell>
                 <TableCell>{f.size}</TableCell>
-                <TableCell className="text-right">
+                <TableCell
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
+                  className="text-right"
+                >
                   <RowAction isFolder={false} name={f.name} id={f.id} />
                 </TableCell>
               </TableRow>
