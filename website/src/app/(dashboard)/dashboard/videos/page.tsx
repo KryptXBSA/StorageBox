@@ -38,7 +38,7 @@ export default function Page() {
   return (
     <section className="p-4">
       <Breadcrumbs />
-      <DataTable />
+      <DataTable filter="videos" />
     </section>
   )
 }

@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { useDataStore } from "@/state/data"
 import { File, Folder } from "@/types"
-import { FileIcon, FolderIcon } from "lucide-react"
+import { FileIcon, FolderClosed, FolderIcon } from "lucide-react"
 
 import {
   Table,
@@ -16,10 +16,10 @@ import {
 
 import { FileCard } from "./FileCard"
 import { FolderCard } from "./FolderCard"
-import { RowAction } from "./RowAction"
 import { GetFileIcon } from "./GetFileIcon"
+import { RowAction } from "./RowAction"
 
-export function DataTable() {
+export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   const state = useDataStore()
 
   function selectFolder(id: string) {
@@ -44,6 +44,9 @@ export function DataTable() {
   }
 
   // TODO explicitly filder root folder /, DONE
+  //
+  //filter?:"all-media"|"images"|"videos"
+  //
   let filteredFolders = state.folders
   let filteredFiles = state.files
   filteredFolders = state.folders.filter((f) => f.name !== "/")
@@ -63,6 +66,35 @@ export function DataTable() {
   filteredFiles = filteredFiles.filter((f) =>
     f.name.toLowerCase().includes(state.searchQuery.toLowerCase())
   )
+  const imageTypes = ["image", "png"]
+  const videoTypes = ["video", "mp4"]
+  if (p.filter === "all-media") {
+    // Filter both images and videos
+    filteredFiles = filteredFiles.filter(
+      (f) =>
+        imageTypes.some((type) => f.type.includes(type)) ||
+        videoTypes.some((type) => f.type.includes(type))
+    )
+  } else if (p.filter === "images") {
+    // Filter only images
+    filteredFiles = filteredFiles.filter((f) =>
+      imageTypes.some((type) => f.type.includes(type))
+    )
+  } else if (p.filter === "videos") {
+    // Filter only videos
+    filteredFiles = filteredFiles.filter((f) =>
+      videoTypes.some((type) => f.type.includes(type))
+    )
+  }
+  if (filteredFolders.length === 0 && filteredFiles.length === 0)
+    return (
+      <div className="flex justify-center items-center mt-20">
+        <div className="flex flex-col items-center">
+          <FolderClosed className="w-20 h-20" />
+          <p className="font-bold text-2xl">No files found</p>
+        </div>
+      </div>
+    )
   if (state.viewAs === "grid")
     return (
       <>
@@ -116,7 +148,7 @@ export function DataTable() {
           {filteredFiles.map((f) => (
             <TableRow className="cursor-pointer" key={f.id}>
               <TableCell className="font-medium flex gap-1">
-              <GetFileIcon view="list" type={f.type}/>
+                <GetFileIcon view="list" type={f.type} />
                 {f.name}
               </TableCell>
               <TableCell>{f.createdAt}</TableCell>
