@@ -1,4 +1,6 @@
 import "@/styles/globals.css"
+import 'vidstack/styles/defaults.css';
+import 'vidstack/styles/community-skin/video.css';
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Sidebar } from "@/layout/Sidebar"

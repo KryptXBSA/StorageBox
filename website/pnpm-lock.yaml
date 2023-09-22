@@ -65,6 +65,9 @@ dependencies:
   '@uppy/tus':
     specifier: ^3.2.0
     version: 3.3.0(@uppy/core@3.5.0)
+  '@vidstack/react':
+    specifier: ^0.6.13
+    version: 0.6.13(@types/react@18.2.22)(maverick.js@0.37.0)(react@18.2.0)(vidstack@0.6.13)
   axios:
     specifier: ^1.5.0
     version: 1.5.0
@@ -119,6 +122,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.6
     version: 1.0.7(tailwindcss@3.3.3)
+  vidstack:
+    specifier: ^0.6.13
+    version: 0.6.13
   zod:
     specifier: ^3.21.4
     version: 3.22.2
@@ -447,6 +453,10 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /@maverick-js/signals@5.11.4:
+    resolution: {integrity: sha512-fkUqNfnJK1kgfsKimaLp2jcfQr7NXwHZWBhqhQ3pifnYSZrBJv+4tU/klKyGf1mA33mVBYustCAgilJppzGjig==}
+    dev: false
 
   /@mdx-js/mdx@2.3.0:
     resolution: {integrity: sha512-jLuwRlz8DQfQNiUCJR50Y09CGPq3fLtmtUQfVrj79E0JWu3dvsVcxVIcfhR5h0iXu+/z++zDrYeiJqifRynJkA==}
@@ -1781,6 +1791,21 @@ packages:
     dependencies:
       lodash: 4.17.21
       preact: 10.17.1
+    dev: false
+
+  /@vidstack/react@0.6.13(@types/react@18.2.22)(maverick.js@0.37.0)(react@18.2.0)(vidstack@0.6.13):
+    resolution: {integrity: sha512-VGdHv3sCra0ZDXgbKHqHLy/X9AJtbANZoftk+/8EKbEI8bHzEX0AF0h5fncGXwpkV07jcAp3sLuP7kp041hlLA==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      '@types/react': ^18.0.0
+      maverick.js: 0.37.0
+      react: ^18.0.0
+      vidstack: 0.6.13
+    dependencies:
+      '@types/react': 18.2.22
+      maverick.js: 0.37.0
+      react: 18.2.0
+      vidstack: 0.6.13
     dev: false
 
   /acorn-jsx@5.3.2(acorn@8.10.0):
@@ -3431,6 +3456,14 @@ packages:
       remove-accents: 0.4.2
     dev: false
 
+  /maverick.js@0.37.0:
+    resolution: {integrity: sha512-1Dk/9rienLiihlktVvH04ADC2UJTMflC1fOMVQCCaQAaz7hgzDI5i0p/arFbDM52hFFiIcq4RdXtYz47SgsLgw==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@maverick-js/signals': 5.11.4
+      type-fest: 3.13.1
+    dev: false
+
   /mdast-util-definitions@5.1.2:
     resolution: {integrity: sha512-8SVPMuHqlPME/z3gqVwWY4zVXn8lqKv/pAhC57FuJ40ImXyBpmO5ukh98zB2v7Blql2FiHjHv9LVztSIqjY+MA==}
     dependencies:
@@ -3636,6 +3669,11 @@ packages:
     resolution: {integrity: sha512-V4Zn/ncyN1QNSqSBxTrMOLpjr+IKdHl2v3KVLoWmDPscP4r9GcCi71gjgvUV1SFSKh92AjAG4peFuBl2/YgCJg==}
     dependencies:
       '@types/mdast': 3.0.12
+    dev: false
+
+  /media-captions@0.0.18:
+    resolution: {integrity: sha512-JW18P6FuHdyLSGwC4TQ0kF3WdNj/+wMw2cKOb8BnmY6vSJGtnwJ+vkYj+IjHOV34j3XMc70HDeB/QYKR7E7fuQ==}
+    engines: {node: '>=16'}
     dev: false
 
   /memoize-one@6.0.0:
@@ -5228,6 +5266,11 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
+  /type-fest@3.13.1:
+    resolution: {integrity: sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g==}
+    engines: {node: '>=14.16'}
+    dev: false
+
   /typescript@4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
@@ -5484,6 +5527,15 @@ packages:
       '@types/unist': 3.0.0
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
+    dev: false
+
+  /vidstack@0.6.13:
+    resolution: {integrity: sha512-g5wH6Hfc4EQqOI0Mm7qW4D1DWPZfQnlATLZuqpuVAKI8HOz4UGfd1v48MLK9cR+ZfPjVL4/iZLu7YOIdSX3L2g==}
+    engines: {node: '>=16'}
+    dependencies:
+      maverick.js: 0.37.0
+      media-captions: 0.0.18
+      type-fest: 3.13.1
     dev: false
 
   /vscode-oniguruma@1.7.0:

@@ -11,11 +11,13 @@ export type State = {
   parents: Folder[]
   folders: Folder[]
   files: File[]
+  selectedFile: File | null
   searchQuery: string
 }
 
 export const $appState = atom<State>({
   session: null,
+  selectedFile: null,
   alreadySetSession: false,
   viewAs: "list",
   initialDataFetched: false,

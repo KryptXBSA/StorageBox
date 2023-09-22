@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { useDataStore } from "@/state/data"
+import { updateAppState } from "@/state/state"
 import { File, Folder } from "@/types"
 import { FileIcon, FolderClosed, FolderIcon } from "lucide-react"
 
@@ -17,10 +18,16 @@ import {
 import { FileCard } from "./FileCard"
 import { FolderCard } from "./FolderCard"
 import { GetFileIcon } from "./GetFileIcon"
+import { PreviewFileDialog } from "./PreviewFileDialog"
 import { RowAction } from "./RowAction"
 
 export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   const state = useDataStore()
+  const [open, setOpen] = useState(false)
+  function toggle(f: File) {
+    updateAppState({ selectedFile: f })
+    setOpen(true)
+  }
 
   function selectFolder(id: string) {
     let filtered = state.folders.filter((f) => f.name !== "/")
@@ -110,56 +117,63 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
     )
   else
     return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="grow">Name</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Size</TableHead>
-            <TableHead className="text-right"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredFolders.map((f) => (
-            <TableRow
-              onClick={() => selectFolder(f.id)}
-              className="cursor-pointer"
-              key={f.id}
-            >
-              <TableCell className="font-medium flex items-center gap-1">
-                <FolderIcon />
-                {f.name}
-              </TableCell>
-              <TableCell>{f.createdAt}</TableCell>
-              <TableCell>Folder</TableCell>
-              <TableCell>-</TableCell>
-              <TableCell
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
-                className="text-right"
+      <>
+        <PreviewFileDialog open={open} toggle={setOpen} />
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="grow">Name</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Size</TableHead>
+              <TableHead className="text-right"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredFolders.map((f) => (
+              <TableRow
+                onClick={() => selectFolder(f.id)}
+                className="cursor-pointer"
+                key={f.id}
               >
-                <RowAction isFolder name={f.name} id={f.id} />
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell className="font-medium flex items-center gap-1">
+                  <FolderIcon />
+                  {f.name}
+                </TableCell>
+                <TableCell>{f.createdAt}</TableCell>
+                <TableCell>Folder</TableCell>
+                <TableCell>-</TableCell>
+                <TableCell
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
+                  className="text-right"
+                >
+                  <RowAction isFolder name={f.name} id={f.id} />
+                </TableCell>
+              </TableRow>
+            ))}
 
-          {filteredFiles.map((f) => (
-            <TableRow className="cursor-pointer" key={f.id}>
-              <TableCell className="font-medium flex gap-1">
-                <GetFileIcon view="list" type={f.type} />
-                {f.name}
-              </TableCell>
-              <TableCell>{f.createdAt}</TableCell>
-              <TableCell>{f.type}</TableCell>
-              <TableCell>{f.size}</TableCell>
-              <TableCell className="text-right">
-                <RowAction isFolder={false} name={f.name} id={f.id} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            {filteredFiles.map((f) => (
+              <TableRow
+                onClick={() => toggle(f)}
+                className="cursor-pointer"
+                key={f.id}
+              >
+                <TableCell className="font-medium items-center flex gap-1">
+                  <GetFileIcon view="list" type={f.type} />
+                  {f.name}
+                </TableCell>
+                <TableCell>{f.createdAt}</TableCell>
+                <TableCell>{f.type}</TableCell>
+                <TableCell>{f.size}</TableCell>
+                <TableCell className="text-right">
+                  <RowAction isFolder={false} name={f.name} id={f.id} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </>
     )
 }
