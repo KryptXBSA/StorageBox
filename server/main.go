@@ -64,6 +64,8 @@ func main() {
 
 	r.Use(middleware.Auth)
 
+	r.PUT("/user", handler.UserSettings)
+
 	r.GET("/session", handler.Session)
 	r.POST("/folder", handler.NewFolder)
 
@@ -74,11 +76,11 @@ func main() {
 
 	r.GET("/data", handler.UserData)
 
-	// router.Use(middleware.DirExists)
-	r.POST("/files/", handler.PostHandler)
 	r.HEAD("/files/:id", handler.HeadHandler)
-	r.PATCH("/files/:id", handler.PatchHandler)
 	r.GET("/files/:id", handler.GetHandler)
+	r.Use(middleware.DirExists)
+	r.POST("/files/", handler.PostHandler)
+	r.PATCH("/files/:id", handler.PatchHandler)
 
 	fmt.Println("Listening at :4000")
 	if err := r.Run(":4000"); err != nil {

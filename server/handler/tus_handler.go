@@ -18,10 +18,20 @@ import (
 )
 
 func PostHandler(c *gin.Context) {
-	folderID := c.GetHeader("dir")
+	folderID := c.GetString("dir")
 	if folderID == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Missing dir header"})
 		return
+	}
+
+	if folderID == "/" {
+		folder, err := prisma.Client().Folder.FindFirst(
+			db.Folder.And(db.Folder.UserID.Equals(c.GetString("id")), db.Folder.Name.Equals(folderID)),
+		).Exec(prisma.Context())
+		if err == nil {
+			folderID = folder.ID
+			c.Set("dir", folder.ID)
+		}
 	}
 
 	folder, err := prisma.Client().Folder.FindFirst(
@@ -40,11 +50,21 @@ func PostHandler(c *gin.Context) {
 }
 
 func PatchHandler(c *gin.Context) {
-	folderID := c.GetHeader("dir")
+	folderID := c.GetString("dir")
 
 	if folderID == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Missing dir header"})
 		return
+	}
+
+	if folderID == "/" {
+		folder, err := prisma.Client().Folder.FindFirst(
+			db.Folder.And(db.Folder.UserID.Equals(c.GetString("id")), db.Folder.Name.Equals(folderID)),
+		).Exec(prisma.Context())
+		if err == nil {
+			folderID = folder.ID
+			c.Set("dir", folder.ID)
+		}
 	}
 
 	folder, err := prisma.Client().Folder.FindFirst(
@@ -97,7 +117,6 @@ func GetHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing file id"})
 		return
 	}
-
 
 	file, err := prisma.Client().File.FindFirst(
 		db.File.ID.Equals(fileId),
@@ -169,7 +188,7 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 				db.File.Type.Set(event.Upload.MetaData["type"]),
 				db.File.Size.Set(db.BigInt(event.Upload.Size)),
 				db.File.User.Link(db.User.ID.Equals(c.GetString("id"))),
-				db.File.Folder.Link(db.Folder.ID.Equals(c.GetHeader("dir"))),
+				db.File.Folder.Link(db.Folder.ID.Equals(c.GetString("dir"))),
 			).Exec(prisma.Context())
 
 			if err != nil {
@@ -183,6 +202,17 @@ func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
 			if err != nil {
 				fmt.Println("Unable to update user", event.Upload.ID)
 				return
+			}
+
+			if c.GetString("avatar") == "true" {
+				_, err := prisma.Client().User.FindUnique(
+					db.User.ID.Equals(c.GetString("id")),
+				).Update(db.User.Avatar.Set(event.Upload.ID)).Exec(prisma.Context())
+
+				if err != nil {
+					fmt.Println("Unable to update user", event.Upload.ID)
+					return
+				}
 			}
 
 			println("Upload %s finished\n", event.Upload.ID, event.Upload.Size)

@@ -13,6 +13,8 @@ func DirExists(c *gin.Context) {
 		return
 	}
 	println("dir is", dir)
+	c.Set("dir", dir)
+	c.Set("avatar", "true")
 
 	c.Next()
 }

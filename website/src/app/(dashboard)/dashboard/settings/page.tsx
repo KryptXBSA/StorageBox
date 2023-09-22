@@ -1,15 +1,20 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { changePass } from "@/api/changePass"
 import { apiUrl } from "@/config"
 import { $session } from "@/session/session"
 import { useDataStore } from "@/state/data"
+import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useStore } from "@nanostores/react"
+import { useMutation } from "@tanstack/react-query"
 import Uppy from "@uppy/core"
 import { FileInput } from "@uppy/react"
 import Tus from "@uppy/tus"
+import { AxiosError } from "axios"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import * as z from "zod"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -27,8 +32,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 const formSchema = z.object({
-  currentPassowrd: z.string().min(1).max(255),
-  newPassowrd: z.string().min(1).max(255),
+  currentPassword: z.string().min(1).max(255),
+  newPassword: z.string().min(1).max(255),
 })
 
 export default function Page() {
@@ -40,9 +45,24 @@ export default function Page() {
     resolver: zodResolver(formSchema),
   })
 
+  const mutation = useMutation({
+    mutationFn: changePass,
+    onError: (e: AxiosError<ErrorRes>) => {
+      toast.error(e.response?.data.message)
+      return e
+    },
+  })
   function onSubmit(values: z.infer<typeof formSchema>) {
+    mutation.mutate(values)
     console.log(values)
   }
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      console.log("succc", mutation.data)
+      toast.success("Success")
+    }
+  }, [mutation.isLoading])
   useEffect(() => {
     const uppyInstance = new Uppy({
       id: "uppy1",
@@ -52,7 +72,7 @@ export default function Page() {
       endpoint: apiUrl + "/files/",
       headers: {
         Authorization: "Bearer " + session?.token,
-        dir: session?.id!,
+        dir: "/",
       },
     })
 
@@ -118,43 +138,45 @@ export default function Page() {
           <Button className="self-start ml-4">Save</Button>
         </div>
 
-          <Form {...form}>
-            <form
-              noValidate
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex w-[30%]  items-center gap-4 p-8 rounded-lg flex-col bg-secondary"
-            >
-          <h3 className="text-2xl font-semibold tracking-tight">Passowrd</h3>
-              <FormField
-                control={form.control}
-                name="currentPassowrd"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Current Passowrd</FormLabel>
-                    <FormControl>
-                      <Input  type="password"{...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <Form {...form}>
+          <form
+            noValidate
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex w-[30%]  items-center gap-4 p-8 rounded-lg flex-col bg-secondary"
+          >
+            <h3 className="text-2xl font-semibold tracking-tight">Passowrd</h3>
+            <FormField
+              control={form.control}
+              name="currentPassword"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Current Passowrd</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="newPassowrd"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>New Passowrd</FormLabel>
-                    <FormControl>
-                      <Input type="password"   {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button className="w-full" type="submit">Submit</Button>
-            </form>
-          </Form>
+            <FormField
+              control={form.control}
+              name="newPassword"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>New Passowrd</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button className="w-full" type="submit">
+              Submit
+            </Button>
+          </form>
+        </Form>
       </div>
     </section>
   )

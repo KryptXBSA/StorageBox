@@ -10,6 +10,7 @@ generator db {
 model User {
   id        String   @id @default(uuid())
   username  String   @unique
+  avatar    String   @default("")
   role      String   @default("user")
   email     String?  @unique
   password  String?
