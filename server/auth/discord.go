@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
-
 	"github.com/AlandSleman/StorageBox/config"
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
+	"net/http"
 )
 
 type DiscordProfile struct {
@@ -51,8 +50,8 @@ func Discord(c *gin.Context) {
 		Scopes: []string{"identify", "email"},
 	}
 
-	// Exchange the authorization code for an access token
-	token, err := discordOAuthConfig.Exchange(c, code)
+	// Exchange the authorization code for an access discord_token
+	discord_token, err := discordOAuthConfig.Exchange(c, code)
 	if err != nil {
 		fmt.Println("OAuth exchange error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "An error occurred during OAuth exchange"})
@@ -60,34 +59,46 @@ func Discord(c *gin.Context) {
 	}
 
 	// Fetch the user's Discord profile using the access token
-	profile, err := getDiscordUserProfile(token.AccessToken)
+	profile, err := getDiscordUserProfile(discord_token.AccessToken)
 	if err != nil {
 		fmt.Println("Error fetching Discord user profile:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch Discord user profile"})
 		return
 	}
 
-	println("successs", profile.Username)
-	println("successs", profile.Email)
-	// Find or create the user based on their Discord ID
-	_, err = prisma.Client().User.FindUnique(
+	user, err := prisma.Client().User.FindUnique(
 		db.User.ID.Equals(profile.ID),
 	).Exec(prisma.Context())
 
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
 			// User not found, create a new user
-			// TODO: Implement your user creation logic here
-			println("user not found")
-
+			// TODO trim name
+			user, err = CreateUserProvider(profile.ID, profile.Username, "discord", profile.Email)
+			if err != nil {
+        println("eee",err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
+				return
+			}
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while finding user"})
 			return
 		}
 	}
 
-	// Handle user authentication, generate JWT token, and respond to the client
-	// TODO: Implement user authentication logic here
+	if user.Provider == "password" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid login"})
+		return
+	}
+
+	token, err := GenerateJWTToken(user.ID, user.Role)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate token"})
+		return
+	}
+
+	// Return the token to the client
+	c.JSON(http.StatusOK, gin.H{"token": token})
 
 }
 

@@ -81,11 +81,9 @@ func Github(c *gin.Context) {
 	// Exchange the authorization code for an access gh_token
 	gh_token, err := githubOAuthConfig.Exchange(c, code)
 	if err != nil {
-		println("eeeeeeeeeeeeeee", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "An error occurred"})
 		return
 	}
-	println("tknnnnnnn", gh_token.AccessToken)
 
 	// Fetch the user's GitHub profile using the access token
 	profile, err := getUserProfile(gh_token.AccessToken)

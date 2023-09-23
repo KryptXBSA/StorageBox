@@ -30,7 +30,7 @@ export function Sidebar() {
               {sections.map((section, idx) => (
                 <>
                   <h4
-                    key={section.title}
+                    key={idx}
                     className="text-slate-400 px-4 mb-1 font-medium"
                   >
                     {section.title}

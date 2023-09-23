@@ -49,7 +49,7 @@ export function LoginForm() {
 
   let router = useRouter()
   if (mutation.isSuccess) {
-    toast.success("Success Logging in")
+    toast.success("Logging in")
     Cookies.set("token", mutation.data.token, { secure: true })
     router.push("/dashboard")
   }

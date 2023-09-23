@@ -10,6 +10,7 @@ export const imageTypes = ["image", "png"]
 export const videoTypes = ["video", "mp4"]
 export const textTypes = [
   "textfile",
+  "text",
   "pdf",
   "docx",
   "application/octet-stream",

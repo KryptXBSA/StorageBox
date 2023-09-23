@@ -73,12 +73,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">
                 {/* <FloatingNewBtn /> */}
               </div>
-              <Sidebar />
               <div
-                style={{ width: "calc(100% - 240px)" }}
                 className="relative ml-auto flex min-h-screen flex-col"
               >
-                <SiteHeaderLoggedIn />
                 <main className="flex-1">{children}</main>
               </div>
               <TailwindIndicator />

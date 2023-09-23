@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { newFolder } from "@/api/newFolder"
-import { $session } from "@/session/session"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useStore } from "@nanostores/react"
@@ -38,13 +37,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { getAppState } from "@/state/state"
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
 })
 export function FloatingNewBtn() {
   const [uppy, setUppy] = useState<Uppy>()
-  let token = useStore($session)?.token
+  let token = getAppState().session?.token
 
   useEffect(() => {
     // Create an Uppy instance with custom headers
