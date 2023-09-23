@@ -26,5 +26,10 @@ export interface Folder {
   parentId?: string
 }
 
-export type Session = { id: string; token: string; storage: number }
-
+export type Role = "user" | "admin"
+export type Session = { id: string; token: string; role: Role }
+export type UserData = {
+  id: string
+  storage: number
+  role: Role
+}

@@ -5,7 +5,7 @@ import "vidstack/styles/community-skin/video.css"
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Sidebar } from "@/layout/Sidebar"
-import { Session } from "@/types"
+import { Role, Session, UserData } from "@/types"
 import jwt from "jsonwebtoken"
 
 import "@uppy/core/dist/style.css"
@@ -20,6 +20,8 @@ import { SetSession } from "@/session/SetSession"
 
 import "react-toastify/dist/ReactToastify.css"
 
+import { localServerUrl, serverUrl } from "@/config"
+import axios from "axios"
 import { ToastContainer } from "react-toastify"
 
 import { siteConfig } from "@/config/site"
@@ -54,10 +56,26 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
   if (!token) redirect("/login")
-  let decoded = jwt.decode(token) as { id: string }
+  let decoded = jwt.decode(token) as { id: string; role: Role }
   // let data = getUserData(session?.token)
-  const session: Session = { token, id: decoded.id, storage: 1000000 }
-  // let userData = null
+  const session: Session = { token, id: decoded.id, role: decoded.role }
+  let userData: UserData = {
+    id: decoded.id,
+    role: decoded.role,
+    storage: 0,
+  }
+  try {
+    const { data } = await axios.get(localServerUrl + "/session", {
+      headers: { Authorization: "Bearer " + session.token },
+    })
+    userData = {
+      id: decoded.id,
+      role: decoded.role,
+      storage: parseInt(data.user.storage) || 0,
+    }
+  } catch (error) {
+    console.error(error)
+  }
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -69,7 +87,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ReactQueryProvider>
-            <SetSession session={session} />
+            <SetSession session={session} userData={userData} />
             <ThemeProvider attribute="class" defaultTheme="dark">
               <ToastContainer position="bottom-right" theme="dark" />
               <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">

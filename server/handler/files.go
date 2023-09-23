@@ -11,9 +11,14 @@ func UserData(c *gin.Context) {
 
 	userID := c.GetString("id")
 
+	user, err := prisma.Client().User.FindUnique(
+		db.User.ID.Equals(userID),
+	).Exec(prisma.Context())
+
 	folders, err := prisma.Client().Folder.FindMany(
 		db.Folder.UserID.Equals(userID),
 	).Exec(prisma.Context())
+
 	files, err := prisma.Client().File.FindMany(
 		db.File.UserID.Equals(userID),
 	).Exec(prisma.Context())
@@ -22,5 +27,5 @@ func UserData(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to get user data"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"folders":folders,"files":files})
+	c.JSON(http.StatusOK, gin.H{"folders": folders, "files": files, "storage": user.Storage})
 }

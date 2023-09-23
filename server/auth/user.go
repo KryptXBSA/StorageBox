@@ -95,9 +95,7 @@ func GenerateJWTToken(userID, role string) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * 3000).Unix() // Token expiration time (1 hour)
 
 	// Include the role in the JWT claims if provided
-	if role != "" {
 		claims["role"] = role
-	}
 
 	// Sign the token with the secret key
 	return token.SignedString([]byte(config.GetConfig().JWT_SECRET))

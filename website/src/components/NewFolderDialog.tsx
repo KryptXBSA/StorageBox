@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
-import { getData } from "@/api/getData"
 import { newFolder } from "@/api/newFolder"
+import {  updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { Pencil, PlusCircle } from "lucide-react"
+import {  PlusCircle } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { z } from "zod"
@@ -27,14 +27,12 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { getAppState, updateAppState } from "@/state/state"
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
 })
 
 export function NewFolderDialog({ id }: { id: string }) {
-  let state = getAppState()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -56,11 +54,12 @@ export function NewFolderDialog({ id }: { id: string }) {
 
   useEffect(() => {
     if (mutation.isSuccess) {
-        updateAppState({folders:mutation.data.folders})
-        updateAppState({files:mutation.data.files})
+      updateAppState({ folders: mutation.data.folders })
+      updateAppState({ files: mutation.data.files })
       toast.success("Success")
     }
   }, [mutation.isLoading])
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({ name: values.name, parentId: id })
     setTimeout(() => {

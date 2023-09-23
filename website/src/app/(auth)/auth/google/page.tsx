@@ -1,7 +1,7 @@
 import { cookies } from "next/headers"
 import { redirect, useSearchParams } from "next/navigation"
 import { githubLogin } from "@/api/githubLogin"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import axios from "axios"
 
 export const dynamic = "force-dynamic"
@@ -9,7 +9,7 @@ export default async function Page(p: { params: any; searchParams: any }) {
   const code = p.searchParams.code
   console.log("codeeee", code)
   if (code) {
-    const res = await fetch(apiUrl + "/auth/google/callback?" + "code=" + code)
+    const res = await fetch(serverUrl + "/auth/google/callback?" + "code=" + code)
     let data = await res.json()
     console.log("asdasd", data)
   }

@@ -1,9 +1,10 @@
-import { File, Folder, Session, ViewAs } from "@/types"
+import { File, Folder, Session, UserData, ViewAs } from "@/types"
 import { useStore } from "@nanostores/react"
 import { atom } from "nanostores"
 
 export type State = {
   session: Session | null
+  userData: UserData | null
   alreadySetSession: boolean
   viewAs: ViewAs
   initialDataFetched: boolean
@@ -13,12 +14,11 @@ export type State = {
   files: File[]
   selectedFile: File | null
   searchQuery: string
-  storage: number
 }
 
 export const $appState = atom<State>({
   session: null,
-  storage:0,
+  userData: null,
   selectedFile: null,
   alreadySetSession: false,
   viewAs: "list",

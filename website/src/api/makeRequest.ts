@@ -1,5 +1,5 @@
-import { apiUrl } from "@/config"
-import { $appState, getAppState } from "@/state/state"
+import { serverUrl } from "@/config"
+import { $appState } from "@/state/state"
 import axios from "axios"
 
 export async function makeRequest(path: string, method: string, body?: any) {
@@ -13,7 +13,7 @@ export async function makeRequest(path: string, method: string, body?: any) {
       Authorization: `Bearer ${token}`,
     },
   }
-  const { data } = await axios(apiUrl + options.path, {
+  const { data } = await axios(serverUrl + options.path, {
     ...options,
   })
   return data

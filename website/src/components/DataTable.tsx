@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { getAppState, updateAppState } from "@/state/state"
 import { File, Folder } from "@/types"
 import { FolderClosed, FolderIcon } from "lucide-react"

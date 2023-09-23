@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { getAppState } from "@/state/state"
 import {
   MediaCommunitySkin,
@@ -39,7 +39,7 @@ export function PreviewFileDialog({
       try {
         const authToken = "Bearer " + token // Replace with your authorization token
 
-        const response = await fetch(apiUrl + "/files/" + selectedFile?.id, {
+        const response = await fetch(serverUrl + "/files/" + selectedFile?.id, {
           method: "GET",
           headers: {
             Authorization: authToken,
@@ -84,7 +84,7 @@ export function PreviewFileDialog({
             title={selectedFile?.name}
             src={{
               type: "video/mp4",
-              src: apiUrl + "/files/" + selectedFile?.id + "?token=" + token,
+              src: serverUrl + "/files/" + selectedFile?.id + "?token=" + token,
             }}
             aspectRatio={16 / 9}
             viewType="video"

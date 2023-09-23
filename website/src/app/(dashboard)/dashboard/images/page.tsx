@@ -1,7 +1,7 @@
 "use client"
 
 import { getData } from "@/api/getData"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { queryKeys } from "@/queryKeys"
 import { ErrorRes } from "@/types"
 import { useQuery } from "@tanstack/react-query"

@@ -1,7 +1,7 @@
 "use client"
 
 import { getData } from "@/api/getData"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { queryKeys } from "@/queryKeys"
 import { getAppState, updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"

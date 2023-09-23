@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import { getData } from "@/api/getData"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { getAppState, updateAppState } from "@/state/state"
 import { useStore } from "@nanostores/react"
 import Uppy from "@uppy/core"
@@ -31,8 +31,9 @@ export function Breadcrumbs() {
   function refreshData() {
     setModalOpen(false)
     getData().then((d) => {
-      updateAppState({files:d.files})
-      updateAppState({folders:d.folders})
+      updateAppState({ files: d.files })
+      updateAppState({ folders: d.folders })
+      updateAppState({ userData: { ...state.userData!, storage: d.storage } })
     })
   }
 
@@ -44,10 +45,11 @@ export function Breadcrumbs() {
       autoProceed: false,
       debug: true,
     }).use(Tus, {
-      endpoint: apiUrl + "/files/",
+      endpoint: serverUrl + "/files/",
       headers: {
         dir:
-          state.selectedFolder?.id! || state.folders.find((f) => f.name === "/")?.id!,
+          state.selectedFolder?.id! ||
+          state.folders.find((f) => f.name === "/")?.id!,
         Authorization: "Bearer " + token,
       },
     })
@@ -75,7 +77,7 @@ export function Breadcrumbs() {
       <div className="flex justify-between">
         <ol className="flex text-lg items-center space-x-1 md:space-x-3">
           <li
-            onClick={() => updateAppState({selectedFolder:null})}
+            onClick={() => updateAppState({ selectedFolder: null })}
             className="inline-flex items-center"
           >
             <a
@@ -119,7 +121,7 @@ export function Breadcrumbs() {
             <ArrowUpCircle className="scale-125 text-sky-400" /> Upload Files
           </Button>
           <div
-            onClick={() => updateAppState({viewAs:"list"})}
+            onClick={() => updateAppState({ viewAs: "list" })}
             className={
               state.viewAs === "list"
                 ? "text-sky-400"
@@ -130,7 +132,7 @@ export function Breadcrumbs() {
             <Table />
           </div>
           <div
-            onClick={() => updateAppState({viewAs:"list"})}
+            onClick={() => updateAppState({ viewAs: "list" })}
             className={
               state.viewAs === "grid"
                 ? "text-sky-400"

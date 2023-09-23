@@ -1,5 +1,5 @@
 import * as React from "react"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { File } from "@/types"
 
 import { handleDownload } from "@/lib/utils"

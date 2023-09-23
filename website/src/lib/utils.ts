@@ -1,4 +1,4 @@
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -40,7 +40,7 @@ export function handleDownload({
   id: string
   name: string
 }) {
-  fetch(apiUrl + "/files/" + id + "?token=" + token)
+  fetch(serverUrl + "/files/" + id + "?token=" + token)
     .then((response) => response.blob())
     .then((blob) => {
       const url = window.URL.createObjectURL(blob)

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { changePass } from "@/api/changePass"
-import { apiUrl } from "@/config"
+import { serverUrl } from "@/config"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useStore } from "@nanostores/react"
@@ -67,7 +67,7 @@ export default function Page() {
       autoProceed: false,
       debug: true,
     }).use(Tus, {
-      endpoint: apiUrl + "/files/",
+      endpoint: serverUrl + "/files/",
       headers: {
         Authorization: "Bearer " + session?.token,
         dir: "/",

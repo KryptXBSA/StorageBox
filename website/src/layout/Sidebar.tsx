@@ -4,7 +4,6 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { getAppState } from "@/state/state"
-import { useStore } from "@nanostores/react"
 import { Book, Github } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -18,6 +17,8 @@ export function Sidebar() {
   const pathname = usePathname()
   const state = getAppState()
   const [selected, setSelected] = useState(pathname)
+  let storage = state?.userData?.storage || 0
+
   return (
     <>
       <div className="fixed left-0 flex h-screen  w-60  bg-blue-700/20">
@@ -48,17 +49,15 @@ export function Sidebar() {
           <div className="flex w-full px-4 flex-col gap-1.5">
             <div className="flex text-slate-400 font-medium justify-between">
               <p>Storage</p>
-              <p className="text-sky-400">
-                {calculatePercentage(state?.storage)}%
-              </p>
+              <p className="text-sky-400">{calculatePercentage(storage)}%</p>
             </div>
             <Progress
               className="h-2 bg-black"
-              value={calculatePercentage(state?.storage)}
+              value={calculatePercentage(storage)}
             />
             <p className="text-[13.5px] font-semibold">
               <span className="text-sky-400 font-semibold">
-                {bytesToMB(state?.storage!)}&nbsp;
+                {bytesToMB(storage)}&nbsp;
               </span>{" "}
               of
               <span className="font-semibold">&nbsp;500 MB</span>
