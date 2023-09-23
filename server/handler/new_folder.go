@@ -44,7 +44,7 @@ func NewFolder(c *gin.Context) {
 
 	folderName := NewFolderBody.Name
 
-	newFolder, err := prisma.Client().Folder.CreateOne(
+	_, err = prisma.Client().Folder.CreateOne(
 		db.Folder.Name.Set(folderName),
 		db.Folder.User.Link(db.User.ID.Equals(userID)),
 		db.Folder.Parent.Link(db.Folder.ID.Equals(NewFolderBody.ParentID)),
@@ -55,6 +55,14 @@ func NewFolder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "created folder", "folder": newFolder, "all": user})
+	folders, err := prisma.Client().Folder.FindMany(
+		db.Folder.UserID.Equals(userID),
+	).Exec(prisma.Context())
+
+	files, err := prisma.Client().File.FindMany(
+		db.File.UserID.Equals(userID),
+	).Exec(prisma.Context())
+
+	c.JSON(http.StatusOK, gin.H{"folders": folders, "files": files})
 	return
 }

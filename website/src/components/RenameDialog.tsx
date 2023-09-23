@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getData } from "@/api/getData"
 import { renameItem } from "@/api/rename"
-import { useDataStore } from "@/state/data"
+import { getAppState, updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -41,7 +41,7 @@ export function RenameDialog(p: {
   name: string
   isFolder: boolean
 }) {
-  let state = useDataStore()
+  let state = getAppState()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: p.name },
@@ -65,8 +65,8 @@ export function RenameDialog(p: {
 
   useEffect(() => {
     if (mutation.isSuccess) {
-      state.setFiles(mutation.data.files)
-      state.setFolders(mutation.data.folders)
+      updateAppState({ folders: mutation.data.folders })
+      updateAppState({ files: mutation.data.files })
       toast.success("Success")
     }
   }, [mutation.isLoading])

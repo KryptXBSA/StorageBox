@@ -1,7 +1,9 @@
 import { makeRequest } from "./makeRequest"
 
+import { File, Folder } from "@/types"
 type Res = {
-  message:string
+  files: File[]
+  folders: Folder[]
 }
 type Body = { parentId: string; name: string }
 export async function newFolder(body: Body) {

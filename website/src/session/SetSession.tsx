@@ -1,19 +1,16 @@
 "use client"
 
+import { getAppState, updateAppState } from "@/state/state"
 import { Session } from "@/types"
-import { useStore } from "@nanostores/react"
-
-import { $session, setSession as ss, useSessionStore } from "./session"
 
 export function SetSession(props: { session: Session | null }) {
-  const { setAlreadySet, setSession, session, alreadySet } = useSessionStore()
+  const state = getAppState()
 
-  if (alreadySet) return <></>
+  if (state.alreadySetSession) return <></>
 
-  if (!session) {
-    ss(props.session!)
-    setSession(props.session)
+  if (!state.session) {
+    updateAppState({ session: props.session })
   }
-  setAlreadySet(true)
+  updateAppState({ alreadySetSession: true })
   return <></>
 }

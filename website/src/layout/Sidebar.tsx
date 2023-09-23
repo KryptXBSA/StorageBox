@@ -2,24 +2,21 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { $session } from "@/session/session"
+import { usePathname } from "next/navigation"
+import { getAppState } from "@/state/state"
 import { useStore } from "@nanostores/react"
-import {
-  Book,
-  Github,
-} from "lucide-react"
+import { Book, Github } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Logo } from "@/components/Logo"
-import { sections } from "./sections"
-import { usePathname } from "next/navigation"
 
+import { sections } from "./sections"
 
 export function Sidebar() {
- const pathname = usePathname()
-  const data = useStore($session)
+  const pathname = usePathname()
+  const state = getAppState()
   const [selected, setSelected] = useState(pathname)
   return (
     <>
@@ -46,28 +43,27 @@ export function Sidebar() {
                 </>
               ))}
             </div>
-
           </div>
-            <Separator orientation="horizontal" className="w-full" />
-            <div className="flex w-full px-4 flex-col gap-1.5">
-              <div className="flex text-slate-400 font-medium justify-between">
-                <p>Storage</p>
-                <p className="text-sky-400">
-                  {calculatePercentage(data?.storage!)}%
-                </p>
-              </div>
-              <Progress
-                className="h-2 bg-black"
-                value={calculatePercentage(data?.storage!)}
-              />
-              <p className="text-[13.5px] font-semibold">
-                <span className="text-sky-400 font-semibold">
-                  {bytesToMB(data?.storage!)}&nbsp;
-                </span>{" "}
-                of
-                <span className="font-semibold">&nbsp;500 MB</span>
+          <Separator orientation="horizontal" className="w-full" />
+          <div className="flex w-full px-4 flex-col gap-1.5">
+            <div className="flex text-slate-400 font-medium justify-between">
+              <p>Storage</p>
+              <p className="text-sky-400">
+                {calculatePercentage(state?.storage)}%
               </p>
             </div>
+            <Progress
+              className="h-2 bg-black"
+              value={calculatePercentage(state?.storage)}
+            />
+            <p className="text-[13.5px] font-semibold">
+              <span className="text-sky-400 font-semibold">
+                {bytesToMB(state?.storage!)}&nbsp;
+              </span>{" "}
+              of
+              <span className="font-semibold">&nbsp;500 MB</span>
+            </p>
+          </div>
 
           <Separator orientation="horizontal" className="w-full" />
           <Link

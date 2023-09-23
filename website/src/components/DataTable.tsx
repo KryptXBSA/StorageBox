@@ -2,9 +2,7 @@
 
 import React, { useState } from "react"
 import { apiUrl } from "@/config"
-import { useSessionStore0 } from "@/session/session"
-import { useDataStore } from "@/state/data"
-import { updateAppState } from "@/state/state"
+import { getAppState, updateAppState } from "@/state/state"
 import { File, Folder } from "@/types"
 import { FolderClosed, FolderIcon } from "lucide-react"
 
@@ -25,18 +23,18 @@ import { PreviewFileDialog } from "./PreviewFileDialog"
 import { RowAction } from "./RowAction"
 
 export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
-  const state = useDataStore()
+  const state = getAppState()
   const [open, setOpen] = useState(false)
   function toggle(f: File) {
     updateAppState({ selectedFile: f })
     setOpen(true)
   }
 
-  const token = useSessionStore0()?.token
+  const token = state.session?.token
   function selectFolder(id: string) {
     let filtered = state.folders.filter((f) => f.name !== "/")
     const selectedFolder = filtered.find((f) => f.id === id)!
-    state.setSelectedFolder(selectedFolder)
+    updateAppState({selectedFolder})
 
     let parents: Folder[] = []
     let currentFolder = selectedFolder
@@ -51,7 +49,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
         break
       }
     }
-    state.setParents(parents)
+    updateAppState({parents})
   }
 
   // TODO explicitly filder root folder /, DONE

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { getData } from "@/api/getData"
 import { newFolder } from "@/api/newFolder"
-import { useDataStore } from "@/state/data"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -28,13 +27,14 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { getAppState, updateAppState } from "@/state/state"
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
 })
 
 export function NewFolderDialog({ id }: { id: string }) {
-  let state = useDataStore()
+  let state = getAppState()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -56,16 +56,10 @@ export function NewFolderDialog({ id }: { id: string }) {
 
   useEffect(() => {
     if (mutation.isSuccess) {
-      getData().then((d) => {
-        state.setFiles(d.files)
-        state.setFolders(d.folders)
-      })
+        updateAppState({folders:mutation.data.folders})
+        updateAppState({files:mutation.data.files})
       toast.success("Success")
     }
-
-    // return () => {
-    //   second
-    // }
   }, [mutation.isLoading])
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({ name: values.name, parentId: id })

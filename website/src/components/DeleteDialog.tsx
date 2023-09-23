@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { deleteItem } from "@/api/delete"
 import { getData } from "@/api/getData"
 import { renameItem } from "@/api/rename"
-import { useDataStore } from "@/state/data"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -32,6 +31,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { getAppState, updateAppState } from "@/state/state"
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -42,7 +42,7 @@ export function DeleteDialog(p: {
   name: string
   isFolder: boolean
 }) {
-  let state = useDataStore()
+  let state = getAppState()
   const mutation = useMutation({
     mutationFn: deleteItem,
     onError: (e: AxiosError<ErrorRes>) => {
@@ -62,8 +62,9 @@ export function DeleteDialog(p: {
 
   useEffect(() => {
     if (mutation.isSuccess) {
-      state.setFiles(mutation.data.files)
-      state.setFolders(mutation.data.folders)
+
+    updateAppState({ folders: mutation.data.folders })
+    updateAppState({ files: mutation.data.files })
       toast.success("Success")
     }
   }, [mutation.isLoading])

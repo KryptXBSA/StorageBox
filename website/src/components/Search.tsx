@@ -1,15 +1,15 @@
 "use client"
+
 import { ChangeEvent } from "react"
-import { useDataStore } from "@/state/data"
+import { updateAppState } from "@/state/state"
 import { SearchIcon } from "lucide-react"
+
 import { Input } from "@/components/ui/input"
 
 export function Search() {
-  const store = useDataStore()
-
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const searchQuery = event.target.value
-    store.setSearchQuery(searchQuery)
+    updateAppState({ searchQuery })
   }
 
   return (

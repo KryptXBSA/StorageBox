@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { getData } from "@/api/getData"
 import { apiUrl } from "@/config"
-import { $session } from "@/session/session"
-import { useDataStore } from "@/state/data"
+import { getAppState, updateAppState } from "@/state/state"
 import { useStore } from "@nanostores/react"
 import Uppy from "@uppy/core"
 import { DashboardModal } from "@uppy/react"
@@ -21,9 +20,8 @@ import { Button } from "@/components/ui/button"
 import { NewFolderDialog } from "@/components/NewFolderDialog"
 
 export function Breadcrumbs() {
-  const { selectedFolder, parents, setSelectedFolder, ...store } =
-    useDataStore()
-  let token = useStore($session)?.token
+  const state = getAppState()
+  let token = state.session?.token
   const [uppy, setUppy] = useState<Uppy>()
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   function openModal() {
@@ -33,14 +31,14 @@ export function Breadcrumbs() {
   function refreshData() {
     setModalOpen(false)
     getData().then((d) => {
-      store.setFiles(d.files)
-      store.setFolders(d.folders)
+      updateAppState({files:d.files})
+      updateAppState({folders:d.folders})
     })
   }
 
   useEffect(() => {
     // Create an Uppy instance with custom headers
-    console.log("selectedFolder",selectedFolder?.id)
+    console.log("selectedFolder", state.selectedFolder?.id)
     const uppyInstance = new Uppy({
       id: "uppy1",
       autoProceed: false,
@@ -49,7 +47,7 @@ export function Breadcrumbs() {
       endpoint: apiUrl + "/files/",
       headers: {
         dir:
-          selectedFolder?.id! || store.folders.find((f) => f.name === "/")?.id!,
+          state.selectedFolder?.id! || state.folders.find((f) => f.name === "/")?.id!,
         Authorization: "Bearer " + token,
       },
     })
@@ -61,7 +59,7 @@ export function Breadcrumbs() {
     return () => {
       uppy?.close()
     }
-  }, [selectedFolder])
+  }, [state.selectedFolder])
   return (
     <>
       {modalOpen && (
@@ -77,7 +75,7 @@ export function Breadcrumbs() {
       <div className="flex justify-between">
         <ol className="flex text-lg items-center space-x-1 md:space-x-3">
           <li
-            onClick={() => setSelectedFolder(null)}
+            onClick={() => updateAppState({selectedFolder:null})}
             className="inline-flex items-center"
           >
             <a
@@ -87,7 +85,7 @@ export function Breadcrumbs() {
               My Box
             </a>
           </li>
-          {parents.map((parent) => (
+          {state.parents.map((parent) => (
             <BreadcrumbItem
               key={parent.id}
               text={
@@ -100,11 +98,11 @@ export function Breadcrumbs() {
               }
             />
           ))}
-          {selectedFolder && (
+          {state.selectedFolder && (
             <BreadcrumbItem
               text={
                 <span className="ml-1 font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                  {selectedFolder.name}
+                  {state.selectedFolder.name}
                 </span>
               }
             />
@@ -113,17 +111,17 @@ export function Breadcrumbs() {
         <div className="flex items-center gap-4">
           <NewFolderDialog
             id={
-              selectedFolder?.id! ||
-              store.folders.find((f) => f.name === "/")?.id!
+              state.selectedFolder?.id! ||
+              state.folders.find((f) => f.name === "/")?.id!
             }
           />
           <Button onClick={openModal} variant="ghost" className=" flex gap-2">
             <ArrowUpCircle className="scale-125 text-sky-400" /> Upload Files
           </Button>
           <div
-            onClick={() => store.setViewAs("list")}
+            onClick={() => updateAppState({viewAs:"list"})}
             className={
-              store.viewAs === "list"
+              state.viewAs === "list"
                 ? "text-sky-400"
                 : "hover:text-sky-400 " +
                   "cursor-pointer transition-colors duration-300 "
@@ -132,9 +130,9 @@ export function Breadcrumbs() {
             <Table />
           </div>
           <div
-            onClick={() => store.setViewAs("grid")}
+            onClick={() => updateAppState({viewAs:"list"})}
             className={
-              store.viewAs === "grid"
+              state.viewAs === "grid"
                 ? "text-sky-400"
                 : "hover:text-sky-400 " +
                   "cursor-pointer transition-colors duration-300 "

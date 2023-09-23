@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import { changePass } from "@/api/changePass"
 import { apiUrl } from "@/config"
-import { $session } from "@/session/session"
-import { useDataStore } from "@/state/data"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useStore } from "@nanostores/react"
@@ -30,6 +28,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { getAppState } from "@/state/state"
 
 const formSchema = z.object({
   currentPassword: z.string().min(1).max(255),
@@ -38,9 +37,8 @@ const formSchema = z.object({
 
 export default function Page() {
   const [uppy, setUppy] = useState<Uppy>()
-  let session = useStore($session)
+  let session = getAppState().session
   const fileInputRef = useRef<HTMLInputElement>(null) // Create a ref for the file input element
-  const store = useDataStore()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })

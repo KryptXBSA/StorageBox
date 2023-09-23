@@ -13,10 +13,12 @@ export type State = {
   files: File[]
   selectedFile: File | null
   searchQuery: string
+  storage: number
 }
 
 export const $appState = atom<State>({
   session: null,
+  storage:0,
   selectedFile: null,
   alreadySetSession: false,
   viewAs: "list",

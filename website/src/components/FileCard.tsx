@@ -1,6 +1,5 @@
 import * as React from "react"
 import { apiUrl } from "@/config"
-import { useSessionStore0 } from "@/session/session"
 import { File } from "@/types"
 
 import { handleDownload } from "@/lib/utils"
@@ -8,9 +7,10 @@ import { Card, CardContent } from "@/components/ui/card"
 
 import { GetFileIcon } from "./GetFileIcon"
 import { RowAction } from "./RowAction"
+import { getAppState } from "@/state/state"
 
 export function FileCard(p: File) {
-  const token = useSessionStore0()?.token
+  const token = getAppState().session?.token
 
   return (
     <Card className="w-[200px] hover:bg-slate-500/50 cursor-pointer duration-300 transition-colors border-none bg-slate-500/20 h-[160px] py-2">

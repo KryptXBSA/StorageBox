@@ -3,31 +3,30 @@
 import { getData } from "@/api/getData"
 import { apiUrl } from "@/config"
 import { queryKeys } from "@/queryKeys"
-import { useDataStore } from "@/state/data"
+import { getAppState, updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
+import { Breadcrumbs } from "@/components/Breadcrumbs"
 import { DataTable } from "@/components/DataTable"
 import { Spinner } from "@/components/Spinner"
-import { Breadcrumbs } from "@/components/Breadcrumbs"
-
 
 export default function Page() {
-  const store = useDataStore()
+  const state = getAppState()
   const query = useQuery({
     queryKey: [queryKeys.data],
     queryFn: getData,
     // don't refetch again if already fetched
-    enabled: !store.initialDataFetched,
+    enabled: !state.initialDataFetched,
     onError: (e: AxiosError<ErrorRes>) =>
       toast.error(e.response?.data.message || e.message),
   })
-  if (query.isSuccess && !store.initialDataFetched) {
-    store.setInitialDataFetched(true)
-    store.setFolders(query.data.folders)
-    store.setFiles(query.data.files)
+  if (query.isSuccess && !state.initialDataFetched) {
+    updateAppState({ initialDataFetched: true })
+    updateAppState({ folders: query.data.folders })
+    updateAppState({ files: query.data.files })
   }
   if (query.isLoading)
     return (

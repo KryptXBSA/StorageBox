@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { apiUrl } from "@/config"
-import { useSessionStore0 } from "@/session/session"
 import { getAppState } from "@/state/state"
 import {
   MediaCommunitySkin,
@@ -27,12 +26,11 @@ export function PreviewFileDialog({
   open: boolean
   toggle: (b: boolean) => void
 }) {
-  let { selectedFile } = getAppState()
+  let { selectedFile, ...state } = getAppState()
+  let token = state.session?.token
 
   const [content, setContent] = useState<string | null>(null)
   const type = getFileType(selectedFile?.type!)
-
-  const token = useSessionStore0()?.token
 
   useEffect(() => {
     console.log("ttt", type)
@@ -98,7 +96,6 @@ export function PreviewFileDialog({
           </MediaPlayer>
         )}
         <DialogFooter>
-
           <a
             // href="#"
             // onClick={handleDownloadClick}
@@ -106,7 +103,7 @@ export function PreviewFileDialog({
             style={{ textDecoration: "underline", cursor: "pointer" }}
             download
           >
-          <Button type="submit">Download</Button>
+            <Button type="submit">Download</Button>
           </a>
         </DialogFooter>
       </DialogContent>
