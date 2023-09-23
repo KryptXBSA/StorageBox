@@ -94,12 +94,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 {/* <FloatingNewBtn /> */}
               </div>
               <Sidebar />
-              <div
-                style={{ width: "calc(100% - 240px)" }}
-                className="relative ml-auto flex min-h-screen flex-col"
-              >
+              <div className="relative  lg:ml-[240px] flex min-h-screen flex-col">
                 <SiteHeaderLoggedIn />
-                <main className="flex-1">{children}</main>
+                <main className="flex-1 z-20">{children}</main>
               </div>
               <TailwindIndicator />
             </ThemeProvider>

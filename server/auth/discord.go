@@ -73,7 +73,6 @@ func Discord(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
 			// User not found, create a new user
-			// TODO trim name
 			user, err = CreateUserProvider(profile.ID, profile.Username, "discord", profile.Email)
 			if err != nil {
         println("eee",err.Error())

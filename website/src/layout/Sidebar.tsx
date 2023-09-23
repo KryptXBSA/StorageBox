@@ -21,9 +21,11 @@ export function Sidebar() {
 
   return (
     <>
-      <div className="fixed left-0 flex h-screen  w-60  bg-blue-700/20">
+      <div className={cn(!state.showSidebar?"hidden":"mt-16 border-t lg:border-t-0 lg:mt-0","fixed z-50 lg:flex left-0 h-screen  w-60 bg-background  lg:bg-blue-700/20")}>
         <div className="flex  w-full flex-col items-center ">
+          <div>
           <Logo />
+          </div>
           <Separator orientation="horizontal" className="mt-0 w-full" />
           <div className="flex  w-full flex-col overflow-auto items-center ">
             <div className="w-full  flex flex-col">

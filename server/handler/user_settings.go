@@ -24,7 +24,6 @@ func UserSettings(c *gin.Context) {
 
 	userID := c.GetString("id")
 
-	// Find the user in the database based on the provided username
 	user, err := prisma.Client().User.FindUnique(
 		db.User.ID.Equals(userID),
 	).Exec(prisma.Context())
@@ -34,12 +33,12 @@ func UserSettings(c *gin.Context) {
 		return
 	}
 
-	pass, noPass := user.Password()
-
-	if noPass != true {
+	if user.Provider != "password" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
 	}
+
+	pass, _ := user.Password()
 
 	// Verify if the current password matches the user's current hashed password
 	if err := bcrypt.CompareHashAndPassword([]byte(pass), []byte(body.CurrentPassword)); err != nil {

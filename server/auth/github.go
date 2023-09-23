@@ -110,7 +110,6 @@ func Github(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
 			// User not found, create a new user
-			// TODO trim name
 			user, err = CreateUserProvider(strconv.Itoa(profile.ID), profile.Name, "github", profile.Email)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})

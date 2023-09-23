@@ -9,7 +9,7 @@ import {
 } from "@vidstack/react"
 import { toast } from "react-toastify"
 
-import { getFileType } from "@/lib/utils"
+import { getFileType, handleDownload } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -103,7 +103,18 @@ export function PreviewFileDialog({
             style={{ textDecoration: "underline", cursor: "pointer" }}
             download
           >
-            <Button type="submit">Download</Button>
+            <Button
+              onClick={() =>
+                handleDownload({
+                  name: selectedFile?.name!,
+                  id: selectedFile?.id!,
+                  token: state.session?.token!,
+                })
+              }
+              type="submit"
+            >
+              Download
+            </Button>
           </a>
         </DialogFooter>
       </DialogContent>

@@ -8,6 +8,7 @@ export type State = {
   alreadySetSession: boolean
   viewAs: ViewAs
   initialDataFetched: boolean
+  showSidebar: boolean
   selectedFolder: Folder | null
   parents: Folder[]
   folders: Folder[]
@@ -21,6 +22,7 @@ export const $appState = atom<State>({
   userData: null,
   selectedFile: null,
   alreadySetSession: false,
+  showSidebar: false,
   viewAs: "list",
   initialDataFetched: false,
   parents: [],

@@ -26,6 +26,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   const state = getAppState()
   const [open, setOpen] = useState(false)
   function toggle(f: File) {
+    console.log("aaaaa",open)
     updateAppState({ selectedFile: f })
     setOpen(true)
   }
@@ -105,12 +106,13 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   if (state.viewAs === "grid")
     return (
       <>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 py-4 gap-2">
+        <PreviewFileDialog open={open} toggle={setOpen} />
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-7 py-4 gap-4">
           {filteredFolders.map((f) => (
             <FolderCard selectFolder={selectFolder} key={f.id} {...f} />
           ))}
           {filteredFiles.map((f) => (
-            <FileCard key={f.id} {...f} />
+            <FileCard onClick={()=>toggle(f)} key={f.id} {...f} />
           ))}
         </div>
       </>

@@ -74,8 +74,7 @@ func Google(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
 			// User not found, create a new user
-			// TODO trim name
-			user, err = CreateUserProvider(profile.Subject, profile.Name, "discord", profile.Email)
+			user, err = CreateUserProvider(profile.Subject, profile.Name, "google", profile.Email)
 			if err != nil {
 				println("eee", err.Error())
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})

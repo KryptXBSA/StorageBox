@@ -17,7 +17,7 @@ export function Search() {
       <Input
         placeholder="Search"
         onChange={handleInputChange}
-        className="w-[480px] rounded-3xl"
+        className="md:w-[480px] w-56 sm:w-72  rounded-3xl"
       />
       <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2" />
     </div>
