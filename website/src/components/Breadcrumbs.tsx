@@ -66,7 +66,6 @@ export function Breadcrumbs() {
     <>
       {modalOpen && (
         <DashboardModal
-          className="z-50"
           open={modalOpen}
           uppy={uppy!}
           disablePageScrollWhenModalOpen={false}
@@ -76,7 +75,7 @@ export function Breadcrumbs() {
           onRequestClose={refreshData}
         />
       )}
-      <div className="md:flex-row gap-2 flex flex-col-reverse w-full z-20 justify-between">
+      <div className="md:flex-row gap-2 flex flex-col-reverse w-full  justify-between">
         <ol className="flex text-lg items-center space-x-1 md:space-x-3">
           <li
             onClick={() => updateAppState({ selectedFolder: null })}
@@ -112,7 +111,7 @@ export function Breadcrumbs() {
             />
           )}
         </ol>
-        <div className="flex items-center justify-around gap-4">
+        <div className="flex items-center justify-around gap-4  ">
           <NewFolderDialog
             id={
               state.selectedFolder?.id! ||

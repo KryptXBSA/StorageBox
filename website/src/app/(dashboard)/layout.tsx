@@ -90,13 +90,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <SetSession session={session} userData={userData} />
             <ThemeProvider attribute="class" defaultTheme="dark">
               <ToastContainer position="bottom-right" theme="dark" />
-              <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">
-                {/* <FloatingNewBtn /> */}
-              </div>
               <Sidebar />
               <div className="relative  lg:ml-[240px] flex min-h-screen flex-col">
                 <SiteHeaderLoggedIn />
-                <main className="flex-1 z-20">{children}</main>
+                <main className="flex-1">{children}</main>
               </div>
               <TailwindIndicator />
             </ThemeProvider>
