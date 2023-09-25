@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { getAppState } from "@/state/state"
@@ -11,13 +11,16 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Logo } from "@/components/Logo"
 
-import { sidebarNav } from "./sidebar-nav"
+import { sidebarNavAdmin } from "./sidebar-nav-admin"
 
-export function Sidebar() {
+export function SidebarAdmin() {
   const pathname = usePathname()
   const state = getAppState()
   const [selected, setSelected] = useState(pathname)
-  let storage = state?.userData?.storage || 0
+
+  useEffect(() => {
+    setSelected(pathname)
+  }, [pathname])
 
   return (
     <>
@@ -36,43 +39,13 @@ export function Sidebar() {
           <Separator orientation="horizontal" className="mt-0 w-full" />
           <div className="flex  w-full flex-col overflow-auto items-center ">
             <div className="w-full  flex flex-col">
-              {sidebarNav.map((section, idx) => (
+              {sidebarNavAdmin.map((i, idx) => (
                 <>
-                  <h4
-                    key={idx}
-                    className="text-slate-400 px-4 mb-1 font-medium"
-                  >
-                    {section.title}
-                  </h4>
-                  {section.btns.map((i) => (
-                    <Btn {...i} key={i.href} />
-                  ))}
-                  {idx !== sidebarNav.length - 1 && (
-                    <Separator orientation="horizontal" className="w-full" />
-                  )}
+                  <Btn {...i} key={i.href} />
                 </>
               ))}
             </div>
           </div>
-          <Separator orientation="horizontal" className="w-full" />
-          <div className="flex w-full px-4 flex-col gap-1.5">
-            <div className="flex text-slate-400 font-medium justify-between">
-              <p>Storage</p>
-              <p className="text-sky-400">{calculatePercentage(storage)}%</p>
-            </div>
-            <Progress
-              className="h-2 bg-black"
-              value={calculatePercentage(storage)}
-            />
-            <p className="text-[13.5px] font-semibold">
-              <span className="text-sky-400 font-semibold">
-                {bytesToMB(storage)}&nbsp;
-              </span>{" "}
-              of
-              <span className="font-semibold">&nbsp;500 MB</span>
-            </p>
-          </div>
-
           <Separator orientation="horizontal" className="w-full" />
           <Link
             href="/documentation"
@@ -101,7 +74,7 @@ export function Sidebar() {
             Source Code
           </a>
           <Link
-            href="/admin"
+            href="/dashboard/"
             className={cn(
               "transition-colors w-full gap-2 font-semibold px-6 py-3.5  duration-300 cursor-pointer flex flex-row items-center",
               false
@@ -110,7 +83,7 @@ export function Sidebar() {
             )}
           >
             <LayoutDashboardIcon />
-            Admin Dashboard
+            User Dashboard
           </Link>
         </div>
       </div>

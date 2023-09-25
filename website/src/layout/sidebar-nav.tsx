@@ -19,7 +19,7 @@ type Section = {
   btns: { text: string; href: string; icon: JSX.Element }[]
 }
 
-export const sections: Section[] = [
+export const sidebarNav: Section[] = [
   {
     title: "Dashboard",
     btns: [
