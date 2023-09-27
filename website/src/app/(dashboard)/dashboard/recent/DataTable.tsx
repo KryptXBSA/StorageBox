@@ -11,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import mockFiles from "./mockFiles"
 import { GetFileIcon } from "@/components/GetFileIcon"
+import mockFiles from "@/components/mockFiles"
 
 
 export function DataTable() {
