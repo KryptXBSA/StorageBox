@@ -29,8 +29,8 @@ export const sidebarNav: Section[] = [
         icon: <LayoutDashboardIcon />,
       },
       {
-        text: "Recents",
-        href: "/dashboard/recents",
+        text: "Recent",
+        href: "/dashboard/recent",
         icon: <HistoryIcon />,
       },
       {

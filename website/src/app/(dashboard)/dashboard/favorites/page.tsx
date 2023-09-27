@@ -1,12 +1,12 @@
 import { AlertNotImplemented } from "@/components/AlertNotImplemented"
+import { HeadText } from "@/components/HeadText"
 import { DataTable } from "./DataTable"
-import { HeadText } from "./HeadText"
 
 export default function Page() {
   return (
     <section className="p-4">
       <AlertNotImplemented/>
-      <HeadText />
+      <HeadText text="Favorites" />
       <DataTable />
     </section>
   )
