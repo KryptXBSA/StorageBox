@@ -63,6 +63,9 @@ func main() {
 	r.GET("/auth/google/callback", auth.Google)
 
 	r.Use(middleware.Auth)
+	//admin routes
+	r.GET("/admin/overview", handler.AdminOverview)
+	r.GET("/admin/users", handler.AdminUsers)
 
 	r.PUT("/user", handler.UserSettings)
 

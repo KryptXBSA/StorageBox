@@ -10,25 +10,25 @@ const mockDevices: Device[] = [
     name: "Phone",
     lastSync: "1 day ago",
     filesCount: 235,
-    totalStorage: "64 GB",
+    totalStorage: "337 MB",
   },
   {
     name: "Tablet",
     lastSync: "3 days ago",
     filesCount: 123,
-    totalStorage: "128 GB",
+    totalStorage: "118 MB",
   },
   {
     name: "Laptop",
     lastSync: "5 days ago",
     filesCount: 567,
-    totalStorage: "512 GB",
+    totalStorage: "1.5 GB",
   },
   {
     name: "Desktop",
     lastSync: "2 weeks ago",
     filesCount: 789,
-    totalStorage: "1 TB",
+    totalStorage: "2.8 GB",
   },
 ];
 export default mockDevices

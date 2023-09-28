@@ -22,7 +22,6 @@ import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 // import { getServerSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { FloatingNewBtn } from "@/components/FloatingNewBtn"
 import { ReactQueryProvider } from "@/components/ReactQueryProvider"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -71,7 +70,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <ThemeProvider attribute="class" defaultTheme="dark">
               <ToastContainer position="bottom-right" theme="dark" />
               <div className="absolute bottom-20 right-20 z-10 flex flex-row items-center gap-3">
-                {/* <FloatingNewBtn /> */}
               </div>
               <div
                 className="relative ml-auto flex min-h-screen flex-col"
