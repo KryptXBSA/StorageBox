@@ -38,10 +38,9 @@ func UserSettings(c *gin.Context) {
 		return
 	}
 
-	pass, _ := user.Password()
 
 	// Verify if the current password matches the user's current hashed password
-	if err := bcrypt.CompareHashAndPassword([]byte(pass), []byte(body.CurrentPassword)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.CurrentPassword)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid password"})
 		return
 	}

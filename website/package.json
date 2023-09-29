@@ -39,6 +39,7 @@
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "0.279.0",
+    "moment": "^2.29.4",
     "nanostores": "^0.9.3",
     "next": "^13.4.8",
     "next-themes": "^0.2.1",

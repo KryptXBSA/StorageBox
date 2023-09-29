@@ -1,7 +1,12 @@
 "use client"
 
 import Link from "next/link"
+import { adminOverview } from "@/api/adminOverview"
+import { queryKeys } from "@/queryKeys"
+import { useQuery } from "@tanstack/react-query"
 import { ArrowUpRightIcon, Database, FileIcon, UsersIcon } from "lucide-react"
+
+import { bytesToMB } from "@/lib/utils"
 
 import { AdminCard } from "./AdminCard"
 
@@ -68,6 +73,10 @@ const dashboardData = [
   },
 ]
 export default function Page() {
+  const query = useQuery({
+    queryKey: [queryKeys.overview],
+    queryFn: adminOverview,
+  })
   return (
     <section className="p-4 flex flex-col items-center gap-2">
       <h2 className="text-3xl font-semibold tracking-tight transition-colors first:mt-0">
@@ -78,21 +87,21 @@ export default function Page() {
           <AdminCard
             icon={<UsersIcon className="w-14 h-14  rounded-sm p-2" />}
             text1="Users"
-            text2="32"
+            text2={query.data?.userCount.toString() || "0"}
           />
         </Link>
         <Link href="#">
           <AdminCard
             icon={<Database className="w-14 h-14  rounded-sm p-2" />}
             text1="Storage Used"
-            text2="100 GB"
+            text2={bytesToMB(query.data?.totalStorage || 0)}
           />
         </Link>
         <Link href="/admin/users">
           <AdminCard
             icon={<FileIcon className="w-14 h-14  rounded-sm p-2" />}
             text1="Files"
-            text2="992"
+            text2={query.data?.fileCount.toString() || "0"}
           />
         </Link>
       </div>

@@ -57,3 +57,28 @@ export function handleDownload({
       console.error("Error downloading the file:", error)
     })
 }
+
+export function bytesToMB(bytes: number, decimalPlaces = 2) {
+  bytes=parseInt(bytes.toString())
+  if (bytes === 0) return "0 MB"
+
+  const k = 1024
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const formattedValue = parseFloat(
+    (bytes / Math.pow(k, i)).toFixed(decimalPlaces)
+  )
+
+  return formattedValue + " " + sizes[i]
+}
+const totalSize = 500 * 1024 * 1024
+export function calculatePercentage(
+  sizeInBytes: number,
+  totalSizeInBytes = totalSize,
+  decimalPlaces = 2
+): number {
+  if (totalSizeInBytes === 0) return 0
+
+  const percentage = (sizeInBytes / totalSizeInBytes) * 100
+  return parseFloat(percentage.toFixed(decimalPlaces))
+}

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { getAppState } from "@/state/state"
 import { Book, Github, LayoutDashboardIcon } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { bytesToMB, calculatePercentage, cn } from "@/lib/utils"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Logo } from "@/components/Logo"
@@ -133,27 +133,4 @@ export function Sidebar() {
       </Link>
     )
   }
-}
-function bytesToMB(bytes: number, decimalPlaces = 2) {
-  if (bytes === 0) return "0 MB"
-
-  const k = 1024
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  const formattedValue = parseFloat(
-    (bytes / Math.pow(k, i)).toFixed(decimalPlaces)
-  )
-
-  return formattedValue + " " + sizes[i]
-}
-const totalSize = 500 * 1024 * 1024
-function calculatePercentage(
-  sizeInBytes: number,
-  totalSizeInBytes = totalSize,
-  decimalPlaces = 2
-): number {
-  if (totalSizeInBytes === 0) return 0
-
-  const percentage = (sizeInBytes / totalSizeInBytes) * 100
-  return parseFloat(percentage.toFixed(decimalPlaces))
 }

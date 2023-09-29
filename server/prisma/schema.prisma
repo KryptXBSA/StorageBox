@@ -12,8 +12,8 @@ model User {
   username  String   @unique
   avatar    String   @default("")
   role      String   @default("user")
-  email     String?  @unique
-  password  String?
+  email     String   @unique @default("")
+  password  String   @default("")
   provider  String
   storage   BigInt   @default(0)
   folders   Folder[]

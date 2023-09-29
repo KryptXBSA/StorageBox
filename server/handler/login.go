@@ -47,8 +47,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Check if the provided password matches the stored hash
-	pass, _ := user.Password()
-	if err := auth.CheckPassword(pass, body.Password); err != nil {
+	if err := auth.CheckPassword(user.Password, body.Password); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid password"})
 		return
 	}

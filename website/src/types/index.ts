@@ -33,3 +33,18 @@ export type UserData = {
   storage: number
   role: Role
 }
+
+export interface User {
+  id: string
+  username: string
+  avatar: string
+  role: string
+  password: string
+  email: string
+  provider: string
+  storage: number
+  createdAt: Date
+  updatedAt: Date
+  folders: Folder[]
+  files: File[]
+}

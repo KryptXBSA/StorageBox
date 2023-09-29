@@ -8,10 +8,10 @@ import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-import { DataTable } from "@/components/DataTable"
 import { Spinner } from "@/components/Spinner"
 import { Breadcrumbs } from "@/components/Breadcrumbs"
 import { getAppState, updateAppState } from "@/state/state"
+import { UsersTable } from "./UsersTable"
 
 
 export default function Page() {
@@ -38,7 +38,7 @@ export default function Page() {
   return (
     <section className="p-4">
       <Breadcrumbs />
-      <DataTable />
+      <UsersTable />
     </section>
   )
 }
