@@ -77,6 +77,8 @@ export default function Page() {
     queryKey: [queryKeys.overview],
     queryFn: adminOverview,
   })
+
+  if (query.isLoading) return <></>
   return (
     <section className="p-4 flex flex-col items-center gap-2">
       <h2 className="text-3xl font-semibold tracking-tight transition-colors first:mt-0">

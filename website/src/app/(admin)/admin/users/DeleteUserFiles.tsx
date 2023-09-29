@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { deleteUser } from "@/api/deleteUser"
+import { deleteUserFiles } from "@/api/deleteUserFiles"
 import { ErrorRes } from "@/types"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
@@ -16,9 +17,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-export function DeleteUserDialog(p: { id: string; username: string }) {
+export function DeleteUserFilesDialog(p: { id: string; username: string }) {
   const mutation = useMutation({
-    mutationFn: deleteUser,
+    mutationFn: deleteUserFiles,
     onError: (e: AxiosError<ErrorRes>) => {
       toast.error(e.response?.data.message)
       return e
@@ -46,12 +47,12 @@ export function DeleteUserDialog(p: { id: string; username: string }) {
           className="flex justify-start gap-4"
         >
           <Trash />
-          Delete User
+          Delete Files
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete {p.username} </DialogTitle>
+          <DialogTitle>Delete {p.username} Files </DialogTitle>
         </DialogHeader>
         <DialogFooter>
           <Button onClick={() => setOpen(false)} variant="ghost">

@@ -19,7 +19,6 @@ func AdminUsers(c *gin.Context) {
 		return
 	}
 
-	// Fetch all users with their files and folders
 	users, err := prisma.Client().User.FindMany().Exec(prisma.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})

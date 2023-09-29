@@ -24,9 +24,10 @@ import { RowAction } from "./RowAction"
 
 export function UsersTable() {
   const query = useQuery({
-    queryKey: [queryKeys.overview],
+    queryKey: [queryKeys.users],
     queryFn: adminUsers,
   })
+  if (query.isLoading) return <></>
   return (
     <>
       {/* <PreviewFileDialog open={open} toggle={setOpen} /> */}
