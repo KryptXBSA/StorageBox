@@ -63,9 +63,6 @@ func main() {
 	r.GET("/auth/google/callback", auth.Google)
 
 	r.Use(middleware.Auth)
-	//admin routes
-	r.GET("/admin/overview", handler.AdminOverview)
-	r.GET("/admin/users", handler.AdminUsers)
 
 	r.PUT("/user", handler.UserSettings)
 
@@ -81,9 +78,14 @@ func main() {
 
 	r.HEAD("/files/:id", handler.HeadHandler)
 	r.GET("/files/:id", handler.GetHandler)
-	r.Use(middleware.DirExists)
-	r.POST("/files/", handler.PostHandler)
-	r.PATCH("/files/:id", handler.PatchHandler)
+	r.POST("/files/", middleware.DirExists, handler.PostHandler)
+	r.PATCH("/files/:id", middleware.DirExists, handler.PatchHandler)
+
+	//admin routes
+	r.GET("/admin/overview", handler.AdminOverview)
+	r.GET("/admin/users", handler.AdminUsers)
+	r.Use(middleware.AuthAdmin)
+	r.POST("/admin/delete-user", handler.AdminDeleteUser)
 
 	fmt.Println("Listening at :4000")
 	if err := r.Run(":4000"); err != nil {

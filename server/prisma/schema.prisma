@@ -12,7 +12,7 @@ model User {
   username  String   @unique
   avatar    String   @default("")
   role      String   @default("user")
-  email     String   @unique @default("")
+  email     String    @default("")
   password  String   @default("")
   provider  String
   storage   BigInt   @default(0)
@@ -27,7 +27,7 @@ model Folder {
   name       String
   userId     String
   parentId   String?
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   parent     Folder?  @relation("SubFolders", fields: [parentId], references: [id])
   subFolders Folder[] @relation("SubFolders")
   files      File[]
@@ -42,7 +42,7 @@ model File {
   size      BigInt
   userId    String
   folderId  String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete:Cascade)
   folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

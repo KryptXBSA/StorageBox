@@ -20,6 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { RowAction } from "./RowAction"
+
 export function UsersTable() {
   const query = useQuery({
     queryKey: [queryKeys.overview],
@@ -52,21 +54,16 @@ export function UsersTable() {
               </TableCell>
               <TableCell>{i.provider}</TableCell>
               <TableCell>{i.email}</TableCell>
-              <TableCell>{bytesToMB(i.storage||0)}</TableCell>
+              <TableCell>{bytesToMB(i.storage || 0)}</TableCell>
               <TableCell>{moment(i.createdAt).fromNow()}</TableCell>
-              {/* <TableCell */}
-              {/*   onClick={(e) => { */}
-              {/*     e.stopPropagation() */}
-              {/*   }} */}
-              {/*   className="text-right" */}
-              {/* > */}
-              {/*   <RowAction */}
-              {/*     handleDownload={() => handleDownload({ ...i, token: token! })} */}
-              {/*     isFolder={false} */}
-              {/*     name={i.name} */}
-              {/*     id={i.id} */}
-              {/*   /> */}
-              {/* </TableCell> */}
+              <TableCell
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
+                className="text-right"
+              >
+                <RowAction username={i.username} id={i.id} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

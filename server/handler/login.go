@@ -33,6 +33,7 @@ func Login(c *gin.Context) {
 			// User not found, create a new user
 			user, err = auth.CreateUserPassword(body.Username, body.Password)
 			if err != nil {
+        println(err.Error())
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
 				return
 			}
