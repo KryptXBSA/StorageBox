@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	// "github.com/AlandSleman/StorageBox/prisma"
 	// "github.com/AlandSleman/StorageBox/prisma/db"
@@ -205,14 +207,64 @@ func tusHandler(c *gin.Context) *tusd.UnroutedHandler {
 			}
 
 			if c.GetString("avatar") == "true" {
-				_, err := prisma.Client().User.FindUnique(
+				// Find user
+				user, err := prisma.Client().User.FindUnique(
+					db.User.ID.Equals(c.GetString("id")),
+				).Exec(prisma.Context())
+
+				if err != nil {
+					println(err.Error())
+					return // Skip sending a response
+				}
+
+				// Check if user.Avatar is not empty
+				if user.Avatar != "" {
+					mainFilePath := filepath.Join("./uploads/", c.GetString("id"), user.Avatar)
+					infoFilePath := mainFilePath + ".info"
+
+					// Remove main file
+					if err := os.Remove(mainFilePath); err != nil {
+						println(err.Error())
+						return // Skip sending a response
+					}
+					println("Done removing main file")
+
+					// Remove info file
+					if err := os.Remove(infoFilePath); err != nil {
+						println(err.Error())
+						return // Skip sending a response
+					}
+					println("Done removing info file")
+
+					// TODO Decrement storage based on prv avatar size
+					// _, err := prisma.Client().User.FindUnique(
+					// 	db.User.ID.Equals(c.GetString("id")),
+					// ).Update(db.User.Storage.Decrement(db.BigInt(user.Avatar.))).Exec(prisma.Context())
+
+					// Delete file from the database
+					_, err = prisma.Client().File.FindMany(
+						db.File.And(db.File.UserID.Equals(c.GetString("id")), db.File.ID.Equals(user.Avatar)),
+					).Delete().Exec(prisma.Context())
+
+					if err != nil {
+						println(err.Error())
+						return // Skip sending a response
+					}
+					println("Done deleting file from the database")
+				} else {
+					println("User.Avatar is empty. No files to remove.")
+				}
+
+				// Update user's avatar
+				_, err = prisma.Client().User.FindUnique(
 					db.User.ID.Equals(c.GetString("id")),
 				).Update(db.User.Avatar.Set(event.Upload.ID)).Exec(prisma.Context())
 
 				if err != nil {
-					fmt.Println("Unable to update user", event.Upload.ID)
-					return
+					println(err.Error())
+					return // Skip sending a response
 				}
+				println("Done updating user avatar")
 			}
 
 			println("Upload %s finished\n", event.Upload.ID, event.Upload.Size)

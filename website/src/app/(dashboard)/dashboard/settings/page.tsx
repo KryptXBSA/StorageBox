@@ -142,6 +142,11 @@ export default function Page() {
         avatar: id || state.userData?.avatar,
       },
     })
+    setShowChangeAvatarBtn(false)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+    toast.success("Success")
   }
   if (!uppy) return <></>
   return (
@@ -198,8 +203,8 @@ export default function Page() {
           >
             <h3 className="text-2xl font-semibold tracking-tight">Passowrd</h3>
             {providerNotPassword && (
-              <p className=" font-semibold tracking-tight">
-                Can't change password you are logged in with{" "}
+              <p className=" font-semibold tracking-tight text-center">
+                Can't change password you are logged in with &nbsp;
                 {state.userData?.provider}
               </p>
             )}

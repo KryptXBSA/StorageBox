@@ -61,7 +61,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const session: Session = { token, id: decoded.id, role: decoded.role }
   let userData: UserData = {
     id: decoded.id,
+    avatar: "",
     role: decoded.role,
+    provider: "password",
     storage: 0,
   }
   try {
@@ -70,8 +72,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     })
     userData = {
       id: decoded.id,
+      provider: data.provider,
+      avatar: data.avatar,
       role: decoded.role,
-      storage: parseInt(data.user.storage) || 0,
+      storage: parseInt(data.storage) || 0,
     }
   } catch (error) {
     console.error(error)

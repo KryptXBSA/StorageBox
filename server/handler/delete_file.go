@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"net/http"
+	"os"
+	"path/filepath"
+
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func DeleteFile(c *gin.Context) {
@@ -27,6 +30,23 @@ func DeleteFile(c *gin.Context) {
 	if err != nil {
 		println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete file"})
+		return
+	}
+
+	mainFilePath := filepath.Join("./uploads/", userID, Body.FileId)
+	infoFilePath := mainFilePath + ".info"
+
+	err = os.Remove(mainFilePath)
+	if err != nil {
+		println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete file"})
+		return
+	}
+
+	err = os.Remove(infoFilePath)
+	if err != nil {
+		println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete info file"})
 		return
 	}
 
