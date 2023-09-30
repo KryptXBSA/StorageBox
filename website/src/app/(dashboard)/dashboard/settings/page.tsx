@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { changePass } from "@/api/changePass"
 import { serverUrl } from "@/config"
+import { getAppState, updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useStore } from "@nanostores/react"
@@ -28,7 +29,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getAppState } from "@/state/state"
 
 const formSchema = z.object({
   currentPassword: z.string().min(1).max(255),
@@ -37,7 +37,12 @@ const formSchema = z.object({
 
 export default function Page() {
   const [uppy, setUppy] = useState<Uppy>()
-  let session = getAppState().session
+  const [avatar, setAvatar] = useState<string | null>(null)
+  let state = getAppState()
+  let token = state.session?.token
+  // auth provider
+  let providerNotPassword = state.userData?.provider !== "password"
+
   const fileInputRef = useRef<HTMLInputElement>(null) // Create a ref for the file input element
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +55,7 @@ export default function Page() {
       return e
     },
   })
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate(values)
     console.log(values)
@@ -57,10 +63,10 @@ export default function Page() {
 
   useEffect(() => {
     if (mutation.isSuccess) {
-      console.log("succc", mutation.data)
       toast.success("Success")
     }
   }, [mutation.isLoading])
+
   useEffect(() => {
     const uppyInstance = new Uppy({
       id: "uppy1",
@@ -69,7 +75,7 @@ export default function Page() {
     }).use(Tus, {
       endpoint: serverUrl + "/files/",
       headers: {
-        Authorization: "Bearer " + session?.token,
+        Authorization: "Bearer " + token,
         dir: "/",
       },
     })
@@ -83,17 +89,61 @@ export default function Page() {
     }
   }, [])
 
-  if (!uppy) return <></>
+  useEffect(() => {
+    state.userData?.avatar.length! > 0 && fetchAvatar()
+    async function fetchAvatar() {
+      try {
+        const authToken = "Bearer " + token // Replace with your authorization token
 
-  // Function to handle file input change
+        const response = await fetch(
+          serverUrl + "/files/" + state.userData?.avatar,
+          {
+            method: "GET",
+            headers: {
+              Authorization: authToken,
+            },
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error("Request failed")
+        }
+
+        const blob = await response.blob()
+        const blobUrl = URL.createObjectURL(blob)
+        setAvatar(blobUrl)
+      } catch (error) {
+        toast.error("Error fetching avatar:" + error)
+        console.error("Error fetching file content:", error)
+      }
+    }
+  }, [])
+  const [showChangeAvatarBtn, setShowChangeAvatarBtn] = useState(false)
   const handleFileInputChange = () => {
     const fileInput = fileInputRef.current
     if (fileInput && fileInput.files && fileInput.files[0]) {
       let file = fileInput.files[0]
-      uppy.addFile({ data: file, name: file.name })
-      uppy.upload()
+      const blobUrl = URL.createObjectURL(file)
+      setAvatar(blobUrl)
+      uppy?.addFile({ data: file, name: file.name })
+      setShowChangeAvatarBtn(true)
     }
   }
+  async function changeAvatar() {
+    let res = await uppy?.upload()
+    const url = res?.successful[0].uploadURL
+    const parts = url!.split("/") // Split the URL by "/"
+    const id = parts[parts.length - 1] // Get the last part of the URL
+
+    updateAppState({
+      userData: {
+        ...state.userData,
+        //@ts-ignore
+        avatar: id || state.userData?.avatar,
+      },
+    })
+  }
+  if (!uppy) return <></>
   return (
     <section className="p-14">
       <div className="flex justify-around w-full">
@@ -103,8 +153,7 @@ export default function Page() {
           </h3>
           <div className="flex items-center justify-start gap-4 px-4 w-full">
             <Avatar className="w-14 h-14 self-start ">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={avatar ?? "/avatar.png"} />
             </Avatar>
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="picture">Change Avatar</Label>
@@ -115,6 +164,11 @@ export default function Page() {
                 accept="image/png, image/gif, image/jpeg"
                 onChange={handleFileInputChange}
               />
+              {showChangeAvatarBtn && (
+                <Button onClick={changeAvatar} variant="outline">
+                  Change Avatar
+                </Button>
+              )}
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -143,7 +197,14 @@ export default function Page() {
             className="flex w-[30%]  items-center gap-4 p-8 rounded-lg flex-col bg-secondary"
           >
             <h3 className="text-2xl font-semibold tracking-tight">Passowrd</h3>
+            {providerNotPassword && (
+              <p className=" font-semibold tracking-tight">
+                Can't change password you are logged in with{" "}
+                {state.userData?.provider}
+              </p>
+            )}
             <FormField
+              disabled={providerNotPassword}
               control={form.control}
               name="currentPassword"
               render={({ field }) => (
@@ -158,6 +219,7 @@ export default function Page() {
             />
 
             <FormField
+              disabled={providerNotPassword}
               control={form.control}
               name="newPassword"
               render={({ field }) => (
@@ -170,7 +232,11 @@ export default function Page() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button
+              disabled={providerNotPassword}
+              className="w-full"
+              type="submit"
+            >
               Submit
             </Button>
           </form>

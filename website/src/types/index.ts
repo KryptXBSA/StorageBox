@@ -30,6 +30,8 @@ export type Role = "user" | "admin"
 export type Session = { id: string; token: string; role: Role }
 export type UserData = {
   id: string
+  avatar: string
+  provider: "password" | "google" | "discord" | "github"
   storage: number
   role: Role
 }

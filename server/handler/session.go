@@ -13,12 +13,12 @@ func Session(c *gin.Context) {
 
 	user, err := prisma.Client().User.FindFirst(
 		db.User.ID.Equals(userID),
-	).With(db.User.Folders.Fetch()).Exec(prisma.Context())
+	).Exec(prisma.Context())
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to get user"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	c.JSON(http.StatusOK, user)
 }

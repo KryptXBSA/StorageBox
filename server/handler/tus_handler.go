@@ -46,7 +46,7 @@ func PostHandler(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
-	dTusHandler(c).PostFile(c.Writer, c.Request)
+	tusHandler(c).PostFile(c.Writer, c.Request)
 }
 
 func PatchHandler(c *gin.Context) {
@@ -79,7 +79,7 @@ func PatchHandler(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
-	dTusHandler(c).PatchFile(c.Writer, c.Request)
+	tusHandler(c).PatchFile(c.Writer, c.Request)
 }
 func HeadHandler(c *gin.Context) {
 	fileId := c.Param("id")
@@ -108,7 +108,7 @@ func HeadHandler(c *gin.Context) {
 
 	c.Header("Content-Disposition", "inline; filename=\""+file.Name+"\"")
 
-	dTusHandler(c).HeadFile(c.Writer, c.Request)
+	tusHandler(c).HeadFile(c.Writer, c.Request)
 }
 
 func GetHandler(c *gin.Context) {
@@ -135,10 +135,10 @@ func GetHandler(c *gin.Context) {
 	}
 	c.Set("id", file.UserID)
 
-	dTusHandler(c).GetFile(c.Writer, c.Request)
+	tusHandler(c).GetFile(c.Writer, c.Request)
 }
 
-func dTusHandler(c *gin.Context) *tusd.UnroutedHandler {
+func tusHandler(c *gin.Context) *tusd.UnroutedHandler {
 
 	store := filestore.FileStore{
 		// using userID as the prefix

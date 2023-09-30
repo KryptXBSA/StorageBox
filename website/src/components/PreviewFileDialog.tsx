@@ -29,9 +29,9 @@ export function PreviewFileDialog({
   let { selectedFile, ...state } = getAppState()
   let token = state.session?.token
 
-  const [content, setContent] = useState<string | null>(null)
   const type = getFileType(selectedFile?.type!)
 
+  const [content, setContent] = useState<string | null>(null)
   useEffect(() => {
     console.log("ttt", type)
     if (type === "text" || type === "image") fetchFileContent()

@@ -52,26 +52,46 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
+export interface ResSession {
+  id: string
+  username: string
+  avatar: string
+  role: string
+  email: string
+  password: string
+  provider: "password" | "google" | "discord" | "github"
+  storage: string
+  createdAt: string
+  updatedAt: string
+}
+
 export default async function RootLayout({ children }: RootLayoutProps) {
   const cookieStore = cookies()
   const token = cookieStore.get("token")?.value
   if (!token) redirect("/login")
   let decoded = jwt.decode(token) as { id: string; role: Role }
-  // let data = getUserData(session?.token)
+
   const session: Session = { token, id: decoded.id, role: decoded.role }
   let userData: UserData = {
     id: decoded.id,
+    avatar: "",
     role: decoded.role,
+    provider: "password",
     storage: 0,
   }
   try {
-    const { data } = await axios.get(localServerUrl + "/session", {
-      headers: { Authorization: "Bearer " + session.token },
-    })
+    const { data }: { data: ResSession } = await axios.get(
+      localServerUrl + "/session",
+      {
+        headers: { Authorization: "Bearer " + session.token },
+      }
+    )
     userData = {
       id: decoded.id,
+      provider: data.provider,
+      avatar: data.avatar,
       role: decoded.role,
-      storage: parseInt(data.user.storage) || 0,
+      storage: parseInt(data.storage) || 0,
     }
   } catch (error) {
     console.error(error)
