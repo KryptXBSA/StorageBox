@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -52,16 +51,6 @@ func AdminDeleteFile(c *gin.Context) {
 	_, err = prisma.Client().File.FindUnique(
 		db.File.ID.Equals(file.ID),
 	).Delete().Exec(prisma.Context())
-
-	if err != nil {
-		if errors.Is(err, db.ErrNotFound) {
-			// success deleted file
-		} else {
-			println(err.Error())
-			c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete user"})
-			return
-		}
-	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
 	return

@@ -1,18 +1,17 @@
 "use client"
 
 import { getData } from "@/api/getData"
-import { serverUrl } from "@/config"
 import { queryKeys } from "@/queryKeys"
+import { getAppState, updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
-import { DataTable } from "@/components/DataTable"
+import { HeadText } from "@/components/HeadText"
 import { Spinner } from "@/components/Spinner"
-import { Breadcrumbs } from "@/components/Breadcrumbs"
-import { getAppState, updateAppState } from "@/state/state"
 
+import { FilesTable } from "./FilesTable"
 
 export default function Page() {
   const state = getAppState()
@@ -37,8 +36,8 @@ export default function Page() {
     )
   return (
     <section className="p-4">
-      <Breadcrumbs />
-      <DataTable />
+      <HeadText text="Files" />
+      <FilesTable />
     </section>
   )
 }

@@ -9,7 +9,6 @@ import {
 
 import { DeleteUserDialog } from "./DeleteUserDialog"
 import { DeleteUserFilesDialog } from "./DeleteUserFiles"
-import { RenameDialog } from "./RenameDialog"
 
 export function RowAction(p: { id: string; username: string }) {
   return (

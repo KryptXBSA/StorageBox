@@ -45,6 +45,6 @@ export interface User {
   storage: number
   createdAt: Date
   updatedAt: Date
-  folders: Folder[]
-  files: File[]
+  folders?: Folder[]
+  files?: File[]
 }

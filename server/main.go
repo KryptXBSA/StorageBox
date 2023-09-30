@@ -84,10 +84,11 @@ func main() {
 	//admin routes
 	r.GET("/admin/overview", handler.AdminOverview)
 	r.GET("/admin/users", handler.AdminUsers)
+	r.GET("/admin/files", handler.AdminFiles)
 	r.Use(middleware.AuthAdmin)
-	r.POST("/admin/delete-user", handler.AdminDeleteUser)
-	r.POST("/admin/delete-user-files", handler.AdminDeleteAllUserFiles)
-	r.POST("/admin/delete-file", handler.AdminDeleteFile)
+	r.DELETE("/admin/user", handler.AdminDeleteUser)
+	r.DELETE("/admin/user-files", handler.AdminDeleteAllUserFiles)
+	r.DELETE("/admin/file", handler.AdminDeleteFile)
 
 	fmt.Println("Listening at :4000")
 	if err := r.Run(":4000"); err != nil {

@@ -1,13 +1,10 @@
 "use client"
 
-import React, { useState } from "react"
-import { adminOverview } from "@/api/adminOverview"
+import React from "react"
+import { adminFiles } from "@/api/adminFiles"
 import { adminUsers } from "@/api/adminUsers"
 import { queryKeys } from "@/queryKeys"
-import { getAppState, updateAppState } from "@/state/state"
-import { File, Folder } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { FolderClosed, FolderIcon } from "lucide-react"
 import moment from "moment"
 
 import { bytesToMB } from "@/lib/utils"
@@ -19,13 +16,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { GetFileIcon } from "@/components/GetFileIcon"
 
 import { RowAction } from "./RowAction"
 
-export function UsersTable() {
+export function FilesTable() {
   const query = useQuery({
     queryKey: [queryKeys.users],
-    queryFn: adminUsers,
+    queryFn: adminFiles,
   })
   if (query.isLoading) return <></>
   return (
@@ -34,13 +32,10 @@ export function UsersTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="grow">Username</TableHead>
-            <TableHead>Signup Method</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Files</TableHead>
-            <TableHead>Folders</TableHead>
-            <TableHead>Total storage</TableHead>
-            <TableHead>Signup Date</TableHead>
+            <TableHead className="grow">Name</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>type</TableHead>
+            <TableHead>Size</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
@@ -52,22 +47,18 @@ export function UsersTable() {
               key={i.id}
             >
               <TableCell className="font-medium items-center flex gap-1">
-                {/* <GetFileIcon view="list" type={i.type} /> */}
-                {i.username}
+                <GetFileIcon view="list" type={i.type} />
+                {i.name}
               </TableCell>
-              <TableCell>{i.provider}</TableCell>
-              <TableCell>{i.email}</TableCell>
-              <TableCell>{i.files?.length || 0}</TableCell>
-              <TableCell>{i.folders?.length || 0}</TableCell>
-              <TableCell>{bytesToMB(i.storage || 0)}</TableCell>
               <TableCell>{moment(i.createdAt).fromNow()}</TableCell>
+              <TableCell>{bytesToMB(i.size || 0)}</TableCell>
               <TableCell
                 onClick={(e) => {
                   e.stopPropagation()
                 }}
                 className="text-right"
               >
-                <RowAction username={i.username} id={i.id} />
+                <RowAction name={i.name} id={i.id} />
               </TableCell>
             </TableRow>
           ))}
