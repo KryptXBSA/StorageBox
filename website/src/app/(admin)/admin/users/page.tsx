@@ -12,6 +12,7 @@ import { Spinner } from "@/components/Spinner"
 import { Breadcrumbs } from "@/components/Breadcrumbs"
 import { getAppState, updateAppState } from "@/state/state"
 import { UsersTable } from "./UsersTable"
+import { HeadText } from "@/components/HeadText"
 
 
 export default function Page() {
@@ -37,7 +38,7 @@ export default function Page() {
     )
   return (
     <section className="p-4">
-      <Breadcrumbs />
+      <HeadText text="Users"/>
       <UsersTable />
     </section>
   )

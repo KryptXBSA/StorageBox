@@ -47,10 +47,11 @@ export function FilesTable() {
               key={i.id}
             >
               <TableCell className="font-medium items-center flex gap-1">
-                <GetFileIcon view="list" type={i.type} />
+                <GetFileIcon view="list" type={i.type||""} />
                 {i.name}
               </TableCell>
               <TableCell>{moment(i.createdAt).fromNow()}</TableCell>
+              <TableCell>{i.type}</TableCell>
               <TableCell>{bytesToMB(i.size || 0)}</TableCell>
               <TableCell
                 onClick={(e) => {

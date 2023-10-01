@@ -6,7 +6,7 @@ import { getAppState, updateAppState } from "@/state/state"
 import { File, Folder } from "@/types"
 import { FolderClosed, FolderIcon } from "lucide-react"
 
-import { handleDownload, imageTypes, videoTypes } from "@/lib/utils"
+import { bytesToMB, handleDownload, imageTypes, videoTypes } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -168,7 +168,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
                 </TableCell>
                 <TableCell>{f.createdAt}</TableCell>
                 <TableCell>{f.type}</TableCell>
-                <TableCell>{f.size}</TableCell>
+                <TableCell>{bytesToMB(f.size)}</TableCell>
                 <TableCell
                   onClick={(e) => {
                     e.stopPropagation()

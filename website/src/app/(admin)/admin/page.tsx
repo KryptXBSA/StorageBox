@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query"
 import { ArrowUpRightIcon, Database, FileIcon, UsersIcon } from "lucide-react"
 
 import { bytesToMB } from "@/lib/utils"
+import { Spinner } from "@/components/Spinner"
 
 import { AdminCard } from "./AdminCard"
 
@@ -78,7 +79,12 @@ export default function Page() {
     queryFn: adminOverview,
   })
 
-  if (query.isLoading) return <></>
+  if (query.isLoading)
+    return (
+      <div className="p-96 mx-auto">
+        <Spinner />
+      </div>
+    )
   return (
     <section className="p-4 flex flex-col items-center gap-2">
       <h2 className="text-3xl font-semibold tracking-tight transition-colors first:mt-0">
