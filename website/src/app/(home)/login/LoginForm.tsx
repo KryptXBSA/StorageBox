@@ -8,13 +8,14 @@ import {
   GITHUB_CLIENT_ID,
   GITHUB_REDIRECT_URI,
   GOOGLE_CLIENT_ID,
-  GOOGLE_REDIRECT_URI
+  GOOGLE_REDIRECT_URI,
 } from "@/config"
 import { ErrorRes } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import Cookies from "js-cookie"
+import { GithubIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import * as z from "zod"
@@ -29,6 +30,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import DiscordIcon from "@/components/icons/Discord"
+import GoogleIcon from "@/components/icons/Google"
 
 const formSchema = z.object({
   username: z.string().min(1).max(255),
@@ -57,17 +60,17 @@ export function LoginForm() {
     mutation.mutate(values)
   }
 
-function googleLogin() {
-  const clientId = GOOGLE_CLIENT_ID; // Your Google OAuth client ID
-  const redirectUri = GOOGLE_REDIRECT_URI; // Your OAuth redirect URI
-  const scope = "openid email profile"; // Scopes required by your application
+  function googleLogin() {
+    const clientId = GOOGLE_CLIENT_ID // Your Google OAuth client ID
+    const redirectUri = GOOGLE_REDIRECT_URI // Your OAuth redirect URI
+    const scope = "openid email profile" // Scopes required by your application
 
-  // Construct the Google OAuth URL
-  const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
-  
-  // Use router to replace the URL with the authUrl
-  router.replace(authUrl);
-}
+    // Construct the Google OAuth URL
+    const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`
+
+    // Use router to replace the URL with the authUrl
+    router.replace(authUrl)
+  }
   function discordLogin() {
     const clientId = DISCORD_CLIENT_ID // Your Discord OAuth client ID
     const redirectUri = DISCORD_REDIRECT_URI // Your OAuth redirect URI
@@ -86,16 +89,41 @@ function googleLogin() {
     router.replace(authUrl)
   }
   return (
-    <>
-      <Button onClick={githubLogin}>Github</Button>
-
-      <Button onClick={discordLogin}>Discord</Button>
-      <Button onClick={googleLogin}>Google</Button>
+    <div className="flex flex-col justify-center gap-2 py-10 mx-auto w-full items-center">
+      <Button
+        variant="outline"
+        className="flex gap-2 h-12 w-52 rounded-lg "
+        onClick={githubLogin}
+      >
+        <GithubIcon className="w-8 h-8" />
+        Login with Github
+      </Button>
+      <Button
+        variant="outline"
+        className="flex gap-2 h-12 w-52 rounded-lg "
+        onClick={discordLogin}
+      >
+        <DiscordIcon className="w-8 h-8" />
+        Login with Discord
+      </Button>
+      <Button
+        variant="outline"
+        className="flex gap-2 h-12 w-52 rounded-lg "
+        onClick={googleLogin}
+      >
+        <GoogleIcon className="w-8 h-8" />
+        Login with Google
+      </Button>
+      <fieldset className="md:w-1/3 lg:w-1/4 w-full sm:w-1/2 border-t border-gray-600">
+        <legend className="mx-auto grow px-2 text-lg text-black dark:text-white ">
+          or
+        </legend>
+      </fieldset>
       <Form {...form}>
         <form
           noValidate
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8"
+          className="space-y-4"
         >
           <FormField
             control={form.control}
@@ -124,9 +152,12 @@ function googleLogin() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Login</Button>
+          <p className="text-sm text-gray-500">
+            If you don't have an account. We'll create one for you.
+          </p>
         </form>
       </Form>
-    </>
+    </div>
   )
 }

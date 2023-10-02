@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"net/http"
+	"os"
+	"path/filepath"
+
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func DeleteFolder(c *gin.Context) {
@@ -20,7 +23,38 @@ func DeleteFolder(c *gin.Context) {
 
 	userID := c.GetString("id")
 
-	_, err := prisma.Client().Folder.FindMany(
+	folder, err := prisma.Client().Folder.FindFirst(
+		db.Folder.And(db.Folder.UserID.Equals(userID), db.Folder.ID.Equals(Body.FolderID)),
+	).With(db.Folder.Files.Fetch()).Exec(prisma.Context())
+
+	if err != nil {
+		println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to get folder"})
+		return
+	}
+
+  // delete all files associated with this folder
+	for _, file := range folder.Files() {
+		mainFilePath := filepath.Join("./uploads/", userID, file.ID)
+		infoFilePath := mainFilePath + ".info"
+
+		err := os.Remove(mainFilePath)
+
+		if err != nil {
+			println(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete file"})
+			return
+		}
+
+		err = os.Remove(infoFilePath)
+		if err != nil {
+			println(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to delete info file"})
+			return
+		}
+	}
+
+	_, err = prisma.Client().Folder.FindMany(
 		db.Folder.And(db.Folder.UserID.Equals(userID), db.Folder.ID.Equals(Body.FolderID)),
 	).Delete().Exec(prisma.Context())
 
@@ -30,9 +64,11 @@ func DeleteFolder(c *gin.Context) {
 		return
 	}
 
+  // get latest folders and files
 	folders, err := prisma.Client().Folder.FindMany(
 		db.Folder.UserID.Equals(userID),
 	).Exec(prisma.Context())
+
 	files, err := prisma.Client().File.FindMany(
 		db.File.UserID.Equals(userID),
 	).Exec(prisma.Context())

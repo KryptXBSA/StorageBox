@@ -12,9 +12,11 @@ func DirExists(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Missing dir header"})
 		return
 	}
-	println("dir is", dir)
 	c.Set("dir", dir)
-	c.Set("avatar", "true")
+
+	if dir == "/" {
+		c.Set("avatar", "true")
+	}
 
 	c.Next()
 }

@@ -26,7 +26,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   const state = getAppState()
   const [open, setOpen] = useState(false)
   function toggle(f: File) {
-    console.log("aaaaa",open)
+    console.log("aaaaa", open)
     updateAppState({ selectedFile: f })
     setOpen(true)
   }
@@ -35,7 +35,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   function selectFolder(id: string) {
     let filtered = state.folders.filter((f) => f.name !== "/")
     const selectedFolder = filtered.find((f) => f.id === id)!
-    updateAppState({selectedFolder})
+    updateAppState({ selectedFolder })
 
     let parents: Folder[] = []
     let currentFolder = selectedFolder
@@ -50,7 +50,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
         break
       }
     }
-    updateAppState({parents})
+    updateAppState({ parents })
   }
 
   // TODO explicitly filder root folder /, DONE
@@ -59,14 +59,16 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
   //
   let filteredFolders = state.folders
   let filteredFiles = state.files
-  filteredFolders = state.folders.filter((f) => f.name !== "/")
+  let rootFolder = state.folders.find((f) => f.name === "/")
+  let selectedFolder=state.selectedFolder?.id || rootFolder?.id
+  // filteredFolders = state.folders.filter((f) => f.name !== "/")
   // first filter based on the selected folder
-  if (state.selectedFolder?.id) {
+  if (selectedFolder) {
     filteredFolders = filteredFolders.filter(
-      (f) => f.parentId === state.selectedFolder?.id
+      (f) => f.parentId === selectedFolder
     )
     filteredFiles = filteredFiles.filter(
-      (f) => f.folderId === state.selectedFolder?.id
+      (f) => f.folderId === selectedFolder
     )
   }
   // then filter based on the searchQuery
@@ -112,7 +114,7 @@ export function DataTable(p: { filter?: "all-media" | "images" | "videos" }) {
             <FolderCard selectFolder={selectFolder} key={f.id} {...f} />
           ))}
           {filteredFiles.map((f) => (
-            <FileCard onClick={()=>toggle(f)} key={f.id} {...f} />
+            <FileCard onClick={() => toggle(f)} key={f.id} {...f} />
           ))}
         </div>
       </>

@@ -3,7 +3,7 @@ version: '3'
 services:
   postgres:
     image: postgres:latest
-    container_name: sbp
+    container_name: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
@@ -13,22 +13,20 @@ services:
 
   redis:
     image: redis:latest
-    container_name: sbr
+    container_name: redis
     ports:
       - "6379:6379"
-    depends_on:
-      - postgres  # Ensure PostgreSQL starts before Redis
 
-  go-app:
+  app:
+    container_name: server
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       JWT_SECRET: your-secret-key
-      DATABASE_URL: postgresql://postgres:123@sbp:5432/tus  # Use container_name for PostgreSQL
-      REDIS_URL: redis://sbr:6379/0  # Use container_name for Redis
+      DATABASE_URL: postgresql://postgres:123@postgres:5432/tus
+      REDIS_URL: redis://redis:6379/0
     ports:
       - "4000:4000"
     depends_on:
-      - postgres  # Ensure PostgreSQL starts before Go app
-      - redis     # Ensure Redis starts before Go app
+      - postgres
