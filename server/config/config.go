@@ -1,9 +1,12 @@
 package config
 
-import "os"
+import (
+	"os"
+)
 
 type ServerConfig struct {
 	JWT_SECRET           string
+	REDIS_URL            string
 	MAX_SIZE             int64
 	GITHUB_CLIENT_ID     string
 	GITHUB_CLIENT_SECRET string
@@ -13,7 +16,6 @@ type ServerConfig struct {
 	DISCORD_CLIENT_SECRET string
 	DISCORD_REDIRECT_URI  string
 
-	// Add Google OAuth configuration variables here
 	GOOGLE_CLIENT_ID     string
 	GOOGLE_CLIENT_SECRET string
 	GOOGLE_REDIRECT_URI  string
@@ -22,6 +24,7 @@ type ServerConfig struct {
 func GetConfig() *ServerConfig {
 	config := &ServerConfig{
 		JWT_SECRET:           os.Getenv("JWT_SECRET"),
+		REDIS_URL:            os.Getenv("REDIS_URL"),
 		MAX_SIZE:             10000000000000,
 		GITHUB_CLIENT_ID:     os.Getenv("GITHUB_CLIENT_ID"),
 		GITHUB_CLIENT_SECRET: os.Getenv("GITHUB_CLIENT_SECRET"),

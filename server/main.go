@@ -4,19 +4,30 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/AlandSleman/StorageBox/auth"
+	"github.com/AlandSleman/StorageBox/config"
 	"github.com/AlandSleman/StorageBox/handler"
 	"github.com/AlandSleman/StorageBox/middleware"
 	"github.com/AlandSleman/StorageBox/prisma"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 	limiter "github.com/ulule/limiter/v3"
 	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
 	sredis "github.com/ulule/limiter/v3/drivers/store/redis"
 )
 
+func loadEnvVariables() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		os.Exit(1)
+	}
+}
 func main() {
+	loadEnvVariables()
 	r := gin.Default()
 	r.Use(middleware.Cors())
 
@@ -27,9 +38,9 @@ func main() {
 	}
 
 	// Create a redis client.
-	option, err := redis.ParseURL("redis://localhost:6379/0")
+	option, err := redis.ParseURL(config.GetConfig().REDIS_URL)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("errris:", err)
 		return
 	}
 	client := redis.NewClient(option)
