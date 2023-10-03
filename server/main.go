@@ -2,21 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/AlandSleman/StorageBox/auth"
-	"github.com/AlandSleman/StorageBox/config"
 	"github.com/AlandSleman/StorageBox/handler"
 	"github.com/AlandSleman/StorageBox/middleware"
 	"github.com/AlandSleman/StorageBox/prisma"
+	"github.com/AlandSleman/StorageBox/prisma/db"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/redis/go-redis/v9"
-	limiter "github.com/ulule/limiter/v3"
-	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
-	sredis "github.com/ulule/limiter/v3/drivers/store/redis"
 )
 
 func loadEnvVariables() {
@@ -26,39 +21,23 @@ func loadEnvVariables() {
 		os.Exit(1)
 	}
 }
+
+// create admin user
+func seedDb() {
+	pass, _ := auth.HashPassword("admin")
+	_, _ = prisma.Client().User.CreateOne(db.User.Username.Set("admin"),
+		db.User.Provider.Set("password"),
+		db.User.Role.Set("admin"),
+		db.User.Password.Set(pass)).Exec(prisma.Context())
+}
+
 func main() {
 	loadEnvVariables()
 	r := gin.Default()
 	r.Use(middleware.Cors())
 
-	rate, err := limiter.NewRateFromFormatted("70-M")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	r.Use(middleware.RateLimit())
 
-	// Create a redis client.
-	option, err := redis.ParseURL(config.GetConfig().REDIS_URL)
-	if err != nil {
-		log.Fatal("errris:", err)
-		return
-	}
-	client := redis.NewClient(option)
-
-	// Create a store with the redis client.
-	store, err := sredis.NewStoreWithOptions(client, limiter.StoreOptions{
-		Prefix:   "limiter",
-		MaxRetry: 3,
-	})
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	// Create a new middleware with the limiter instance.
-	limiterMiddleware := mgin.NewMiddleware(limiter.New(store, rate))
-
-	r.Use(limiterMiddleware)
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "hello",
@@ -66,6 +45,7 @@ func main() {
 	})
 
 	prisma.Init()
+	seedDb()
 
 	r.POST("/login", handler.Login)
 

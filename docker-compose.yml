@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: storagebox-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: storagebox-redis
+    ports:
+      - "6379:6379"
+
+  server:
+    container_name: storagebox-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+      - redis
+
+  website:
+    container_name: storagebox-website
+    build:
+      context: ./website  
+      dockerfile: Dockerfile  
+    ports:
+      - "4001:4001"  
+    depends_on:
+      - server
