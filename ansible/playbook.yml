@@ -30,25 +30,25 @@
 
     - name: Start frontend with PM2
       ansible.builtin.shell: |
-        pnpm start
+        pm2 start pnpm --name "website" -- start
       args:
         chdir: "{{ playbook_dir }}/../website"
 
     - name: Init Db
       ansible.builtin.shell: |
-        go run github.com/steebchen/prisma-client-go db push
+        /usr/local/go/bin/go run github.com/steebchen/prisma-client-go db push
       args:
         chdir: "{{ playbook_dir }}/../server"
 
     - name:  Build Server
       ansible.builtin.shell: |
-        go build -o server
+        /usr/local/go/bin/go build -o server
       args:
         chdir: "{{ playbook_dir }}/../server"
 
     - name: Run Server 
       ansible.builtin.shell: |
-        setsid ./server 
+        pm2 start ./server --name "server"
       args:
         chdir: "{{ playbook_dir }}/../server"
 
