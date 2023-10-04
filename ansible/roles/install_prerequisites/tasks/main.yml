@@ -19,6 +19,9 @@
     path: /etc/profile
     line: 'export PATH=$PATH:/usr/local/go/bin'
 
+- name: Copy 'go' from /usr/local/go/bin to /usr/local/bin
+  ansible.builtin.command: cp /usr/local/go/bin/go /usr/local/bin/
+
 - name: Install Node.js and global packages
   ansible.builtin.shell: |
     mkdir -p /etc/apt/keyrings
