@@ -16,19 +16,32 @@
       ansible.builtin.shell: |
         docker run --name postgres -e POSTGRES_PASSWORD={{db.POSTGRES_PASSWORD}} -p 5432:5432 -d postgres
 
-
-    - name: Install frontend dependencies, build, and start with PM2
+    - name: Install frontend dependencies
       ansible.builtin.shell: |
-        ls
         pnpm i
+      args:
+        chdir: "{{ playbook_dir }}/../website"
+
+    - name: Build frontend
+      ansible.builtin.shell: |
         pnpm build
+      args:
+        chdir: "{{ playbook_dir }}/../website"
+
+    - name: Start frontend with PM2
+      ansible.builtin.shell: |
         pnpm start
       args:
         chdir: "{{ playbook_dir }}/../website"
 
-    - name: Migrate and Build Server
+    - name: Init Db
       ansible.builtin.shell: |
         go run github.com/steebchen/prisma-client-go db push
+      args:
+        chdir: "{{ playbook_dir }}/../server"
+
+    - name:  Build Server
+      ansible.builtin.shell: |
         go build -o server
       args:
         chdir: "{{ playbook_dir }}/../server"
