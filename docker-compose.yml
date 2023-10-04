@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - ./server/pg-data:/var/lib/postgresql/data  
 
   redis:
     image: redis:latest
@@ -27,6 +29,8 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - ./server/uploads:/app/uploads  
 
   website:
     container_name: storagebox-website

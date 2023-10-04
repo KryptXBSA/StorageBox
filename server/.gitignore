@@ -1,2 +1,5 @@
 .env
 uploads/*
+pg-data/*
+server 
+server.log

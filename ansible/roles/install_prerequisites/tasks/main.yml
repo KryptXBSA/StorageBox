@@ -1,0 +1,47 @@
+---
+- name: Install prerequisites
+  apt:
+    update_cache: yes
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+  vars:
+    go_version: "1.21.0"  
+- name: Download Go
+  get_url:
+    url: https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
+    dest: /tmp/go.tar.gz  
+
+- name: Extract Go
+  ansible.builtin.unarchive:
+    src: /tmp/go.tar.gz
+    dest: /usr/local
+
+- name: Set Go Environment Variables
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: 'export PATH=$PATH:/usr/local/go/bin'
+
+- name: Install Node.js and global packages
+  ansible.builtin.shell: |
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+    NODE_MAJOR=20
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+    sudo apt update 
+    sudo apt install -y nodejs
+    npm i prisma pm2 pnpm -g
+
+- name: Install Docker
+  ansible.builtin.shell: |
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
