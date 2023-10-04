@@ -1,7 +1,7 @@
 ---
 - name: Setup Local Environment
   hosts: localhost
-  become: false
+  become: true
 
 
   roles:

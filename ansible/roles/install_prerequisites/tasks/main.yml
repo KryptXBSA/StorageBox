@@ -4,13 +4,9 @@
     update_cache: yes
     name:
       - ca-certificates
-      - curl
-      - gnupg
-  vars:
-    go_version: "1.21.0"  
 - name: Download Go
   get_url:
-    url: https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
+    url: https://golang.org/dl/go1.21.0.linux-amd64.tar.gz
     dest: /tmp/go.tar.gz  
 
 - name: Extract Go
