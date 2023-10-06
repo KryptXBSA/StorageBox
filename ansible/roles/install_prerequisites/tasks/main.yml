@@ -2,35 +2,6 @@
 - name: Install prerequisites
   apt:
     update_cache: yes
-    name:
-      - ca-certificates
-- name: Download Go
-  get_url:
-    url: https://golang.org/dl/go1.21.0.linux-amd64.tar.gz
-    dest: /tmp/go.tar.gz  
-
-- name: Extract Go
-  ansible.builtin.unarchive:
-    src: /tmp/go.tar.gz
-    dest: /usr/local
-
-- name: Set Go Environment Variables
-  ansible.builtin.lineinfile:
-    path: /etc/profile
-    line: 'export PATH=$PATH:/usr/local/go/bin'
-
-- name: Copy 'go' from /usr/local/go/bin to /usr/local/bin
-  ansible.builtin.command: cp /usr/local/go/bin/go /usr/local/bin/
-
-- name: Install Node.js and global packages
-  ansible.builtin.shell: |
-    mkdir -p /etc/apt/keyrings
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-    NODE_MAJOR=20
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-    apt update 
-    apt install -y nodejs
-    npm i prisma pm2 pnpm -g
 
 - name: Install Docker
   ansible.builtin.shell: |

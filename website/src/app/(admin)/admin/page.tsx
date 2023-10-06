@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { adminOverview } from "@/api/adminOverview"
+import { grafanaUrl } from "@/config"
 import { queryKeys } from "@/queryKeys"
 import { useQuery } from "@tanstack/react-query"
 import { ArrowUpRightIcon, Database, FileIcon, UsersIcon } from "lucide-react"
@@ -16,12 +17,16 @@ const dashboardData = [
     title: "CPU",
     links: [
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=20",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=20",
         width: "450px",
         height: "200px",
       },
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=3",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=3",
         width: "450px",
         height: "200px",
       },
@@ -31,12 +36,16 @@ const dashboardData = [
     title: "Network",
     links: [
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=280",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=280",
         width: "450px",
         height: "200px",
       },
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=85",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=85",
         width: "450px",
         height: "200px",
       },
@@ -46,12 +55,16 @@ const dashboardData = [
     title: "RAM",
     links: [
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=75",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=75",
         width: "450px",
         height: "200px",
       },
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=16",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=16",
         width: "450px",
         height: "200px",
       },
@@ -61,12 +74,16 @@ const dashboardData = [
     title: "Storage",
     links: [
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=23",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=23",
         width: "450px",
         height: "200px",
       },
       {
-        src: "http://localhost:3000/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=154",
+        src:
+          grafanaUrl +
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=154",
         width: "450px",
         height: "200px",
       },

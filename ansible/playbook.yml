@@ -3,111 +3,69 @@
   hosts: localhost
   become: true
 
-
-  roles:
-      - install_prerequisites
+  # roles:
+  #     - install_prerequisites
   tasks:
 
     - name: Include Variables
       include_vars:
         file: vars.yml
 
-    - name: Create new PostgreSQL container
-      ansible.builtin.shell: |
-        docker run --name postgres -e POSTGRES_PASSWORD={{db.POSTGRES_PASSWORD}} -p 5432:5432 -d postgres
-
-    - name: Install frontend dependencies
-      ansible.builtin.shell: |
-        pnpm i
-      args:
-        chdir: "{{ playbook_dir }}/../website"
-
-    - name: Build frontend
-      ansible.builtin.shell: |
-        pnpm build
-      args:
-        chdir: "{{ playbook_dir }}/../website"
-
-    - name: Start frontend with PM2
-      ansible.builtin.shell: |
-        pm2 start pnpm --name "website" -- start
-      args:
-        chdir: "{{ playbook_dir }}/../website"
-
-    - name: Init Db
-      ansible.builtin.shell: |
-        /usr/local/go/bin/go run github.com/steebchen/prisma-client-go db push
-      args:
-        chdir: "{{ playbook_dir }}/../server"
-
-    - name:  Build Server
-      ansible.builtin.shell: |
-        /usr/local/go/bin/go build -o server
-      args:
-        chdir: "{{ playbook_dir }}/../server"
-
-    - name: Run Server 
-      ansible.builtin.shell: |
-        pm2 start ./server --name "server"
-      args:
-        chdir: "{{ playbook_dir }}/../server"
-
-    # - name: Create .env file in ./StorageBox/server
-    #   ansible.builtin.copy:
-    #     content: |
-    #       DATABASE_URL="postgresql://postgres:123@localhost:5432/postgres"
-    #     dest: StorageBox/server/.env
-
-    # - name: Prisma sync database
+    # - name: Run Docker Compose Up
     #   ansible.builtin.shell: |
-    #     cd StorageBox/server
-    #     npx prisma db push --force
+    #     docker-compose up -d
+    #   args:
+    #     chdir: "{{ playbook_dir }}/.."
 
-    # - name: Run backend with PM2
-    #   ansible.builtin.shell: |
-    #     pm2 start StorageBox/server --name server
 
-    # - name: Create .env file in ./StorageBox/website
-    #   ansible.builtin.copy:
-    #     content: |
-    #       SERVER_URL="https://api.kurdmake.com"
-    #     dest: StorageBox/website/.env
+    - name: Update Nginx configuration
+      ansible.builtin.copy:
+        content: |
+          http {
+              server {
+                  listen 80;
+                  server_name {{domain.website}};
 
-    # - name: Update Nginx configuration
-    #   ansible.builtin.copy:
-    #     content: |
-    #       events {}
+                  location / {
+                      proxy_pass http://localhost/4001;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
 
-    #       http {
-    #           server {
-    #               listen 80;
-    #               server_name storagebox.kurdmake.com;
+              server {
+                  listen 80;
+                  server_name {{domain.server}};
 
-    #               location / {
-    #                   proxy_pass http://localhost:4001;
-    #                   proxy_set_header Host $http_host;
-    #                   proxy_set_header X-Real-IP $remote_addr;
-    #                   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    #                   proxy_set_header X-Forwarded-Proto $scheme;
-    #                   proxy_set_header X-Forwarded-Host $http_host;
-    #               }
-    #           }
+                  location / {
+                      proxy_pass http://localhost/4000;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
 
-    #           server {
-    #               listen 80;
-    #               server_name api.kurdmake.com;
+              server {
+                  listen 80;
+                  server_name {{domain.grafana}};
 
-    #               location / {
-    #                   proxy_pass http://localhost:4000;
-    #                   proxy_set_header Host $http_host;
-    #                   proxy_set_header X-Real-IP $remote_addr;
-    #                   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    #                   proxy_set_header X-Forwarded-Proto $scheme;
-    #                   proxy_set_header X-Forwarded-Host $http_host;
-    #               }
-    #           }
-    #       }
-    #     dest: /etc/nginx/sites-available/default
+                  location / {
+                      proxy_pass http://localhost/3000;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
+          }
+          events {}
+        dest: /etc/nginx/nginx.conf
 
-    # - name: Reload Nginx
-    #   ansible.builtin.command: nginx -s reload
+    - name: Reload Nginx
+      ansible.builtin.command: nginx -s reload

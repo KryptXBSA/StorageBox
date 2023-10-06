@@ -7,6 +7,7 @@ const nextConfig = {
     SERVER_URL: process.env.SERVER_URL,
     LOCAL_SERVER_URL: process.env.LOCAL_SERVER_URL,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+    GRAFANA_URL: process.env.GRAFANA_URL,
     GITHUB_REDIRECT_URI: process.env.GITHUB_REDIRECT_URI,
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_REDIRECT_URI: process.env.DISCORD_REDIRECT_URI,

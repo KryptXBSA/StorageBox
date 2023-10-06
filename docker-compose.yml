@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./server/pg-data:/var/lib/postgresql/data  
+      - ./data/pg-data:/var/lib/postgresql/data  
 
   redis:
     image: redis:latest
@@ -26,11 +26,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4000:4000"
-    depends_on:
-      - postgres
-      - redis
     volumes:
-      - ./server/uploads:/app/uploads  
+      - ./data/uploads:/app/uploads  
 
   website:
     container_name: storagebox-website
@@ -39,5 +36,35 @@ services:
       dockerfile: Dockerfile  
     ports:
       - "4001:4001"  
-    depends_on:
-      - server
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - './data/node_exporter-data:/host:ro,rslave'
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data/prometheus-data:/prometheus
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    environment:
+      GF_SECURITY_ALLOW_EMBEDDING: true
+      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana-data:/var/lib/grafana
+    restart: unless-stopped
+

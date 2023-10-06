@@ -1,4 +1,7 @@
 # vars.yml
 ---
-db:
-  POSTGRES_PASSWORD: 123
+domain:
+  website: storagebox.kurdmake.com
+  server: storagebox-api.kurdmake.com
+  grafana: grafana.kurdmake.com
+

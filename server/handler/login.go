@@ -38,6 +38,7 @@ func Login(c *gin.Context) {
 				return
 			}
 		} else {
+      println(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while finding user"})
 			return
 		}
