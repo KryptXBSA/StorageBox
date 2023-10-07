@@ -3,8 +3,8 @@
   hosts: localhost
   become: true
 
-  # roles:
-  #     - install_prerequisites
+  roles:
+      - install_prerequisites
   tasks:
 
     - name: Include Variables
