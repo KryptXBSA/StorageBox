@@ -1,8 +1,4 @@
 ---
-- name: Install prerequisites
-  apt:
-    update_cache: yes
-
 - name: Install Docker
   ansible.builtin.shell: |
     mkdir -p /etc/apt/keyrings

@@ -64,8 +64,11 @@
                   }
               }
           }
-          events {}
-        dest: /etc/nginx/nginx.conf
+        dest: /etc/nginx/sites-available/kurdmake.com
+
+    - name: Create link
+      ansible.builtin.command: ln -s /etc/nginx/sites-available/kurdmake.com /etc/nginx/sites-enabled/
+
 
     - name: Reload Nginx
       ansible.builtin.command: nginx -s reload
