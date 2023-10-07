@@ -11,11 +11,11 @@
       include_vars:
         file: vars.yml
 
-    # - name: Run Docker Compose Up
-    #   ansible.builtin.shell: |
-    #     docker-compose up -d
-    #   args:
-    #     chdir: "{{ playbook_dir }}/.."
+    - name: Run Docker Compose Up
+      ansible.builtin.shell: |
+        docker-compose up -d
+      args:
+        chdir: "{{ playbook_dir }}/.."
 
 
     - name: Update Nginx configuration
