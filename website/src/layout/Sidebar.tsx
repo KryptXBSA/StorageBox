@@ -13,11 +13,11 @@ import { Logo } from "@/components/Logo"
 
 import { sidebarNav } from "./sidebar-nav"
 
-export function Sidebar() {
+export function Sidebar({ storage: s }: { storage: number }) {
   const pathname = usePathname()
   const state = getAppState()
   const [selected, setSelected] = useState(pathname)
-  let storage = state?.userData?.storage || 0
+  let storage = state?.userData?.storage || s
 
   return (
     <>
@@ -26,7 +26,7 @@ export function Sidebar() {
           !state.showSidebar
             ? "hidden"
             : "mt-16 border-t lg:border-t-0 lg:mt-0",
-          "fixed z-50 lg:flex left-0 h-screen  w-60 bg-background  lg:bg-blue-700/20"
+          "fixed z-50 overflow-y-scroll lg:overflow-hidden lg:flex left-0 h-screen  w-60 bg-background  lg:bg-blue-700/20"
         )}
       >
         <div className="flex  w-full flex-col items-center ">

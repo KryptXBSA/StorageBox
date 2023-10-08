@@ -1,7 +1,7 @@
 # vars.yml
 ---
 domain:
-  domain-name: kurdmake
+  domain_name: kurdmake
   website: storagebox.kurdmake.com
   server: storagebox-api.kurdmake.com
   grafana: grafana.kurdmake.com

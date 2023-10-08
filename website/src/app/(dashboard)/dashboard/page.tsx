@@ -3,17 +3,17 @@
 import { getData } from "@/api/getData"
 import { serverUrl } from "@/config"
 import { queryKeys } from "@/queryKeys"
+import { getAppState, updateAppState } from "@/state/state"
 import { ErrorRes } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "react-toastify"
 
+import { Breadcrumbs } from "@/components/Breadcrumbs"
 import { DataTable } from "@/components/DataTable"
 import { Spinner } from "@/components/Spinner"
-import { Breadcrumbs } from "@/components/Breadcrumbs"
-import { getAppState, updateAppState } from "@/state/state"
 
-
+export const dynamic = "force-dynamic"
 export default function Page() {
   const state = getAppState()
   const query = useQuery({

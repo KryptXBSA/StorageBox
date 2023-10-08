@@ -46,6 +46,7 @@ export function Breadcrumbs() {
       debug: true,
     }).use(Tus, {
       endpoint: serverUrl + "/files/",
+      chunkSize: 5 * 1024 * 1024,
       headers: {
         dir:
           state.selectedFolder?.id! ||

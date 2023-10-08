@@ -9,7 +9,7 @@ export function Logo() {
         fill="white"
         version="1.1"
         id="Capa_1"
-        className="w-12 h-12 mr-3"
+        className="sm:w-12 sm:h-12 mr-3"
         viewBox="0 0 444.185 444.184"
         xmlSpace="preserve"
       >
@@ -26,7 +26,7 @@ export function Logo() {
           </g>
         </g>
       </svg>
-      <span className="text-xl font-bold">Storage Box</span>
+      <span className="sm:text-xl whitespace-nowrap text-base font-bold">Storage Box</span>
     </Link>
   )
 }

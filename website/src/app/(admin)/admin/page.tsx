@@ -19,7 +19,7 @@ const dashboardData = [
       {
         src:
           grafanaUrl +
-          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=20",
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=305",
         width: "450px",
         height: "200px",
       },
@@ -38,14 +38,14 @@ const dashboardData = [
       {
         src:
           grafanaUrl +
-          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=280",
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=290",
         width: "450px",
         height: "200px",
       },
       {
         src:
           grafanaUrl +
-          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=85",
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=126",
         width: "450px",
         height: "200px",
       },
@@ -57,7 +57,7 @@ const dashboardData = [
       {
         src:
           grafanaUrl +
-          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=75",
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=78",
         width: "450px",
         height: "200px",
       },
@@ -76,14 +76,14 @@ const dashboardData = [
       {
         src:
           grafanaUrl +
-          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=23",
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&panelId=127",
         width: "450px",
         height: "200px",
       },
       {
         src:
           grafanaUrl +
-          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&refresh=5s&var-DS_PROMETHEUS=default&var-job=node_exporter&var-node=localhost%3A9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B&panelId=154",
+          "/d-solo/rYdddlPWk/node-exporter-full?orgId=1&panelId=156",
         width: "450px",
         height: "200px",
       },

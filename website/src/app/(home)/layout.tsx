@@ -1,33 +1,17 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
 import { SiteHeader } from "@/layout/SiteHeader"
-
-import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { ReactQueryProvider } from "@/components/ReactQueryProvider"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
-
 import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
-}
+import { meta } from "@/config/meta"
+
+export const metadata:Metadata=meta
 
 interface RootLayoutProps {
   children: React.ReactNode
@@ -45,7 +29,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ReactQueryProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
               <ToastContainer position="bottom-right" theme="dark" />
               <div className="relative flex min-h-screen flex-col">
                 <SiteHeader />

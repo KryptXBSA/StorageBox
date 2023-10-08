@@ -115,6 +115,7 @@ func HeadHandler(c *gin.Context) {
 
 func GetHandler(c *gin.Context) {
 	fileId := c.Param("id")
+
 	if fileId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing file id"})
 		return
@@ -131,7 +132,7 @@ func GetHandler(c *gin.Context) {
 	// if user is not admin && not file owner return err
 	if c.GetString("role") != "admin" {
 		if file.UserID != c.GetString("id") {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorizedd"})
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 			return
 		}
 	}
@@ -151,8 +152,7 @@ func tusHandler(c *gin.Context) *tusd.UnroutedHandler {
 	store.UseIn(composer)
 
 	h, err := tusd.NewUnroutedHandler(tusd.Config{
-		BasePath: "/files/",
-		// BasePath:              "https://apii.kurdmake.com/files/",
+		BasePath:             config.GetConfig().API_URL+"/files/" ,
 		StoreComposer: composer,
 
 		RespectForwardedHeaders: true,

@@ -21,7 +21,6 @@
     - name: Update Nginx configuration
       ansible.builtin.copy:
         content: |
-          http {
               server {
                   listen 80;
                   server_name {{domain.website}};
@@ -63,11 +62,10 @@
                       proxy_set_header X-Forwarded-Host $http_host;
                   }
               }
-          }
-        dest: /etc/nginx/sites-available/{{domain.domain-name}}.conf
+        dest: /etc/nginx/sites-available/{{domain.domain_name}}.conf
 
     - name: Create symlink
-      ansible.builtin.command: ln -s /etc/nginx/sites-available/{{domain.domain-name}}.conf /etc/nginx/sites-enabled/
+      ansible.builtin.command: ln -s /etc/nginx/sites-available/{{domain.domain_name}}.conf /etc/nginx/sites-enabled/
 
 
     - name: Reload Nginx

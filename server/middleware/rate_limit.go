@@ -13,7 +13,7 @@ import (
 )
 
 func RateLimit() gin.HandlerFunc {
-	rate, err := limiter.NewRateFromFormatted("70-M")
+	rate, err := limiter.NewRateFromFormatted("85-M")
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
