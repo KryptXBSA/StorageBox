@@ -14,7 +14,7 @@ export function SiteHeader() {
         <div className="flex  flex-1 items-center justify-between">
           <div className="flex  items-center gap-6">
             <Logo />
-            <Link href="/documentation">Documentation</Link>
+            {/* <Link href="/documentation">Documentation</Link> */}
           </div>
           {/* <div className="invisible"> */}
           {/*   <UserAvatar /> */}

@@ -152,7 +152,7 @@ func tusHandler(c *gin.Context) *tusd.UnroutedHandler {
 	store.UseIn(composer)
 
 	h, err := tusd.NewUnroutedHandler(tusd.Config{
-		BasePath:             config.GetConfig().API_URL+"/files/" ,
+		BasePath:             config.GetConfig().SERVER_URL+"/files/" ,
 		StoreComposer: composer,
 
 		RespectForwardedHeaders: true,

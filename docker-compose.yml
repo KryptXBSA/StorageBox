@@ -63,7 +63,7 @@ services:
     container_name: grafana
     environment:
       GF_SECURITY_ALLOW_EMBEDDING: true
-      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+      GF_AUTH_ANONYMOUS_ENABLED: true
     ports:
       - "3000:3000"
     volumes:
