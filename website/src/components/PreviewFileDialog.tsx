@@ -33,7 +33,6 @@ export function PreviewFileDialog({
 
   const [content, setContent] = useState<string | null>(null)
   useEffect(() => {
-    console.log("ttt", type)
     if (type === "text" || type === "image") fetchFileContent()
     async function fetchFileContent() {
       try {

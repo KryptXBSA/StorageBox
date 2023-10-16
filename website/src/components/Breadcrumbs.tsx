@@ -4,15 +4,12 @@ import React, { useEffect, useState } from "react"
 import { getData } from "@/api/getData"
 import { serverUrl } from "@/config"
 import { getAppState, updateAppState } from "@/state/state"
-import { useStore } from "@nanostores/react"
 import Uppy from "@uppy/core"
 import { DashboardModal } from "@uppy/react"
 import Tus from "@uppy/tus"
 import {
   ArrowUpCircle,
   LayoutGrid,
-  List,
-  PlusCircle,
   Table,
 } from "lucide-react"
 
@@ -39,7 +36,6 @@ export function Breadcrumbs() {
 
   useEffect(() => {
     // Create an Uppy instance with custom headers
-    console.log("selectedFolder", state.selectedFolder?.id)
     const uppyInstance = new Uppy({
       id: "uppy1",
       autoProceed: false,
