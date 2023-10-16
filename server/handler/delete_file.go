@@ -23,7 +23,27 @@ func DeleteFile(c *gin.Context) {
 
 	userID := c.GetString("id")
 
-	_, err := prisma.Client().File.FindMany(
+	file, err := prisma.Client().File.FindFirst(
+		db.File.And(db.File.UserID.Equals(userID), db.File.ID.Equals(Body.FileId)),
+	).Exec(prisma.Context())
+
+	if err != nil {
+		println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to find file"})
+		return
+	}
+
+	// decrement the total Storage for user
+	_, err = prisma.Client().User.FindUnique(
+		db.User.ID.Equals(userID),
+	).Update(db.User.Storage.Decrement(file.Size)).Exec(prisma.Context())
+
+	if err != nil {
+		println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to decrement Storage for user"})
+		return
+	}
+	_, err = prisma.Client().File.FindMany(
 		db.File.And(db.File.UserID.Equals(userID), db.File.ID.Equals(Body.FileId)),
 	).Delete().Exec(prisma.Context())
 
