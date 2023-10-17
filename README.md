@@ -8,7 +8,7 @@ StorageBox a simple file storage service.
 - React Query
 - Uppy with Tus Plugin for resumable file uploads
 - Shadcn-ui and Tailwind CSS for components and styling
-- Go for the backend with Tus for resumable file uploads
+- Go (Gin Framework) for the backend with Tus for resumable file uploads
 - Postgres (primary database) and Redis (rate limiting)
 - Prisma as an ORM
 - Grafana, Prometheus for server statistics with node_exporter
