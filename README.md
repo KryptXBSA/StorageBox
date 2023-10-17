@@ -18,13 +18,13 @@ StorageBox a simple file storage service.
 
 **Services (docker-compose.yml)**
 
-- `postgres`: Primary DB.
-- `redis`: Rate limiting.
-- `server`: Backend server responsible for application logic.
-- `website`: Front-end website for user interaction.
-- `prometheus`: Prometheus for storing and monitoring metrics data.
-- `grafana`: Grafana for visualizing and analyzing metrics.
-- `node_exporter`: Node Exporter for collecting system-level metrics.
+- `postgres`: Primary DB, port 5432.
+- `redis`: Rate limiting, port 6379.
+- `server`: Backend server responsible for application logic, port 4001.
+- `website`: Front-end website for user interaction, port 4000.
+- `prometheus`: Prometheus for storing and monitoring metrics data, port 9100.
+- `grafana`: Grafana for visualizing and analyzing metrics, port 3000.
+- `node_exporter`: Node Exporter for collecting system-level metrics, port 9100.
 
 
 ## How to Run Locally
