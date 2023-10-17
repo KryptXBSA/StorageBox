@@ -22,7 +22,7 @@ StorageBox a simple file storage service.
 - `redis`: Rate limiting, port 6379.
 - `server`: Backend server responsible for application logic, port 4001.
 - `website`: Front-end website for user interaction, port 4000.
-- `prometheus`: Prometheus for storing and monitoring metrics data, port 9100.
+- `prometheus`: Prometheus for storing and monitoring metrics data, port 9090.
 - `grafana`: Grafana for visualizing and analyzing metrics, port 3000.
 - `node_exporter`: Node Exporter for collecting system-level metrics, port 9100.
 
@@ -70,7 +70,7 @@ To run the project on a VPS, follow these steps:
 
 6. Change to the `ansible/` directory and run the following command to run the Ansible playbook: `ansible-playbook playbook.yml`
    
-  This playbook will install the required software, spawn Docker containers, and configure Nginx for you. You may also need to configure your firewall. Please note this playbook has only been tested on Linux(Debian).
+  This playbook will install the required software, spawn Docker containers, and configure Nginx for you. You may also need to configure your firewall. Please note this playbook has only been tested on Linux(Ubuntu).
 
 
 ## Contributing
