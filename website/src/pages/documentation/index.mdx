@@ -10,12 +10,16 @@ StorageBox a simple file storage service.
 
 ## Tech Stack
 
-- `postgres`: Primary DB.
-- `redis`: Rate limiting.
-- `server`: Backend server responsible for application logic.
-- `website`: Front-end website for user interaction.
-- `prometheus`: Prometheus for storing and monitoring metrics data.
-- `grafana`: Grafana for visualizing and analyzing metrics.
-- `node_exporter`: Node Exporter for collecting system-level metrics.
+- Next.js
+- React Query
+- Uppy with Tus Plugin for resumable file uploads
+- Shadcn-ui and Tailwind CSS for components and styling
+- Go for the backend with Tus for file uploads
+- Postgres (primary database) and Redis (rate limiting)
+- Prisma as an ORM
+- Grafana, Prometheus for server statistics with node_exporter
+- Ansible for automating server provisioning
+- Nginx as a reverse proxy
+- Docker and Docker Compose for containerizing all the 7 services required to run this project
 
 
