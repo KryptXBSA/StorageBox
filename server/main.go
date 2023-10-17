@@ -78,6 +78,7 @@ func main() {
 	r.GET("/admin/files", handler.AdminFiles)
 	r.Use(middleware.AuthAdmin)
 	r.DELETE("/admin/user", handler.AdminDeleteUser)
+  // TODO after deleting a file decrement the user Storage limit
 	r.DELETE("/admin/user-files", handler.AdminDeleteAllUserFiles)
 	r.DELETE("/admin/file", handler.AdminDeleteFile)
 

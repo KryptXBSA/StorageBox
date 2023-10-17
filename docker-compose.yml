@@ -71,4 +71,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  grafana-data:
+  grafana-data: 
