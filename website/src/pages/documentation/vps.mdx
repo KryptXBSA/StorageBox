@@ -1,0 +1,29 @@
+## How to Run on a VPS
+
+**Requirements**
+
+- Ansible: [Installation Instructions](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
+To run the project on a VPS, follow these steps:
+
+1. Clone the project: `git clone https://github.com/AlandSleman/StorageBox`
+
+2. Change to the `server/` directory. Copy the contents of the `.env.example` file into a new file named `.env`.
+
+3. Change to the `website/` directory. Copy the contents of the `.env.example` file into a new file named `.env`.
+
+4. Change to the `ansible/` directory and edit `vars.yml` to your own values. This file contains the variables used for configuring Nginx with Ansible.
+
+5. You'll also need to update the Nginx maximum upload limit. The default is 1MB. Refer to [this guide](https://stackoverflow.com/questions/26717013/how-to-edit-nginx-conf-to-increase-file-size-upload) to update the limit.
+
+6. Change to the `ansible/` directory and run the following command to run the Ansible playbook: `ansible-playbook playbook.yml`
+   
+  This playbook will install the required software, spawn Docker containers, and configure Nginx for you. You may also need to configure your VPS firewall. Please note this playbook has only been tested on Linux(Ubuntu).
+
+Make sure to visit `website_url` which you configured, login with the default credentals `user:admin, pass:admin` this user has a special role which can delete files and users in the Admin Dashboard so make sure to change the password.
+
+Also Make sure to visit `grafana_url` which you configured, login with the default credentals `user:admin, pass:admin`, configure Grafana and Prometheus by following these steps:
+
+- Add the Prometheus data source `Home > Connections > Data sources` The URL would be `http://prometheus:9090`.
+
+- Import the Node Exporter dashboard `Home > Dashboards > Import dashboard` the dashboard ID would be `1860`.

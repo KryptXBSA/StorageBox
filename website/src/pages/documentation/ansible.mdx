@@ -1,0 +1,148 @@
+# Ansible
+This Ansible playbook automates several tasks, including installing essential software components, setting up Docker containers, and configuring Nginx as a reverse proxy. It allows you to efficiently manage the deployment and configuration of the application.
+
+Let's go through the Ansible playbook.
+
+## Setup Local Environment
+- **Hosts**: localhost
+- **Become**: true (Run tasks with elevated privileges)
+- **Roles**: install_prerequisites (Roles define tasks for installing prerequisites)
+
+```yaml
+---
+- name: Setup Local Environment
+  hosts: localhost
+  become: true
+
+  roles:
+      - install_prerequisites
+```
+
+## Tasks
+
+### install_prerequisites task
+- **Install Docker and Docker compose**: This task installs Docker and Docker Compose along with related components.
+- **Install Nginx**: This task installs the Nginx web server.
+
+```yaml
+---
+- name: Install Docker and docker compose
+  ansible.builtin.shell: |
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+    apt update
+    apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+```
+
+## Include Variables
+- The "Include Variables" task is a crucial step that customizes the playbook's configuration by loading variables from the `vars.yml` file.
+
+```yaml
+    - name: Include Variables
+      include_vars:
+        file: vars.yml
+```
+
+## Run Docker Compose Up
+- Execute the `docker compose up -d` command to start Docker containers.
+- The `args` section specifies the working directory.
+```yaml
+    - name: Run Docker Compose Up
+      ansible.builtin.shell: |
+        docker compose up -d
+      args:
+        chdir: "{{ playbook_dir }}/.."
+```
+
+### vars.yml
+- The `vars.yml` file contains a set of key-value pairs, defining various configuration settings for the application. In this specific case, the following variables are defined:
+
+  - `domain_name`: Specifies the primary domain name, which, in this example, is set to `kurdmake`.
+  - `website`: Defines the domain name for the website, set to `storagebox.kurdmake.com`.
+  - `server`: Specifies the domain name for the server, which is `storagebox-api.kurdmake.com`.
+  - `grafana`: Sets the domain name for Grafana, configured as `grafana.kurdmake.com`.
+
+These variables play a vital role in tailoring the configuration of our Ansible playbook to match your specific environment and domain names, ensuring a seamless and tailored deployment process.
+
+```yaml
+# vars.yml
+---
+domain:
+  domain_name: kurdmake
+  website: storagebox.kurdmake.com
+  server: storagebox-api.kurdmake.com
+  grafana: grafana.kurdmake.com
+```
+## Update Nginx Configuration
+- Use the `ansible.builtin.copy` module to update the Nginx configuration.
+- This block sets up proxy configurations for different server names (`{{domain.website}}`, `{{domain.server}}`, and `{{domain.grafana}}`) to forward requests to the respective services.
+
+```yaml
+    - name: Update Nginx configuration
+      ansible.builtin.copy:
+        content: |
+              server {
+                  listen 80;
+                  server_name {{domain.website}};
+
+                  location / {
+                      proxy_pass http://localhost:4001;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
+
+              server {
+                  listen 80;
+                  server_name {{domain.server}};
+
+                  location / {
+                      proxy_pass http://localhost:4000;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
+
+              server {
+                  listen 80;
+                  server_name {{domain.grafana}};
+
+                  location / {
+                      proxy_pass http://localhost:3000;
+                      proxy_set_header Host $http_host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header X-Forwarded-Host $http_host;
+                  }
+              }
+        dest: /etc/nginx/sites-available/{{domain.domain_name}}.conf
+```
+
+## Create Symlink
+- Create a symbolic link (symlink) for the Nginx configuration file in the `sites-enabled` directory.
+```yaml
+    - name: Create symlink
+      ansible.builtin.command: ln -s /etc/nginx/sites-available/{{domain.domain_name}}.conf /etc/nginx/sites-enabled/
+```
+
+## Reload Nginx
+- Reload Nginx to apply the configuration changes.
+
+```yaml
+    - name: Reload Nginx
+      ansible.builtin.command: nginx -s reload
+```
+

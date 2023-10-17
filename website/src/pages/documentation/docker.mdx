@@ -1,0 +1,96 @@
+# docker-compose.yml
+
+The Docker Compose file defines services that use a shared network created by Docker, enabling seamless communication between these services.
+
+### Postgres
+Running on port 5432
+```yaml
+  postgres:
+    image: postgres:latest
+    container_name: storagebox-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/pg-data:/var/lib/postgresql/data  
+```
+### Redis
+Running on port 6379
+```yaml
+  redis:
+    image: redis:latest
+    container_name: storagebox-redis
+    ports:
+      - "6379:6379"
+```
+### Server
+The backend, port 4000
+```yaml
+  server:
+    container_name: storagebox-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./data/uploads:/app/uploads  
+```
+### Website
+The frontend, port 4001
+```yaml
+  website:
+    container_name: storagebox-website
+    build:
+      context: ./website  
+      dockerfile: Dockerfile  
+    ports:
+      - "4001:4001"  
+```
+### Prometheus
+Prometheus for storing and monitoring metrics data, port 9090.
+```yaml
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data/prometheus-data:/etc/prometheus
+```
+
+### Grafana
+Grafana for visualizing and analyzing metrics, port 3000.
+```yaml
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    environment:
+      GF_SECURITY_ALLOW_EMBEDDING: true
+      GF_AUTH_ANONYMOUS_ENABLED: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+```
+### Node Exporter
+Node Exporter for collecting system-level metrics, port 9100.
+```yaml
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - './data/node_exporter-data:/host:ro,rslave'
+```
+

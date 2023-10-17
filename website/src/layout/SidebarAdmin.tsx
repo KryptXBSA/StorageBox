@@ -47,19 +47,19 @@ export function SidebarAdmin() {
             </div>
           </div>
           <Separator orientation="horizontal" className="w-full" />
-          {/* <Link */}
-          {/*   href="/documentation" */}
-          {/*   target="_blank" */}
-          {/*   className={cn( */}
-          {/*     "transition-colors w-full gap-2 font-semibold px-6 py-3.5 duration-300 cursor-pointer flex flex-row items-center", */}
-          {/*     false */}
-          {/*       ? "bg-gradient-to-r from-blue-600/90 to-blue-600/10  hover:from-blue-600 hover:to-blue-600/20" */}
-          {/*       : "hover:bg-blue-700/80" */}
-          {/*   )} */}
-          {/* > */}
-          {/*   <Book /> */}
-          {/*   Documentation */}
-          {/* </Link> */}
+          <Link
+            href="/documentation"
+            target="_blank"
+            className={cn(
+              "transition-colors w-full gap-2 font-semibold px-6 py-3.5 duration-300 cursor-pointer flex flex-row items-center",
+              false
+                ? "bg-gradient-to-r from-blue-600/90 to-blue-600/10  hover:from-blue-600 hover:to-blue-600/20"
+                : "hover:bg-blue-700/80"
+            )}
+          >
+            <Book />
+            Documentation
+          </Link>
           <a
             href="https://github.com/AlandSleman/StorageBox"
             target="_blank"

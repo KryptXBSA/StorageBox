@@ -1,0 +1,9 @@
+# Conclusion
+
+In summary, working on this project has been a great learning experience. It allowed me to gain valuable insights into Go, Docker, Ansible, and other essential technologies for modern web development. However, there were some unique challenges along the way:
+
+- I encountered issues with running Postgres in Docker, as it repeatedly attempted to execute random commands within the container. As a solution, I had to run Postgres separately, outside of Docker. Meanwhile, the website and server containers had to utilize the host networking mode for seamless interaction.
+
+- When it came to data modeling and working with the Postgres database in Go, things got a bit tricky. I initially chose Prisma, but it proved to be more complicated than expected. It's worth noting that Prisma doesn't offer the best developer experience in Go because there is no official library maintained by the team, like their TypeScript library.
+
+In the future, I plan to explore GORM, a more developer-friendly option.

@@ -43,6 +43,8 @@
     "moment": "^2.29.4",
     "nanostores": "^0.9.3",
     "next": "^13.4.8",
+    "nextra": "latest",
+    "nextra-theme-docs": "latest",
     "next-themes": "^0.2.1",
     "pnpm": "^8.8.0",
     "react": "^18.2.0",

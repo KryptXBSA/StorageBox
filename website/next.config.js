@@ -16,9 +16,14 @@ const nextConfig = {
   }
 };
 
+const withNextra = require("nextra")({
+  theme: "nextra-theme-docs",
+  themeConfig: "./theme.config.tsx",
+});
 
+// module.exports = withNextra(nextConfig);
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
-module.exports = withBundleAnalyzer(nextConfig)
+module.exports = withBundleAnalyzer(withNextra(nextConfig))

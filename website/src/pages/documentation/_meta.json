@@ -1,0 +1,8 @@
+{
+  "index": "Introduction",
+  "locally": "Run locally",
+  "vps": "Run on a VPS",
+  "docker": "docker-compose.yml",
+  "ansible": "Ansible",
+  "conclusion": "Conclusion"
+}
