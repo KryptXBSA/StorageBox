@@ -14,19 +14,17 @@ StorageBox a simple file storage service.
 - Grafana, Prometheus for server statistics with node_exporter
 - Ansible for automating server provisioning
 - Nginx as a reverse proxy
-- Docker for containerizing all 7 services
+- Docker and Docker Compose for containerizing all the 7 services required to run this project
 
-**Services and Their Roles**
+**Services (docker-compose.yml)**
 
-- `postgres`: Main database for data storage.
-- `redis`: Redis service used for rate limiting.
+- `postgres`: Primary DB.
+- `redis`: Rate limiting.
 - `server`: Backend server responsible for application logic.
 - `website`: Front-end website for user interaction.
-- `node_exporter`: Node Exporter for collecting system-level metrics.
 - `prometheus`: Prometheus for storing and monitoring metrics data.
 - `grafana`: Grafana for visualizing and analyzing metrics.
-
-
+- `node_exporter`: Node Exporter for collecting system-level metrics.
 
 
 ## How to Run Locally
@@ -43,7 +41,7 @@ To run the project locally, follow these steps:
 
 3. Change to the `website/` directory. Copy the contents of the `.env.example` file into a new file named `.env`. Default values will work for running locally.
 
-4. Run the following command spawn the Docker containers: `docker-compose up`
+4. Run the following command to spawn the Docker containers: `docker-compose up`
 
 
 Make sure to visit `localhost:3000` login with the default credentals`user:admin, pass:admin`, and configure Grafana by following these steps:
@@ -66,7 +64,7 @@ To run the project on a VPS, follow these steps:
 
 3. Change to the `website/` directory. Copy the contents of the `.env.example` file into a new file named `.env`.
 
-4. Change to the `ansible` directory and edit `vars.yml` to your own values. This file is for the Ansible playbook to configure the Nginx reverse proxy.
+4. Change to the `ansible` directory and edit `vars.yml` to your own values. This file contains the variables used for configuring Nginx with Ansible.
 
 5. You'll also need to update the Nginx maximum upload limit. The default is 1MB. Refer to [this guide](https://stackoverflow.com/questions/26717013/how-to-edit-nginx-conf-to-increase-file-size-upload) to update the limit.
 
