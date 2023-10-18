@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/AlandSleman/StorageBox/auth"
 	"github.com/AlandSleman/StorageBox/prisma"
@@ -23,15 +24,16 @@ func Login(c *gin.Context) {
 		return
 	}
 
+  username := strings.ReplaceAll(body.Username, " ", "")
 	// Attempt to find the user by username
 	user, err := prisma.Client().User.FindFirst(
-		db.User.Username.Equals(body.Username),
+		db.User.Username.Equals(username),
 	).Exec(prisma.Context())
 
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
 			// User not found, create a new user
-			user, err = auth.CreateUserPassword(body.Username, body.Password)
+			user, err = auth.CreateUserPassword(username, body.Password)
 			if err != nil {
         println(err.Error())
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Server error"})
