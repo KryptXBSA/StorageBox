@@ -13,6 +13,9 @@ import (
 )
 
 func CreateUserPassword(username, password string) (*db.UserModel, error) {
+	// trim username
+	username = strings.ReplaceAll(username, " ", "")
+
 	hashedPassword, err := HashPassword(password)
 	if err != nil {
 		return nil, err
